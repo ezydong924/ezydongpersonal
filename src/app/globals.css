@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+body {
+  background: #0a0a0a;
+  color: #f5f5f7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+/* ── Liquid Glass ── */
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(48px) saturate(140%);
+  -webkit-backdrop-filter: blur(48px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow:
+    0 30px 60px -15px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+.glass-card::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.glass-card::after {
+  content: '';
+  position: absolute; top: 0; left: 8%; right: 8%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  pointer-events: none;
+}
+
+/* ── Page enter ── */
+.page-enter { animation: fadeIn 0.8s ease-out both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Scroll hint ── */
+.scroll-hint { animation: scrollPulse 2.5s ease-in-out infinite; }
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(5px); }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; opacity: 1; }
+  .scroll-hint { animation: none; opacity: 0.3; }
+}
+
+/* ── Aurora (legacy support) ── */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
+  25% { transform: translate(30%,-20%) rotate(5deg) scale(1.05); }
+  50% { transform: translate(-10%,-30%) rotate(-3deg) scale(0.95); }
+  75% { transform: translate(-20%,10%) rotate(2deg) scale(1.02); }
+}
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0,0) rotate(0deg) scale(1.1); }
+  33% { transform: translate(-25%,-15%) rotate(-4deg) scale(0.9); }
+  66% { transform: translate(20%,25%) rotate(3deg) scale(1.05); }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); }
+  50% { transform: translate(15%,-25%) rotate(-2deg) scale(1.08); }
+}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(120px);opacity:.3;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.aurora-blob-1{width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.4),transparent);animation:aurora-1 20s infinite;top:-20%;left:-10%}
+.aurora-blob-2{width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.35),transparent);animation:aurora-2 25s infinite;top:30%;right:-15%}
+.aurora-blob-3{width:550px;height:550px;background:radial-gradient(circle,rgba(34,211,238,.3),transparent);animation:aurora-3 22s infinite;bottom:-25%;left:20%}
+.noise-overlay{position:absolute;inset:0;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
+.card-glow:hover{box-shadow:0 0 60px -15px rgba(139,92,246,.15)}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob-1,.aurora-blob-2,.aurora-blob-3{animation-duration:0s}
+}
