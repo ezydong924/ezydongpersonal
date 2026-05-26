@@ -7,9 +7,9 @@ import MosaicBg from "@/components/mosaic-bg";
 import BackButton from "@/components/back-button";
 
 const videos = [
-  { title: "城市光影", desc: "穿梭于钢筋森林，捕捉光的轨迹与建筑的呼吸。", cover: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80", slug: "urban-light" },
-  { title: "自然呼吸", desc: "山川湖泊的静谧时刻，风与水的无声对话。", cover: "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=800&q=80", slug: "nature-breath" },
-  { title: "人间烟火", desc: "市井巷陌的日常切片，平凡生活的诗意瞬间。", cover: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&q=80", slug: "human-moments" },
+  { title: "大连", desc: "滨城With light storm.", cover: "/dalian.jpg", slug: "dalian" },
+  { title: "成都", desc: "方寸之间 宽窄自如", cover: "/chengdu-cover.jpg", slug: "chengdu" },
+  { title: "大理", desc: "风花雪月 树海眼泪 风沙粒 都会成为我生命的一部分", cover: "/dali-cover.jpg", slug: "dali" },
 ];
 
 export default function VideosPage() {

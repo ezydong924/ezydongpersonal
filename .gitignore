@@ -1,4 +1,8 @@
 node_modules/
 .next/
+out/
 .env
 .env.local
+
+# 原始大视频，只用压缩版
+public/滨城.mp4
