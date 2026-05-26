@@ -48,7 +48,7 @@ export default function ScrollExpandMedia({
   // Video controls
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -56,13 +56,19 @@ export default function ScrollExpandMedia({
   const [hasInteracted, setHasInteracted] = useState(false);
   const dragStartX = useRef(0);
 
-  // Auto-unmute after expansion completes
+  // Attempt autoplay on mount
   useEffect(() => {
-    if (hasInteracted && videoRef.current) {
-      videoRef.current.muted = false;
-      setIsMuted(false);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
     }
-  }, [hasInteracted]);
+  }, []);
+
+  // Fallback: trigger play on first scroll if autoplay was blocked
+  const tryPlayVideo = () => {
+    if (videoRef.current && videoRef.current.paused) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
 
   useEffect(() => {
     setScrollProgress(0);
@@ -77,6 +83,7 @@ export default function ScrollExpandMedia({
         e.preventDefault();
       } else if (!mediaFullyExpanded) {
         e.preventDefault();
+        tryPlayVideo();
         const scrollDelta = e.deltaY * 0.0007;
         const cap = 0.5;
         const newProgress = Math.min(Math.max(scrollProgress + scrollDelta, 0), cap);
@@ -104,6 +111,7 @@ export default function ScrollExpandMedia({
         e.preventDefault();
       } else if (!mediaFullyExpanded) {
         e.preventDefault();
+        tryPlayVideo();
         const scrollFactor = deltaY < 0 ? 0.006 : 0.004;
         const scrollDelta = deltaY * scrollFactor;
         const cap = 0.5;
