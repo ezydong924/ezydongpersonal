@@ -11,20 +11,20 @@ export default function HomePage() {
       <ShaderBackground />
       <div className="fixed inset-0 bg-black/[0.07] pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
-        <main className="absolute bottom-12 left-12 right-12 max-w-3xl">
+        <main className="absolute bottom-12 left-6 right-6 max-w-3xl overflow-visible">
           <motion.div className="text-left leading-[0.85] tracking-tight">
-            <motion.span className="block text-[5rem] sm:text-[7rem] lg:text-[9rem] font-semibold text-white tracking-[-0.02em] mb-6">
+            <motion.span className="block text-[4.2rem] sm:text-[7rem] lg:text-[9rem] font-semibold text-white tracking-[-0.02em] mb-6 whitespace-nowrap">
               影岑
             </motion.span>
 
             <AnimatedText
               text="Shadow"
-              className="block text-[5rem] sm:text-[7rem] lg:text-[9rem] font-black text-white tracking-[-0.04em] drop-shadow-2xl text-left"
+              className="block text-[4.2rem] sm:text-[7rem] lg:text-[9rem] font-black text-white tracking-[-0.04em] drop-shadow-2xl text-left whitespace-nowrap"
             />
           </motion.div>
 
           <motion.p
-            className="mt-10 text-base sm:text-lg text-white/70 font-light leading-relaxed max-w-md"
+            className="mt-10 text-sm sm:text-base text-white/70 font-light leading-relaxed max-w-md"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}

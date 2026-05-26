@@ -6,7 +6,7 @@ import EntranceText from "@/components/entrance-text";
 export default function Narrative() {
   return (
     <div className="w-full pt-28 pb-24">
-      <section className="max-w-5xl mx-auto px-6 md:px-10 mb-32 text-center">
+      <section className="max-w-5xl mx-auto px-2 md:px-10 mb-32 overflow-visible text-center">
         <div className="flex items-center justify-center gap-0 mb-12 w-full">
           <span className="h-px flex-1 bg-gradient-to-r from-transparent via-white/15 to-white/15" />
           <span className="mx-8 text-sm font-medium tracking-[0.2em] text-white/55 uppercase whitespace-nowrap">
@@ -16,7 +16,7 @@ export default function Narrative() {
         </div>
         <EntranceText
           text="光影 记忆 存在"
-          className="font-[family-name:var(--font-serif)] text-[3.5rem] sm:text-[5.5rem] md:text-[6.5rem] font-semibold text-white tracking-[0em] leading-[1.05]"
+          className="font-[family-name:var(--font-serif)] text-[2.8rem] sm:text-[5rem] md:text-[6.5rem] font-semibold text-white tracking-[0em] leading-[1.05]"
           delay={0.3}
         />
         <p className="mt-10 text-lg sm:text-xl text-white/65 font-light leading-relaxed">

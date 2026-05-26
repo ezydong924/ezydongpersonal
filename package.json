@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "deploy": "npm run build-deploy && npx wrangler pages deploy out --branch main",
+    "build-deploy": "set NEXT_EXPORT=1 && next build",
     "lint": "eslint"
   },
   "dependencies": {
