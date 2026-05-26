@@ -18,10 +18,10 @@ export default function ShaderBackground() {
         rotation={0}
         speed={1}
         colors={[
-          "hsl(200, 100%, 20%)",
-          "hsl(160, 100%, 75%)",
-          "hsl(180, 90%, 30%)",
-          "hsl(170, 100%, 80%)",
+          "hsl(200, 100%, 15%)",
+          "hsl(160, 100%, 70%)",
+          "hsl(180, 90%, 25%)",
+          "hsl(170, 100%, 75%)",
         ]}
       />
     </div>
