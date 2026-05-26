@@ -48,13 +48,21 @@ export default function ScrollExpandMedia({
   // Video controls
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [videoProgress, setVideoProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const dragStartX = useRef(0);
+
+  // Auto-unmute after expansion completes
+  useEffect(() => {
+    if (hasInteracted && videoRef.current) {
+      videoRef.current.muted = false;
+      setIsMuted(false);
+    }
+  }, [hasInteracted]);
 
   useEffect(() => {
     setScrollProgress(0);
