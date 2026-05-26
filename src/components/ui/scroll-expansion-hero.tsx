@@ -54,6 +54,7 @@ export default function ScrollExpandMedia({
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const isDragging = useRef(false);
 
   useEffect(() => {
     setScrollProgress(0);
@@ -248,8 +249,13 @@ export default function ScrollExpandMedia({
                           {/* Progress bar */}
                           <div
                             className="relative w-full py-2 mb-1 cursor-pointer"
-                            onClick={handleSeek}
+                            onClick={(e) => {
+                              if (isDragging.current) { isDragging.current = false; return; }
+                              handleSeek(e);
+                            }}
+                            onTouchStart={() => { isDragging.current = false; }}
                             onTouchMove={(e) => {
+                              isDragging.current = true;
                               const rect = e.currentTarget.getBoundingClientRect();
                               const x = e.touches[0].clientX - rect.left;
                               const pct = Math.min(Math.max((x / rect.width) * 100, 0), 100);
@@ -259,7 +265,7 @@ export default function ScrollExpandMedia({
                               }
                             }}
                           >
-                            <div className="relative w-full h-1 bg-white/20 rounded-full">
+                            <div className="relative w-full h-1 bg-white/20 rounded-full pointer-events-none">
                               <div className="absolute top-0 left-0 h-full bg-white rounded-full" style={{ width: `${videoProgress}%` }} />
                             </div>
                           </div>
