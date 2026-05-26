@@ -15,8 +15,8 @@ export default function Narrative() {
           <span className="h-px flex-1 bg-gradient-to-l from-transparent via-white/15 to-white/15" />
         </div>
         <EntranceText
-          text="光影 记忆与存在"
-          className="font-[family-name:var(--font-serif)] text-[3.5rem] sm:text-[5.5rem] md:text-[7.5rem] font-semibold text-white tracking-[-0.03em] leading-[1.05]"
+          text="光影 记忆 存在"
+          className="font-[family-name:var(--font-serif)] text-[3.5rem] sm:text-[5.5rem] md:text-[6.5rem] font-semibold text-white tracking-[0em] leading-[1.05]"
           delay={0.3}
         />
         <p className="mt-10 text-lg sm:text-xl text-white/65 font-light leading-relaxed">
