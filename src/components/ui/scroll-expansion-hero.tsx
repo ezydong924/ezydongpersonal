@@ -246,8 +246,22 @@ export default function ScrollExpandMedia({
                           onClick={(e) => e.stopPropagation()}
                         >
                           {/* Progress bar */}
-                          <div className="relative w-full h-1 bg-white/20 rounded-full cursor-pointer mb-2" onClick={handleSeek}>
-                            <div className="absolute top-0 left-0 h-full bg-white rounded-full" style={{ width: `${videoProgress}%` }} />
+                          <div
+                            className="relative w-full py-2 mb-1 cursor-pointer"
+                            onClick={handleSeek}
+                            onTouchMove={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = e.touches[0].clientX - rect.left;
+                              const pct = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+                              if (videoRef.current && videoRef.current.duration) {
+                                videoRef.current.currentTime = (pct / 100) * videoRef.current.duration;
+                                setVideoProgress(pct);
+                              }
+                            }}
+                          >
+                            <div className="relative w-full h-1 bg-white/20 rounded-full">
+                              <div className="absolute top-0 left-0 h-full bg-white rounded-full" style={{ width: `${videoProgress}%` }} />
+                            </div>
                           </div>
 
                           <div className="flex items-center justify-between">
