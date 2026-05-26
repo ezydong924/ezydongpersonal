@@ -204,6 +204,10 @@ export default function ScrollExpandMedia({
                     className="relative w-full h-full"
                     onMouseEnter={() => hasInteracted && setShowControls(true)}
                     onMouseLeave={() => setShowControls(false)}
+                    onClick={() => {
+                      if (!isMobileState) return;
+                      if (hasInteracted) setShowControls((v) => !v);
+                    }}
                   >
                     <video
                       ref={videoRef}
@@ -213,6 +217,10 @@ export default function ScrollExpandMedia({
                       muted={isMuted}
                       loop
                       playsInline
+                      webkit-playsinline="true"
+                      x5-video-player-type="h5"
+                      x5-video-player-fullscreen="true"
+                      x5-video-orientation="portraint"
                       preload="auto"
                       className="w-full h-full object-cover rounded-xl"
                       onTimeUpdate={handleTimeUpdate}
