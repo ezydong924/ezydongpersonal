@@ -54,7 +54,7 @@ export default function ScrollExpandMedia({
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
 
   useEffect(() => {
     setScrollProgress(0);
@@ -249,19 +249,29 @@ export default function ScrollExpandMedia({
                           {/* Progress bar */}
                           <div
                             className="relative w-full py-2 mb-1 cursor-pointer"
-                            onClick={(e) => {
-                              if (isDragging.current) { isDragging.current = false; return; }
-                              handleSeek(e);
-                            }}
-                            onTouchStart={() => { isDragging.current = false; }}
+                            onMouseDown={handleSeek}
+                            onTouchStart={(e) => { dragStartX.current = e.touches[0].clientX; }}
                             onTouchMove={(e) => {
-                              isDragging.current = true;
+                              const dx = Math.abs(e.touches[0].clientX - dragStartX.current);
+                              if (dx < 5) return;
                               const rect = e.currentTarget.getBoundingClientRect();
                               const x = e.touches[0].clientX - rect.left;
                               const pct = Math.min(Math.max((x / rect.width) * 100, 0), 100);
                               if (videoRef.current && videoRef.current.duration) {
                                 videoRef.current.currentTime = (pct / 100) * videoRef.current.duration;
                                 setVideoProgress(pct);
+                              }
+                            }}
+                            onTouchEnd={(e) => {
+                              const dx = Math.abs(e.changedTouches[0].clientX - dragStartX.current);
+                              if (dx < 5) {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                const x = e.changedTouches[0].clientX - rect.left;
+                                const pct = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+                                if (videoRef.current && videoRef.current.duration) {
+                                  videoRef.current.currentTime = (pct / 100) * videoRef.current.duration;
+                                  setVideoProgress(pct);
+                                }
                               }
                             }}
                           >
