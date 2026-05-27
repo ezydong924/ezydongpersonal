@@ -1,123 +1,136 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import BackButton from "@/components/back-button";
 
-const cards = [
-  { id: 0, front: "📷", back: "还没拍" },
-  { id: 1, front: "🎞️", back: "胶片用完了" },
-  { id: 2, front: "🖼️", back: "在冲扫" },
-  { id: 3, front: "✨", back: "等待灵感" },
-  { id: 4, front: "🌙", back: "下次一定" },
-  { id: 5, front: "💤", back: "摄影师睡着了" },
+const cities = [
+  { name: "大连", en: "Dalian", lat: 38.92, lng: 121.63, slug: "dalian" },
+  { name: "成都", en: "Chengdu", lat: 30.57, lng: 104.07, slug: "chengdu" },
+  { name: "大理", en: "Dali", lat: 25.61, lng: 100.27, slug: "dali" },
 ];
 
-const excuses = [
-  "记忆卡满了...",
-  "镜头盖忘摘了...",
-  "这张拍糊了，真的",
-  "好看的照片都在相机里",
-  "其实我拍了，但SD卡坏了",
-  "这些空白都是留白艺术",
-  "最好的照片永远是下一张",
-];
 
-export default function PhotosPage() {
-  const [flipped, setFlipped] = useState<Set<number>>(new Set());
-  const [clicks, setClicks] = useState(0);
-  const [excuse, setExcuse] = useState(excuses[0]);
+export default function PhotosMapPage() {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [hintVisible, setHintVisible] = useState(true);
+  const [active, setActive] = useState<string | null>(null);
 
-  const toggle = (id: number) => {
-    if (!flipped.has(id)) {
-      setFlipped((prev) => new Set(prev).add(id));
-      const newClicks = clicks + 1;
-      setClicks(newClicks);
-      setExcuse(excuses[newClicks % excuses.length]);
-    }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    const loadLeaflet = () => {
+      if (cancelled || !mapRef.current) return;
+      const L = (window as any).L;
+      if (!L) return;
 
-  const allFlipped = flipped.size === cards.length;
+      const map = L.map(mapRef.current, {
+        center: [35, 105],
+        zoom: 4.5,
+        zoomControl: false,
+        attributionControl: false,
+        scrollWheelZoom: true,
+        dragging: true,
+        touchZoom: true,
+        doubleClickZoom: true,
+      });
+
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        { maxZoom: 6 },
+      ).addTo(map);
+
+      map.setMinZoom(3.5);
+      map.setMaxZoom(6);
+      map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
+
+      cities.forEach((city: (typeof cities)[0]) => {
+        const iconHtml =
+          '<div style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
+          '<div style="position:relative;width:12px;height:12px;flex-shrink:0">' +
+          '<div style="position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);animation:pulse-ring 2.5s infinite"></div>' +
+          '<div style="width:12px;height:12px;background:white;border-radius:50%;box-shadow:0 0 16px rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.5);position:relative;z-index:1"></div>' +
+          '</div>' +
+          '<span style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:300;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8)">' + city.name + '</span>' +
+          '</div>';
+        const icon = L.divIcon({
+          className: "",
+          html: iconHtml,
+          iconSize: [80, 24],
+          iconAnchor: [6, 12],
+        });
+        const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
+        marker.on("click", () => {
+          window.location.href = "/gallery/photos/" + city.slug;
+        });
+        marker.on("mouseover", () => setActive(city.slug));
+        marker.on("mouseout", () => setActive(null));
+      });
+
+      const style = document.createElement("style");
+      style.textContent = "@keyframes pulse-ring{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.5);opacity:0}}";
+      document.head.appendChild(style);
+
+      map.on("mousedown touchstart dragstart zoomstart", () => setHintVisible(false));
+
+      setLoaded(true);
+      setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 100);
+      setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 500);
+    };
+
+    const timer = setTimeout(loadLeaflet, 50);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, []);
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16">
-      <BackButton href="/gallery" label="返回" />
+    <div className="relative min-h-screen bg-black overflow-hidden">
+      <div className="fixed top-8 left-8 z-[1000]">
+        <BackButton href="/gallery" label="返回" />
+      </div>
 
-      <h1 className="text-4xl font-light tracking-wide text-white/90 mt-8 mb-2">
-        影笺
-      </h1>
-      <p className="text-white/40 text-lg font-light mb-4">
-        Photography
-      </p>
+      <div className="absolute inset-0">
+        <div ref={mapRef} className="w-full h-full"
+          style={{
+            filter: loaded ? "none" : "blur(6px)",
+            transition: "filter 0.6s ease",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60 pointer-events-none" />
+      </div>
 
-      <AnimatePresence mode="wait">
-        {!allFlipped ? (
-          <motion.div key="grid" exit={{ opacity: 0, scale: 0.95 }}>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-10">
-              {cards.map((card) => (
-                <motion.button
-                  key={card.id}
-                  onClick={() => toggle(card.id)}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className={`relative aspect-[3/4] rounded-2xl border border-white/10 backdrop-blur-sm flex items-center justify-center text-4xl transition-all duration-500 ${
-                    flipped.has(card.id)
-                      ? "bg-white/[0.06] border-white/20"
-                      : "bg-white/[0.03] cursor-pointer hover:bg-white/[0.08]"
-                  }`}
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={flipped.has(card.id) ? "back" : "front"}
-                      initial={{ rotateY: 90, opacity: 0 }}
-                      animate={{ rotateY: 0, opacity: 1 }}
-                      exit={{ rotateY: -90, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute"
-                    >
-                      {flipped.has(card.id) ? (
-                        <span className="text-white/40 text-sm font-light">
-                          {card.back}
-                        </span>
-                      ) : (
-                        card.front
-                      )}
-                    </motion.span>
-                  </AnimatePresence>
-                </motion.button>
-              ))}
-            </div>
-            <p className="text-center text-white/20 text-sm mt-8">{excuse}</p>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="done"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20"
-          >
-            <p className="text-white/60 text-2xl font-light">
-              好吧，你都翻完了。
-            </p>
-            <p className="text-white/40 text-base mt-4">
-              其实这些不是我最好的作品。
-            </p>
-            <p className="text-white/30 text-sm mt-2">
-              最好的那张，永远在取景器里。
-            </p>
-            <button
-              onClick={() => {
-                setFlipped(new Set());
-                setClicks(0);
-                setExcuse(excuses[0]);
-              }}
-              className="mt-8 px-5 py-2 rounded-full bg-white/10 border border-white/15 text-white/50 text-sm hover:bg-white/20 transition-colors"
-            >
-              再来一次
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="relative z-[800] min-h-screen flex flex-col items-center pointer-events-none">
+        <div
+          className="mt-20 text-center pointer-events-auto"
+          style={{
+            opacity: hintVisible ? 1 : 0,
+            transition: "opacity 1.5s ease-out",
+          }}
+        >
+          <h1 className="text-3xl md:text-4xl font-light tracking-wide text-white/90">影笺</h1>
+          <p className="text-white/30 text-sm mt-2 tracking-widest">选择一个城市</p>
+        </div>
+
+        <div className="absolute bottom-16 w-full flex justify-center pointer-events-auto">
+          {cities.map((city) => (
+            <Link key={city.slug} href={"/gallery/photos/" + city.slug}>
+              <motion.div
+                initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                animate={active === city.slug
+                  ? { opacity: 1, y: 0, filter: "blur(0px)" }
+                  : { opacity: 0, y: 20, filter: "blur(8px)" }
+                }
+                transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                className="px-10 py-5 rounded-2xl bg-white/[0.06] backdrop-blur-2xl border border-white/[0.08] text-center"
+                style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)" }}
+              >
+                <p className="text-white/90 text-xl font-light tracking-wider">{city.name}</p>
+                <p className="text-white/30 text-xs mt-1.5 tracking-[0.15em] uppercase">{city.en}</p>
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
