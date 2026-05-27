@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
 
@@ -9,6 +9,16 @@ const cities = [
   { name: "大连", en: "Dalian", lat: 38.92, lng: 121.63, slug: "dalian" },
   { name: "成都", en: "Chengdu", lat: 30.57, lng: 104.07, slug: "chengdu" },
   { name: "大理", en: "Dali", lat: 25.61, lng: 100.27, slug: "dali" },
+  { name: "昆明", en: "Kunming", lat: 25.04, lng: 102.68, slug: "kunming" },
+  { name: "香港", en: "Hong Kong", lat: 22.32, lng: 114.17, slug: "hongkong" },
+  { name: "威海", en: "Weihai", lat: 37.51, lng: 122.12, slug: "weihai" },
+  { name: "苏州", en: "Suzhou", lat: 31.30, lng: 120.63, slug: "suzhou" },
+  { name: "北京", en: "Beijing", lat: 39.90, lng: 116.41, slug: "beijing" },
+  { name: "日照", en: "Rizhao", lat: 35.42, lng: 119.53, slug: "rizhao" },
+  { name: "重庆", en: "Chongqing", lat: 29.56, lng: 106.55, slug: "chongqing" },
+  { name: "丽江", en: "Lijiang", lat: 26.86, lng: 100.23, slug: "lijiang" },
+  { name: "西双版纳", en: "Xishuangbanna", lat: 22.01, lng: 100.80, slug: "xishuangbanna" },
+  { name: "迪庆州", en: "Diqing", lat: 27.82, lng: 99.70, slug: "diqing" },
 ];
 
 
@@ -47,18 +57,17 @@ export default function PhotosMapPage() {
 
       cities.forEach((city: (typeof cities)[0]) => {
         const iconHtml =
-          '<div style="display:flex;align-items:center;gap:8px;cursor:pointer">' +
-          '<div style="position:relative;width:12px;height:12px;flex-shrink:0">' +
-          '<div style="position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);animation:pulse-ring 2.5s infinite"></div>' +
-          '<div style="width:12px;height:12px;background:white;border-radius:50%;box-shadow:0 0 16px rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.5);position:relative;z-index:1"></div>' +
+          '<div style="display:flex;align-items:center;gap:6px;cursor:pointer">' +
+          '<div style="position:relative;width:10px;height:10px;flex-shrink:0">' +
+          '<div style="width:10px;height:10px;background:white;border-radius:50%;box-shadow:0 0 14px rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.5);position:relative;z-index:1"></div>' +
           '</div>' +
-          '<span style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:300;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8)">' + city.name + '</span>' +
+          '<span style="color:rgba(255,255,255,0.6);font-size:12px;font-weight:300;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.9)">' + city.name + '</span>' +
           '</div>';
         const icon = L.divIcon({
           className: "",
           html: iconHtml,
-          iconSize: [80, 24],
-          iconAnchor: [6, 12],
+          iconSize: [80, 16],
+          iconAnchor: [5, 8],
         });
         const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
         marker.on("click", () => {
@@ -67,10 +76,6 @@ export default function PhotosMapPage() {
         marker.on("mouseover", () => setActive(city.slug));
         marker.on("mouseout", () => setActive(null));
       });
-
-      const style = document.createElement("style");
-      style.textContent = "@keyframes pulse-ring{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.5);opacity:0}}";
-      document.head.appendChild(style);
 
       map.on("mousedown touchstart dragstart zoomstart", () => setHintVisible(false));
 
@@ -111,24 +116,48 @@ export default function PhotosMapPage() {
           <p className="text-white/30 text-sm mt-2 tracking-widest">选择一个城市</p>
         </div>
 
-        <div className="absolute bottom-16 w-full flex justify-center pointer-events-auto">
-          {cities.map((city) => (
-            <Link key={city.slug} href={"/gallery/photos/" + city.slug}>
-              <motion.div
-                initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                animate={active === city.slug
-                  ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                  : { opacity: 0, y: 20, filter: "blur(8px)" }
-                }
-                transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-                className="px-10 py-5 rounded-2xl bg-white/[0.06] backdrop-blur-2xl border border-white/[0.08] text-center"
-                style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)" }}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 pointer-events-auto">
+          <AnimatePresence mode="wait">
+            {active && cities.find((c) => c.slug === active) && (
+              <Link
+                key={active}
+                href={"/gallery/photos/" + active}
               >
-                <p className="text-white/90 text-xl font-light tracking-wider">{city.name}</p>
-                <p className="text-white/30 text-xs mt-1.5 tracking-[0.15em] uppercase">{city.en}</p>
-              </motion.div>
-            </Link>
-          ))}
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0, y: 24, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -24, scale: 0.95 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative px-12 py-6 rounded-2xl bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] text-center whitespace-nowrap overflow-hidden group"
+                  style={{ boxShadow: "0 4px 40px rgba(0,0,0,0.5), inset 0 0.5px 0 rgba(255,255,255,0.06)" }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <motion.p
+                    className="text-white/85 text-3xl font-light tracking-[0.02em]"
+                    style={{ fontFamily: "var(--font-serif)" }}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.05 }}
+                  >
+                    {cities.find((c) => c.slug === active)?.name}
+                  </motion.p>
+                  <div className="flex items-center justify-center gap-3 mt-2">
+                    <div className="h-px w-6 bg-white/10" />
+                    <motion.p
+                      className="text-white/25 text-xs tracking-[0.2em] uppercase"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.15 }}
+                    >
+                      {cities.find((c) => c.slug === active)?.en}
+                    </motion.p>
+                    <div className="h-px w-6 bg-white/10" />
+                  </div>
+                </motion.div>
+              </Link>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
