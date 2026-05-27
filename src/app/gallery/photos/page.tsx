@@ -27,6 +27,16 @@ export default function PhotosMapPage() {
   const [loaded, setLoaded] = useState(false);
   const [hintVisible, setHintVisible] = useState(true);
   const [active, setActive] = useState<string | null>(null);
+  const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Auto-dismiss bottom info after 3s
+  useEffect(() => {
+    if (dismissTimer.current) clearTimeout(dismissTimer.current);
+    if (active) {
+      dismissTimer.current = setTimeout(() => setActive(null), 2000);
+    }
+    return () => { if (dismissTimer.current) clearTimeout(dismissTimer.current); };
+  }, [active]);
 
   useEffect(() => {
     let cancelled = false;
@@ -129,31 +139,23 @@ export default function PhotosMapPage() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -24, scale: 0.95 }}
                   transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative px-12 py-6 rounded-2xl bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] text-center whitespace-nowrap overflow-hidden group"
+                  className="relative px-10 py-5 rounded-2xl bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] text-center overflow-hidden group"
                   style={{ boxShadow: "0 4px 40px rgba(0,0,0,0.5), inset 0 0.5px 0 rgba(255,255,255,0.06)" }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <motion.p
-                    className="text-white/85 text-3xl font-light tracking-[0.02em]"
-                    style={{ fontFamily: "var(--font-serif)" }}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.05 }}
+                  <motion.div
+                    className="flex flex-col items-center"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    {cities.find((c) => c.slug === active)?.name}
-                  </motion.p>
-                  <div className="flex items-center justify-center gap-3 mt-2">
-                    <div className="h-px w-6 bg-white/10" />
-                    <motion.p
-                      className="text-white/25 text-xs tracking-[0.2em] uppercase"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.4, delay: 0.15 }}
-                    >
+                    <p className="text-white/85 text-2xl font-light tracking-[0.04em] leading-none" style={{ fontFamily: "var(--font-serif)" }}>
+                      {cities.find((c) => c.slug === active)?.name}
+                    </p>
+                    <p className="text-white/25 text-[11px] tracking-[0.25em] uppercase mt-2 leading-none">
                       {cities.find((c) => c.slug === active)?.en}
-                    </motion.p>
-                    <div className="h-px w-6 bg-white/10" />
-                  </div>
+                    </p>
+                  </motion.div>
                 </motion.div>
               </Link>
             )}
