@@ -60,7 +60,7 @@ export default function PhotosMapPage() {
         maxZoom: 6,
       }).addTo(map);
 
-      map.setMinZoom(3.5);
+      map.setMinZoom(4);
       map.setMaxZoom(6);
       map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
 
