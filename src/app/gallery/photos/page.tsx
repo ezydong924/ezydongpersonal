@@ -56,9 +56,11 @@ export default function PhotosMapPage() {
         doubleClickZoom: true,
       });
 
-      L.tileLayer("/tiles/{z}/{x}/{y}.png", { noWrap: true }).addTo(map);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+        maxZoom: 6,
+      }).addTo(map);
 
-      map.setMinZoom(3.5);
+      map.setMinZoom(3);
       map.setMaxZoom(6);
       map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
 
