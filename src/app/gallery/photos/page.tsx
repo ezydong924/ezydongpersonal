@@ -57,8 +57,8 @@ export default function PhotosMapPage() {
       });
 
       L.tileLayer(
-        "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
-        { maxZoom: 6, subdomains: ["1", "2", "3", "4"] },
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        { maxZoom: 6 },
       ).addTo(map);
 
       map.setMinZoom(3.5);
@@ -71,7 +71,7 @@ export default function PhotosMapPage() {
           '<div style="position:relative;width:10px;height:10px;flex-shrink:0">' +
           '<div style="width:10px;height:10px;background:white;border-radius:50%;box-shadow:0 0 14px rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.5);position:relative;z-index:1"></div>' +
           '</div>' +
-          '<span style="color:rgba(255,255,255,0.6);font-size:12px;font-weight:300;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.9)">' + city.name + '</span>' +
+          '<span style="color:rgba(255,255,255,0.7);font-size:12px;font-weight:300;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.8)">' + city.name + '</span>' +
           '</div>';
         const icon = L.divIcon({
           className: "",
