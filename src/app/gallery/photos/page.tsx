@@ -47,7 +47,7 @@ export default function PhotosMapPage() {
 
       const map = L.map(mapRef.current, {
         center: [35, 105],
-        zoom: 4.5,
+        zoom: 3.5,
         zoomControl: false,
         attributionControl: false,
         scrollWheelZoom: true,
@@ -56,10 +56,7 @@ export default function PhotosMapPage() {
         doubleClickZoom: true,
       });
 
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        { maxZoom: 6 },
-      ).addTo(map);
+      L.tileLayer("/tiles/{z}/{x}/{y}.png", { noWrap: true }).addTo(map);
 
       map.setMinZoom(3.5);
       map.setMaxZoom(6);
