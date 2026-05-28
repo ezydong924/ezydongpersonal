@@ -47,7 +47,7 @@ export default function PhotosMapPage() {
 
       const map = L.map(mapRef.current, {
         center: [35, 105],
-        zoom: 3.5,
+        zoom: 4,
         zoomControl: false,
         attributionControl: false,
         scrollWheelZoom: true,
@@ -60,7 +60,7 @@ export default function PhotosMapPage() {
         maxZoom: 6,
       }).addTo(map);
 
-      map.setMinZoom(3);
+      map.setMinZoom(4);
       map.setMaxZoom(5);
       map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
 
