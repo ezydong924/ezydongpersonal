@@ -57,8 +57,8 @@ export default function PhotosMapPage() {
       });
 
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        { maxZoom: 6 },
+        "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+        { maxZoom: 6, subdomains: ["1", "2", "3", "4"] },
       ).addTo(map);
 
       map.setMinZoom(3.5);
