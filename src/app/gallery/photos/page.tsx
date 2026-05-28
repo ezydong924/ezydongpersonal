@@ -61,7 +61,7 @@ export default function PhotosMapPage() {
       }).addTo(map);
 
       map.setMinZoom(3);
-      map.setMaxZoom(6);
+      map.setMaxZoom(5);
       map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
 
       cities.forEach((city: (typeof cities)[0]) => {
