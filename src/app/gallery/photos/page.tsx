@@ -56,9 +56,16 @@ export default function PhotosMapPage() {
         doubleClickZoom: true,
       });
 
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        maxZoom: 6,
-      }).addTo(map);
+      const key = "db316d7883d50adf407d700495555ab8";
+      // Tianditu base + transparent labels
+      L.tileLayer(
+        "https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&FORMAT=tiles&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + key,
+        { subdomains: ["0","1","2","3","4","5","6","7"] },
+      ).addTo(map);
+      L.tileLayer(
+        "https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&FORMAT=tiles&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + key,
+        { subdomains: ["0","1","2","3","4","5","6","7"] },
+      ).addTo(map);
 
       map.setMinZoom(4.5);
       map.setMaxZoom(6);
@@ -87,6 +94,11 @@ export default function PhotosMapPage() {
       });
 
       map.on("mousedown touchstart dragstart zoomstart", () => setHintVisible(false));
+
+      // Dark filter only on tile layers, not markers
+      const style = document.createElement("style");
+      style.textContent = `.leaflet-tile-pane { filter: invert(85%) hue-rotate(180deg) brightness(0.85) contrast(1.1); }`;
+      document.head.appendChild(style);
 
       setLoaded(true);
       setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 100);
