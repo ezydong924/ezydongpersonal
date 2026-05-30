@@ -95,8 +95,26 @@ export const musicStore = {
       audio.volume = 1;
     }
 
-    // Never attempt autoplay before user gesture — prevents Safari/iOS
-    // from permanently blocking audio for the entire page
+    // Try autoplay first (works on desktop Chrome/Firefox)
+    if (audio) {
+      audio.muted = true;
+      audio.volume = 0;
+      audio.play().then(() => {
+        audio!.muted = false;
+        _isPlaying = true;
+        notify();
+        const s = performance.now();
+        const fi = () => {
+          if (!audio) return;
+          audio.volume = Math.min((performance.now() - s) / 3000, 1);
+          if (audio.volume < 1) requestAnimationFrame(fi);
+        };
+        requestAnimationFrame(fi);
+        return; // Success — skip prime
+      }).catch(() => { /* Fall through to prime */ });
+    }
+
+    // Wait for user gesture (Safari/mobile fallback)
     const prime = () => {
       ['touchstart','touchend','click','mousedown'].forEach((ev) => {
         document.body.removeEventListener(ev, prime);
