@@ -69,7 +69,11 @@ export default function ChengduGallery() {
       </div>
 
       <button
-        onClick={() => musicStore.togglePlay()}
+        onClick={() => {
+          const a = musicStore.audioEl;
+          if (a && a.paused) { a.muted = false; a.volume = 1; }
+          musicStore.togglePlay();
+        }}
         className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
       >
         {musicPlaying ? <Pause size={16} /> : <Play size={16} />}

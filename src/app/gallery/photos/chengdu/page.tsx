@@ -26,6 +26,7 @@ export default function Page() {
     if (!audio) return;
     if (audio.paused) {
       audio.muted = false;
+      audio.volume = 1;
       audio.play().catch(() => {});
     } else {
       musicStore.toggleMute();
