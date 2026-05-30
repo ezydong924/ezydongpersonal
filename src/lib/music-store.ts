@@ -129,7 +129,10 @@ export const musicStore = {
 
   resume() {
     if (!audio || !_tracks[_index]) return;
-    rebuildAudio().catch(() => {});
+    audio.muted = _isMuted;
+    audio.play().catch(() => {
+      rebuildAudio().catch(() => {});
+    });
   },
 
   togglePlay() {
