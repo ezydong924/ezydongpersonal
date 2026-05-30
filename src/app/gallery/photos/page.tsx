@@ -1,9 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
+
+function loadLeafletAssets(): Promise<void> {
+  return new Promise((resolve) => {
+    if ((window as any).L) return resolve();
+    const css = document.createElement("link");
+    css.rel = "stylesheet"; css.href = "/leaflet.css";
+    document.head.appendChild(css);
+    const js = document.createElement("script");
+    js.src = "/leaflet.js";
+    js.onload = () => resolve();
+    document.head.appendChild(js);
+  });
+}
 
 const cities = [
   { name: "大连", en: "Dalian", lat: 38.92, lng: 121.63, slug: "dalian" },
@@ -106,8 +119,10 @@ export default function PhotosMapPage() {
       setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 500);
     };
 
-    const timer = setTimeout(loadLeaflet, 50);
-    return () => { cancelled = true; clearTimeout(timer); };
+    loadLeafletAssets().then(() => {
+      if (!cancelled) loadLeaflet();
+    });
+    return () => { cancelled = true; };
   }, []);
 
   return (

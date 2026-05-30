@@ -28,8 +28,6 @@ export default function RootLayout({
     <html lang="zh-CN" style={{ colorScheme: "dark" }}>
       <head>
         <meta name="theme-color" content="#0a0a0a" />
-        <link rel="stylesheet" href="/leaflet.css" />
-        <script src="/leaflet.js"></script>
       </head>
       <body className={`${inter.variable} ${playfair.variable} ${inter.className} min-h-screen`}>
         <main className="relative z-10 page-enter">{children}</main>

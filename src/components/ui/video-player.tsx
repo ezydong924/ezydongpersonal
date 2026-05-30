@@ -21,24 +21,31 @@ const CustomSlider = ({
   onChange: (value: number) => void;
   className?: string;
 }) => {
+  const sliderRef = React.useRef<HTMLDivElement>(null);
+  const calcPct = (clientX: number) => {
+    const rect = sliderRef.current?.getBoundingClientRect();
+    if (!rect) return 0;
+    const x = clientX - rect.left;
+    return Math.min(Math.max((x / rect.width) * 100, 0), 100);
+  };
+  const handleDown = (e: React.PointerEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    onChange(calcPct(e.clientX));
+  };
+  const handleMove = (e: React.PointerEvent) => {
+    if (e.buttons > 0) { e.stopPropagation(); onChange(calcPct(e.clientX)); }
+  };
   return (
     <motion.div
-      className={cn(
-        "relative w-full h-1 bg-white/20 rounded-full cursor-pointer",
-        className,
-      )}
-      onClick={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const percentage = (x / rect.width) * 100;
-        onChange(Math.min(Math.max(percentage, 0), 100));
-      }}
+      ref={sliderRef}
+      className={cn("relative w-full h-1 bg-white/20 rounded-full cursor-pointer touch-none", className)}
+      onPointerDown={handleDown} onPointerMove={handleMove} onClick={(e) => e.stopPropagation()}
     >
       <motion.div
         className="absolute top-0 left-0 h-full bg-white rounded-full"
         style={{ width: `${value}%` }}
-        initial={{ width: 0 }}
-        animate={{ width: `${value}%` }}
+        initial={{ width: 0 }} animate={{ width: `${value}%` }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       />
     </motion.div>
@@ -124,13 +131,14 @@ const VideoPlayer = ({ src }: { src: string }) => {
       transition={{ duration: 0.5 }}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
+      onTouchStart={() => setShowControls(true)}
     >
       <video
         ref={videoRef}
         className="w-full"
         onTimeUpdate={handleTimeUpdate}
         src={src}
-        onClick={togglePlay}
+        onClick={() => { setShowControls(true); togglePlay(); }}
       />
       <AnimatePresence>
         {showControls && (
@@ -161,7 +169,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
                   whileTap={{ scale: 0.9 }}
                 >
                   <Button
-                    onClick={togglePlay}
+                    onClick={() => { setShowControls(true); togglePlay(); }}
                     variant="ghost"
                     size="icon"
                     className="text-white hover:bg-white/10 hover:text-white"

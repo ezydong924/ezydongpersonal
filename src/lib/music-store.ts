@@ -43,8 +43,10 @@ export const musicStore = {
   init(tracks: Track[]) {
     if (typeof window === "undefined") return;
     ensureAudio();
+    const sameTracks = _tracks.length === tracks.length &&
+      tracks.every((t, i) => t.src === _tracks[i]?.src);
     _tracks = tracks;
-    if (audio && _isPlaying && !audio.paused) return;
+    if (audio && _isPlaying && !audio.paused && sameTracks) return;
     _index = 0;
     if (audio && audio.src !== tracks[0]?.src) {
       audio.muted = _isMuted;

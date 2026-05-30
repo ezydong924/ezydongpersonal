@@ -1,25 +1,53 @@
 Write-Host "🚀 Deploying to Cloudflare + GitHub..." -ForegroundColor Cyan
 
-# 1. Temp: add export
-$c = Get-Content next.config.ts -Raw
-$c -replace 'const nextConfig: NextConfig = \{[^}]*\}', 'const nextConfig: NextConfig = { output: "export" }' | Set-Content next.config.ts
+# 1. Backup config and add export for static build
+$configPath = "next.config.ts"
+$backupPath = "next.config.ts.bak"
+Copy-Item $configPath $backupPath -Force
 
-# 2. Build for Cloudflare
-Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue
-npm run build
-if ($LASTEXITCODE -ne 0) { Write-Host "❌ Build failed" -Red; $c | Set-Content next.config.ts; exit 1 }
+try {
+    $content = Get-Content $configPath -Raw
+    # Robust: replace whole config object content, handling any nesting
+    $idx = $content.IndexOf("NextConfig = {")
+    if ($idx -ge 0) {
+        $prefix = $content.Substring(0, $idx + "NextConfig = ".Length)
+        $rest = $content.Substring($idx + "NextConfig = ".Length)
+        # Find matching closing brace
+        $depth = 0; $closeIdx = -1
+        for ($i = 0; $i -lt $rest.Length; $i++) {
+            if ($rest[$i] -eq '{') { $depth++ }
+            elseif ($rest[$i] -eq '}') { $depth--; if ($depth -eq 0) { $closeIdx = $i; break } }
+        }
+        if ($closeIdx -ge 0) {
+            $inner = $rest.Substring(1, $closeIdx - 1).Trim()
+            if ($inner.Length -gt 0) { $inner = "output: `"export`", $inner" } else { $inner = "output: `"export`"" }
+            $newContent = $prefix + "{ $inner }" + $rest.Substring($closeIdx + 1)
+            Set-Content $configPath $newContent -NoNewline
+        }
+    }
 
-# 3. Deploy to Cloudflare
-Write-Host "📤 Cloudflare..." -Cyan
-npx wrangler pages deploy out --branch main --commit-dirty=true
+    # 2. Build for Cloudflare
+    Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue
+    npm run build
+    if ($LASTEXITCODE -ne 0) { throw "Build failed" }
 
-# 4. Restore config
-$c | Set-Content next.config.ts
+    # 3. Deploy to Cloudflare
+    Write-Host "📤 Cloudflare..." -Cyan
+    npx wrangler pages deploy out --branch main --commit-dirty=true
 
-# 5. Push to GitHub → Vercel
-Write-Host "📤 GitHub → Vercel..." -Cyan
-git add -A; git commit -m "deploy: update"; git push
+    # 4. Push to GitHub → Vercel
+    Write-Host "📤 GitHub → Vercel..." -Cyan
+    git add -A; git commit -m "deploy: update"; git push
 
-Write-Host "✅ Done!" -Green
-Write-Host "   Cloudflare: https://shadow-memory.pages.dev" -Green
-Write-Host "   Vercel: https://ezydongpersonal.vercel.app" -Green
+    Write-Host "✅ Done!" -Green
+    Write-Host "   Cloudflare: https://shadow-memory.pages.dev" -Green
+    Write-Host "   Vercel: https://ezydongpersonal.vercel.app" -Green
+} catch {
+    Write-Host "❌ $_" -Red
+} finally {
+    # Always restore original config
+    if (Test-Path $backupPath) {
+        Copy-Item $backupPath $configPath -Force
+        Remove-Item $backupPath -Force
+    }
+}
