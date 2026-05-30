@@ -20,8 +20,7 @@ const CustomSlider = ({ value, onChange, className }: { value: number; onChange:
   return (
     <motion.div ref={ref} className={cn("relative w-full h-1 bg-white/20 rounded-full cursor-pointer touch-none", className)}
       onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); dragging.current = true; onChange(pct(e.clientX)); }}
-      onPointerMove={(e) => { if (dragging.current) { e.stopPropagation(); onChange(pct(e.clientX)); } }}
-      onPointerUp={() => { dragging.current = false; }}>
+      onPointerMove={(e) => { if (dragging.current) { e.stopPropagation(); onChange(pct(e.clientX)); } }}>
       <motion.div className="absolute top-0 left-0 h-full bg-white rounded-full" style={{ width: `${value}%` }} initial={{ width: 0 }} animate={{ width: `${value}%` }} transition={{ type: "spring", stiffness: 400, damping: 30 }} />
     </motion.div>
   );
@@ -37,9 +36,25 @@ export default function VideoPlayer({ src }: { src: string }) {
   const [show, setShow] = useState(false);
   const [cur, setCur] = useState(0);
   const [dur, setDur] = useState(0);
+  const seekRef = useRef(0);
   const skRef = useRef(false);
 
-  const seek = (val: number) => { const v = vRef.current; if (!v?.duration) return; skRef.current = true; v.currentTime = (val / 100) * v.duration; setProg(val); setTimeout(() => { skRef.current = false; }, 300); };
+  // Single global pointerup to end seeking state
+  useEffect(() => {
+    const up = () => { skRef.current = false; };
+    window.addEventListener('pointerup', up);
+    return () => window.removeEventListener('pointerup', up);
+  }, []);
+
+  const seek = (val: number) => {
+    const v = vRef.current;
+    if (!v?.duration) return;
+    skRef.current = true;
+    seekRef.current = val;
+    v.currentTime = (val / 100) * v.duration;
+    setProg(val);
+  };
+
   const toggle = () => { const v = vRef.current; if (!v) return; if (playing) v.pause(); else v.play(); setPlaying(!playing); };
   const toggleM = () => { const v = vRef.current; if (!v) return; v.muted = !muted; setMuted(!muted); if (!muted) { setVol(0); } else { setVol(1); v.volume = 1; } };
 
@@ -48,6 +63,7 @@ export default function VideoPlayer({ src }: { src: string }) {
       onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} onTouchStart={() => setShow(true)}>
       <video ref={vRef} className="w-full" src={src} playsInline webkit-playsinline="true"
         onTimeUpdate={() => { const v = vRef.current; if (!v || skRef.current) return; const p = (v.currentTime / v.duration) * 100; setProg(isFinite(p) ? p : 0); setCur(v.currentTime); setDur(v.duration); }}
+        onSeeked={() => { if (!skRef.current) return; setProg(seekRef.current); skRef.current = false; }}
         onClick={() => setShow(true)} />
       <AnimatePresence>{show && (
         <motion.div className="absolute bottom-0 mx-auto max-w-xl left-0 right-0 p-4 m-2 bg-[#11111198] backdrop-blur-md rounded-2xl" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} transition={{ duration: 0.3 }}>
