@@ -98,7 +98,7 @@ export const musicStore = {
     // Wait for first user touch to unlock audio permission,
     // then attempt autoplay cleanly (won't poison the page)
     const prime = () => {
-      document.body.removeEventListener('touchstart', prime);
+      document.body.removeEventListener('touchend', prime);
       document.body.removeEventListener('click', prime);
       if (!audio || _isPlaying) return;
       audio.muted = true;
@@ -114,9 +114,11 @@ export const musicStore = {
           if (audio.volume < 1) requestAnimationFrame(fi);
         };
         requestAnimationFrame(fi);
-      }).catch(() => {});
+      }).catch(() => {
+        // Quark/QQ may still block — fall through to manual button
+      });
     };
-    document.body.addEventListener('touchstart', prime, { once: true });
+    document.body.addEventListener('touchend', prime, { once: true });
     document.body.addEventListener('click', prime, { once: true });
   },
 
