@@ -37,7 +37,7 @@ function loadTrack() {
   audio.load();
 }
 
-function rebuildAudio() {
+async function rebuildAudio() {
   if (!audio || !_tracks[_index]) return;
   const src = _tracks[_index].src;
   audio.pause();
@@ -61,19 +61,23 @@ function rebuildAudio() {
   a.addEventListener("pause", () => { _isPlaying = false; notify(); });
   audio = a;
 
+  // Try direct play first
+  a.muted = _isMuted;
+  try { await a.play(); return; } catch (_) {}
+
+  // Direct play blocked — try AudioContext route (Android WeChat/QQ X5)
   const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
   if (AC) {
     try {
       if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
       _audioCtx = new AC();
-      if (_audioCtx!.state === "suspended") _audioCtx!.resume();
+      if (_audioCtx!.state === "suspended") await _audioCtx!.resume();
       const sn = _audioCtx!.createMediaElementSource(a);
       sn.connect(_audioCtx!.destination);
+      a.muted = _isMuted;
+      await a.play();
     } catch (_) { _audioCtx = null; }
   }
-
-  a.muted = _isMuted;
-  a.play().catch(() => {});
 }
 
 export const musicStore = {
@@ -101,13 +105,13 @@ export const musicStore = {
 
   resume() {
     if (!audio || !_tracks[_index]) return;
-    rebuildAudio();
+    rebuildAudio().catch(() => {});
   },
 
   togglePlay() {
     if (!audio) return;
     if (_isPlaying) { audio.pause(); }
-    else { rebuildAudio(); }
+    else { rebuildAudio().catch(() => {}); }
   },
 
   toggleMute() {
