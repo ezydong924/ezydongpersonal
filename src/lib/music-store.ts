@@ -95,12 +95,11 @@ export const musicStore = {
       audio.volume = 1;
     }
 
-    // Try autoplay first (works on desktop Chrome/Firefox)
-    if (audio) {
-      audio.muted = true;
-      audio.volume = 0;
-      audio.play().then(() => {
-        audio!.muted = false;
+    const tryPlay = (el: HTMLAudioElement) => {
+      el.muted = true;
+      el.volume = 0;
+      el.play().then(() => {
+        el.muted = false;
         _isPlaying = true;
         notify();
         const s = performance.now();
@@ -110,9 +109,34 @@ export const musicStore = {
           if (audio.volume < 1) requestAnimationFrame(fi);
         };
         requestAnimationFrame(fi);
-        return; // Success — skip prime
-      }).catch(() => { /* Fall through to prime */ });
+      }).catch(() => {});
+    };
+
+    // 1. Try direct autoplay (desktop Chrome/Firefox)
+    if (audio) tryPlay(audio);
+
+    // 2. WeChat iOS/iPad: retry via WeixinJSBridge (with fresh element)
+    const wxPlay = () => {
+      if (_isPlaying || !_tracks[0]) return;
+      if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+      const a = document.createElement('audio');
+      a.src = _tracks[0].src;
+      a.setAttribute('playsinline', '');
+      a.setAttribute('webkit-playsinline', '');
+      a.addEventListener('ended', () => {
+        if (_tracks.length > 1) { _index = (_index + 1) % _tracks.length; if (audio) { audio.src = _tracks[_index].src; audio.load(); } audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {}); }
+      });
+      a.addEventListener('play', () => { _isPlaying = true; notify(); });
+      a.addEventListener('pause', () => { _isPlaying = false; notify(); });
+      audio = a;
+      tryPlay(a);
+    };
+    if ((window as any).WeixinJSBridge) {
+      (window as any).WeixinJSBridge.invoke('getNetworkType', {}, wxPlay);
     }
+    document.addEventListener('WeixinJSBridgeReady', () => {
+      (window as any).WeixinJSBridge?.invoke('getNetworkType', {}, wxPlay);
+    }, { once: true });
 
     // Wait for user gesture (Safari/mobile fallback)
     const prime = () => {
