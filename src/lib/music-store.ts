@@ -95,10 +95,30 @@ export const musicStore = {
       audio.volume = 1;
     }
 
-    // Try autoplay immediately (works on desktop, fails quickly on mobile)
-    const attempt = (a: HTMLAudioElement) => {
+    // Never attempt autoplay before user gesture — prevents Safari/iOS
+    // from permanently blocking audio for the entire page
+    const prime = () => {
+      document.body.removeEventListener('touchend', prime);
+      document.body.removeEventListener('click', prime);
+      if (_isPlaying || !_tracks[0]) return;
+      const src = _tracks[0].src;
+      if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+      const a = document.createElement('audio');
+      a.src = src;
+      a.setAttribute('playsinline', '');
+      a.setAttribute('webkit-playsinline', '');
       a.muted = true;
       a.volume = 0;
+      a.addEventListener('ended', () => {
+        if (_tracks.length > 1) {
+          _index = (_index + 1) % _tracks.length;
+          if (audio) { audio.src = _tracks[_index].src; audio.load(); }
+          audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {});
+        }
+      });
+      a.addEventListener('play', () => { _isPlaying = true; notify(); });
+      a.addEventListener('pause', () => { _isPlaying = false; notify(); });
+      audio = a;
       a.play().then(() => {
         a.muted = false;
         _isPlaying = true;
@@ -110,52 +130,10 @@ export const musicStore = {
           if (audio.volume < 1) requestAnimationFrame(fi);
         };
         requestAnimationFrame(fi);
-      }).catch(() => {
-        // Mobile blocked — wait for first user gesture
-        const prime = () => {
-          document.body.removeEventListener('touchend', prime);
-          document.body.removeEventListener('click', prime);
-          if (_isPlaying || !_tracks[0]) return;
-          const src = _tracks[0].src;
-          // Destroy old (possibly poisoned) audio
-          if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
-          // Create fresh audio SYNCHRONOUSLY in gesture handler
-          const a = document.createElement('audio');
-          a.src = src;
-          a.setAttribute('playsinline', '');
-          a.setAttribute('webkit-playsinline', '');
-          a.preload = 'auto';
-          a.muted = true;
-          a.volume = 0;
-          a.addEventListener('ended', () => {
-            if (_tracks.length > 1) {
-              _index = (_index + 1) % _tracks.length;
-              if (audio) { audio.src = _tracks[_index].src; audio.load(); }
-              audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {});
-            }
-          });
-          a.addEventListener('play', () => { _isPlaying = true; notify(); });
-          a.addEventListener('pause', () => { _isPlaying = false; notify(); });
-          audio = a;
-          // Synchronous play — no await, no async gap
-          a.play().then(() => {
-            a.muted = false;
-            _isPlaying = true;
-            notify();
-            const s2 = performance.now();
-            const fi2 = () => {
-              if (!audio) return;
-              audio.volume = Math.min((performance.now() - s2) / 3000, 1);
-              if (audio.volume < 1) requestAnimationFrame(fi2);
-            };
-            requestAnimationFrame(fi2);
-          }).catch(() => {});
-        };
-        document.body.addEventListener('touchend', prime, { once: true });
-        document.body.addEventListener('click', prime, { once: true });
-      });
+      }).catch(() => {});
     };
-    if (audio) attempt(audio);
+    document.body.addEventListener('touchend', prime, { once: true });
+    document.body.addEventListener('click', prime, { once: true });
   },
 
   get tracks() { return _tracks; },
