@@ -41,12 +41,12 @@ const CustomSlider = ({
 
   const handlePointerDown = (e: React.PointerEvent) => {
     e.preventDefault();
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     onChange(calcPct(e.clientX));
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (e.buttons > 0) {
+    if (sliderRef.current?.hasPointerCapture(e.pointerId)) {
       onChange(calcPct(e.clientX));
     }
   };
@@ -269,4 +269,4 @@ const AudioPlayer = ({
   );
 };
 
-export default AudioPlayer;
+export default AudioPlayer
