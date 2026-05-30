@@ -115,20 +115,22 @@ export const musicStore = {
         const prime = () => {
           document.body.removeEventListener('touchend', prime);
           document.body.removeEventListener('click', prime);
-          if (!audio || _isPlaying) return;
-          a.muted = true;
-          a.volume = 0;
-          a.play().then(() => {
-            a.muted = false;
-            _isPlaying = true;
-            notify();
-            const s2 = performance.now();
-            const fi2 = () => {
-              if (!audio) return;
-              audio.volume = Math.min((performance.now() - s2) / 3000, 1);
-              if (audio.volume < 1) requestAnimationFrame(fi2);
-            };
-            requestAnimationFrame(fi2);
+          if (_isPlaying) return;
+          // Rebuild fresh audio — old one may be poisoned by failed autoplay
+          rebuildAudio().then(() => {
+            if (audio) {
+              audio.muted = false;
+              audio.volume = 0;
+              _isPlaying = true;
+              notify();
+              const s2 = performance.now();
+              const fi2 = () => {
+                if (!audio) return;
+                audio.volume = Math.min((performance.now() - s2) / 3000, 1);
+                if (audio.volume < 1) requestAnimationFrame(fi2);
+              };
+              requestAnimationFrame(fi2);
+            }
           }).catch(() => {});
         };
         document.body.addEventListener('touchend', prime, { once: true });
