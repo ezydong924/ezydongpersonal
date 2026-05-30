@@ -94,6 +94,30 @@ export const musicStore = {
       loadTrack();
       audio.volume = 1;
     }
+
+    // Wait for first user touch to unlock audio permission,
+    // then attempt autoplay cleanly (won't poison the page)
+    const prime = () => {
+      document.body.removeEventListener('touchstart', prime);
+      document.body.removeEventListener('click', prime);
+      if (!audio || _isPlaying) return;
+      audio.muted = true;
+      audio.volume = 0;
+      audio.play().then(() => {
+        audio!.muted = false;
+        _isPlaying = true;
+        notify();
+        const s = performance.now();
+        const fi = () => {
+          if (!audio) return;
+          audio.volume = Math.min((performance.now() - s) / 3000, 1);
+          if (audio.volume < 1) requestAnimationFrame(fi);
+        };
+        requestAnimationFrame(fi);
+      }).catch(() => {});
+    };
+    document.body.addEventListener('touchstart', prime, { once: true });
+    document.body.addEventListener('click', prime, { once: true });
   },
 
   get tracks() { return _tracks; },
