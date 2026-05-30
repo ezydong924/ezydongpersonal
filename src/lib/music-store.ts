@@ -18,13 +18,16 @@ function notify() {
 }
 
 function rebuildAudio() {
-  if (!audio || !_tracks[_index]) return Promise.reject();
+  if (!audio || !_tracks[_index]) return;
   const src = _tracks[_index].src;
-  const wasMuted = _isMuted;
   audio.pause();
   audio.removeAttribute('src');
   audio.load();
-  const a = new Audio(src);
+  const a = document.createElement('audio');
+  a.src = src;
+  a.setAttribute('playsinline', '');
+  a.setAttribute('webkit-playsinline', '');
+  a.preload = 'auto';
   a.muted = false;
   a.volume = 1;
   a.addEventListener('ended', () => {
@@ -37,8 +40,13 @@ function rebuildAudio() {
   a.addEventListener('play', () => { _isPlaying = true; notify(); });
   a.addEventListener('pause', () => { _isPlaying = false; notify(); });
   audio = a;
-  a.muted = wasMuted;
-  return a.play();
+  // Synchronous play within user gesture
+  a.muted = _isMuted;
+  a.play().catch(() => {
+    // One more try with muted-first
+    a.muted = true;
+    a.play().then(() => { a.muted = _isMuted; _isPlaying = true; notify(); }).catch(() => {});
+  });
 }
 
 function ensureAudio() {
@@ -107,16 +115,7 @@ export const musicStore = {
   // Force-play from user gesture (works on all mobile browsers)
   resume() {
     if (!audio || !_tracks[_index]) return;
-    audio.muted = true;
-    audio.volume = 1;
-    audio.play().then(() => {
-      if (audio) audio.muted = _isMuted;
-    }).catch(() => {
-      rebuildAudio().then(() => {
-        _isPlaying = true;
-        notify();
-      }).catch(() => {});
-    });
+    rebuildAudio();
   },
 
   get tracks() { return _tracks; },
