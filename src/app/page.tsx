@@ -13,7 +13,7 @@ export default function HomePage() {
       <div className="relative z-10 min-h-screen">
         <main className="absolute bottom-12 left-6 right-6 max-w-3xl overflow-visible">
           <motion.div className="text-left leading-[0.85] tracking-tight">
-            <motion.span className="block text-[4.2rem] sm:text-[7rem] lg:text-[9rem] font-semibold text-white tracking-[-0.02em] mb-6 whitespace-nowrap">
+            <motion.span className="block text-[3.5rem] sm:text-[7rem] lg:text-[9rem] font-semibold text-white tracking-[-0.02em] mb-6 whitespace-nowrap sm:whitespace-nowrap">
               影岑
             </motion.span>
 

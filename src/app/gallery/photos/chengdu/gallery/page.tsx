@@ -38,7 +38,7 @@ export default function ChengduGallery() {
     window.addEventListener("keydown", k); return () => window.removeEventListener("keydown", k);
   }, []);
 
-  const isMobile = typeof window !== "undefined" && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  const isMobile = typeof window !== "undefined" && (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)));
   const visible = isMobile ? 5 : 10;
   const gSpeed = isMobile ? 0.3 : 0.6;
 

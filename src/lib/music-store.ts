@@ -139,7 +139,10 @@ export const musicStore = {
     }, { once: true });
 
     // Wait for user gesture (Safari/mobile fallback)
+    let primeFired = false;
     const prime = () => {
+      if (primeFired) return;
+      primeFired = true;
       ['touchstart','touchend','click','mousedown'].forEach((ev) => {
         document.body.removeEventListener(ev, prime);
       });

@@ -56,17 +56,21 @@ export default function ScrollExpandMedia({
   const [hasInteracted, setHasInteracted] = useState(false);
   const dragStartX = useRef(0);
 
-  // Attempt autoplay on mount
+  // Attempt muted autoplay on mount (required by all mobile browsers + Safari)
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
+    const v = videoRef.current;
+    if (v) {
+      v.muted = true;
+      v.play().catch(() => {});
     }
   }, []);
 
   // Fallback: trigger play on first scroll if autoplay was blocked
   const tryPlayVideo = () => {
-    if (videoRef.current && videoRef.current.paused) {
-      videoRef.current.play().catch(() => {});
+    const v = videoRef.current;
+    if (v && v.paused) {
+      v.muted = true;
+      v.play().catch(() => {});
     }
   };
 
