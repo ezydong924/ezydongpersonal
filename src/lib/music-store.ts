@@ -17,6 +17,30 @@ function notify() {
   listeners.forEach((fn) => fn());
 }
 
+function rebuildAudio() {
+  if (!audio || !_tracks[_index]) return Promise.reject();
+  const src = _tracks[_index].src;
+  const wasMuted = _isMuted;
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
+  const a = new Audio(src);
+  a.muted = false;
+  a.volume = 1;
+  a.addEventListener('ended', () => {
+    if (_tracks.length > 1) {
+      _index = (_index + 1) % _tracks.length;
+      if (audio) { audio.src = _tracks[_index].src; audio.load(); }
+      audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {});
+    }
+  });
+  a.addEventListener('play', () => { _isPlaying = true; notify(); });
+  a.addEventListener('pause', () => { _isPlaying = false; notify(); });
+  audio = a;
+  a.muted = wasMuted;
+  return a.play();
+}
+
 function ensureAudio() {
   if (typeof window === "undefined") return;
   if (!audio) {
@@ -82,19 +106,16 @@ export const musicStore = {
 
   // Force-play from user gesture (works on all mobile browsers)
   resume() {
-    if (!audio) return;
+    if (!audio || !_tracks[_index]) return;
     audio.muted = true;
     audio.volume = 1;
     audio.play().then(() => {
-      audio!.muted = _isMuted;
+      if (audio) audio.muted = _isMuted;
     }).catch(() => {
-      // Last resort: re-init completely
-      if (audio) {
-        audio.load();
-        audio.muted = true;
-        audio.volume = 1;
-        audio.play().then(() => { audio!.muted = _isMuted; }).catch(() => {});
-      }
+      rebuildAudio().then(() => {
+        _isPlaying = true;
+        notify();
+      }).catch(() => {});
     });
   },
 
