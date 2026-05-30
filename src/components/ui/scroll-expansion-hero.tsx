@@ -325,43 +325,26 @@ export default function ScrollExpandMedia({
                   </div>
                 )}
 
-                <div className="flex flex-col items-center text-center relative z-10 mt-6 transition-none gap-2">
-                  {date && (
-                    <p className="text-sm md:text-base tracking-[0.4em] uppercase text-white/30 font-light"
-                      style={{ transform: `translateX(-${textTranslateX}vw)`, fontFamily: '"Inter","PingFang SC",sans-serif' }}>
+                {date && (
+                  <div className="flex flex-col items-center text-center relative z-10 mt-4 transition-none">
+                    <p className="text-xs tracking-[0.5em] text-white/25 uppercase mb-3"
+                      style={{ fontFamily: '"Inter","PingFang SC",sans-serif', transform: `translateX(-${textTranslateX}vw)` }}>
                       {date}
                     </p>
-                  )}
-                  {scrollToExpand && (
-                    <p className="text-white/25 text-xs tracking-[0.5em] uppercase"
-                      style={{ transform: `translateX(${textTranslateX}vw)`, fontFamily: '"Inter","PingFang SC",sans-serif' }}>
-                      {scrollToExpand}
-                    </p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
-              <div className="relative z-10 flex flex-col items-center gap-3 transition-none"
-                style={{ transform: `translateX(-${textTranslateX * 0.5}vw)` }}>
-                {/* Decorative line */}
-                <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                {/* Main title with cinematic treatment */}
-                <h1 className="font-black select-none text-center leading-[0.85]"
+              <div className="flex items-center justify-center text-center w-full relative z-10 transition-none">
+                <h2 className="font-light tracking-[0.15em] text-white/80 select-none"
                   style={{
-                    fontSize: "clamp(4rem, 12vw, 10rem)",
-                    fontFamily: '"PingFang SC","Noto Serif SC","SimSun",serif',
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.3) 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    textShadow: "0 0 120px rgba(255,255,255,0.08), 0 20px 60px rgba(0,0,0,0.5)",
-                    letterSpacing: "0.08em",
-                    filter: `blur(${scrollProgress * 3}px)`,
+                    transform: `translateX(-${textTranslateX}vw)`,
+                    fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                    fontFamily: '"PingFang SC","Noto Serif SC",serif',
+                    lineHeight: 1.1,
                   }}>
                   {title}
-                </h1>
-                {/* Bottom decorative line */}
-                <div className="h-px w-24 md:w-40 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                </h2>
               </div>
             </div>
 
