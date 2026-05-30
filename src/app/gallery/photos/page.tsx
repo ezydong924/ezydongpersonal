@@ -86,15 +86,16 @@ export default function PhotosMapPage() {
 
       cities.forEach((city: (typeof cities)[0]) => {
         const iconHtml =
-          '<div style="position:relative;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center">' +
-          '<div style="position:absolute;width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);animation:marker-pulse 2.5s ease-out infinite"></div>' +
-          '<div style="width:6px;height:6px;background:white;border-radius:50%;box-shadow:0 0 12px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.6)"></div>' +
+          '<div style="position:relative;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center">' +
+          '<div style="position:absolute;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);animation:marker-pulse 3s ease-out infinite"></div>' +
+          '<div style="position:absolute;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);animation:marker-pulse 3s ease-out 1.5s infinite"></div>' +
+          '<div style="width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 0 16px rgba(255,255,255,0.8),0 0 6px rgba(255,220,180,0.6),0 0 30px rgba(255,255,255,0.3)"></div>' +
           '</div>';
         const icon = L.divIcon({
           className: "",
           html: iconHtml,
-          iconSize: [20, 20],
-          iconAnchor: [10, 10],
+          iconSize: [28, 28],
+          iconAnchor: [14, 14],
         });
         const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
         marker.on("click", () => {
@@ -110,7 +111,7 @@ export default function PhotosMapPage() {
       const style = document.createElement("style");
       style.textContent = `
         .leaflet-tile-pane { filter: invert(85%) hue-rotate(180deg) brightness(0.85) contrast(1.1); }
-        @keyframes marker-pulse { 0% { transform: scale(0.6); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
+        @keyframes marker-pulse { 0% { transform: scale(0.5); opacity: 0.4; } 50% { opacity: 0.15; } 100% { transform: scale(2.8); opacity: 0; } }
       `;
       document.head.appendChild(style);
 
