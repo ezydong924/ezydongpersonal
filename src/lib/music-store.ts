@@ -95,8 +95,33 @@ export const musicStore = {
     if (audio && audio.src !== tracks[0]?.src) {
       audio.muted = _isMuted;
       loadTrack();
-      audio.volume = 1;
-      // Don't autoplay — wait for user gesture via resume()
+      audio.volume = 0;
+
+      // Try autoplay via AudioContext (works on some mobile browsers)
+      const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (AC && !_audioCtx) {
+        try {
+          _audioCtx = new AC();
+          if (_audioCtx!.state === 'suspended') _audioCtx!.resume();
+          const sn = _audioCtx!.createMediaElementSource(audio!);
+          sn.connect(_audioCtx!.destination);
+        } catch (_) { _audioCtx = null; }
+      }
+
+      audio.muted = true;
+      audio.play().then(() => {
+        _isPlaying = true;
+        audio!.muted = _isMuted;
+        notify();
+        // Fade volume in
+        const start = performance.now();
+        const fi = () => {
+          if (!audio) return;
+          audio.volume = Math.min((performance.now() - start) / 3000, 1);
+          if (audio.volume < 1) requestAnimationFrame(fi);
+        };
+        requestAnimationFrame(fi);
+      }).catch(() => { /* Blocked — wait for resume() */ });
     }
   },
 
