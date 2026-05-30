@@ -52,19 +52,50 @@ export const musicStore = {
       audio.muted = _isMuted;
       loadTrack();
       audio.volume = 0;
-      audio.play().then(() => {
-        _isPlaying = true;
-        notify();
-        const start = performance.now();
-        const fadeIn = () => {
-          if (!audio) return;
-          const elapsed = (performance.now() - start) / 1000;
-          audio.volume = Math.min(elapsed / 3, 1);
-          if (audio.volume < 1) requestAnimationFrame(fadeIn);
-        };
-        requestAnimationFrame(fadeIn);
-      }).catch(() => {});
+
+      const tryPlay = () => {
+        if (!audio) return;
+        audio.play().then(() => {
+          _isPlaying = true;
+          notify();
+          const start = performance.now();
+          const fadeIn = () => {
+            if (!audio) return;
+            const elapsed = (performance.now() - start) / 1000;
+            audio.volume = Math.min(elapsed / 3, 1);
+            if (audio.volume < 1) requestAnimationFrame(fadeIn);
+          };
+          requestAnimationFrame(fadeIn);
+        }).catch(() => {});
+      };
+
+      tryPlay();
+
+      // WeChat / QQ X5: retry via WeixinJSBridge
+      const wx = (window as any).WeixinJSBridge;
+      if (wx) wx.invoke('getNetworkType', {}, tryPlay);
+      document.addEventListener('WeixinJSBridgeReady', () => {
+        (window as any).WeixinJSBridge?.invoke('getNetworkType', {}, tryPlay);
+      }, { once: true });
     }
+  },
+
+  // Force-play from user gesture (works on all mobile browsers)
+  resume() {
+    if (!audio) return;
+    audio.muted = true;
+    audio.volume = 1;
+    audio.play().then(() => {
+      audio!.muted = _isMuted;
+    }).catch(() => {
+      // Last resort: re-init completely
+      if (audio) {
+        audio.load();
+        audio.muted = true;
+        audio.volume = 1;
+        audio.play().then(() => { audio!.muted = _isMuted; }).catch(() => {});
+      }
+    });
   },
 
   get tracks() { return _tracks; },
