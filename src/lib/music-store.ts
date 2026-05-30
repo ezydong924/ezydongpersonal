@@ -95,16 +95,12 @@ export const musicStore = {
       audio.volume = 1;
     }
 
-    // Wait for first user touch to unlock audio permission,
-    // then attempt autoplay cleanly (won't poison the page)
-    const prime = () => {
-      document.body.removeEventListener('touchend', prime);
-      document.body.removeEventListener('click', prime);
-      if (!audio || _isPlaying) return;
-      audio.muted = true;
-      audio.volume = 0;
-      audio.play().then(() => {
-        audio!.muted = false;
+    // Try autoplay immediately (works on desktop, fails quickly on mobile)
+    const attempt = (a: HTMLAudioElement) => {
+      a.muted = true;
+      a.volume = 0;
+      a.play().then(() => {
+        a.muted = false;
         _isPlaying = true;
         notify();
         const s = performance.now();
@@ -115,11 +111,31 @@ export const musicStore = {
         };
         requestAnimationFrame(fi);
       }).catch(() => {
-        // Quark/QQ may still block — fall through to manual button
+        // Mobile blocked — wait for first user gesture
+        const prime = () => {
+          document.body.removeEventListener('touchend', prime);
+          document.body.removeEventListener('click', prime);
+          if (!audio || _isPlaying) return;
+          a.muted = true;
+          a.volume = 0;
+          a.play().then(() => {
+            a.muted = false;
+            _isPlaying = true;
+            notify();
+            const s2 = performance.now();
+            const fi2 = () => {
+              if (!audio) return;
+              audio.volume = Math.min((performance.now() - s2) / 3000, 1);
+              if (audio.volume < 1) requestAnimationFrame(fi2);
+            };
+            requestAnimationFrame(fi2);
+          }).catch(() => {});
+        };
+        document.body.addEventListener('touchend', prime, { once: true });
+        document.body.addEventListener('click', prime, { once: true });
       });
     };
-    document.body.addEventListener('touchend', prime, { once: true });
-    document.body.addEventListener('click', prime, { once: true });
+    if (audio) attempt(audio);
   },
 
   get tracks() { return _tracks; },
