@@ -30,18 +30,14 @@ export default function VideosPage() {
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img src={v.cover} alt={v.title}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  {/* Title overlay on image */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h2 className="text-3xl md:text-4xl font-light tracking-[0.06em] text-white/90"
-                      style={{ fontFamily: "PingFang SC,Noto Serif SC,serif" }}>
-                      {v.title}
-                    </h2>
-                  </div>
                 </div>
-                {/* Description below image */}
+                {/* Title + description below image */}
                 <div className="p-5">
-                  <p className="text-sm text-white/35 font-light leading-relaxed group-hover:text-white/50 transition-colors duration-500">
+                  <h2 className="text-2xl md:text-3xl font-light tracking-[0.06em] text-white/80 group-hover:text-white/95 transition-colors duration-500"
+                    style={{ fontFamily: "PingFang SC,Noto Serif SC,serif" }}>
+                    {v.title}
+                  </h2>
+                  <p className="mt-2 text-sm text-white/35 font-light leading-relaxed group-hover:text-white/50 transition-colors duration-500">
                     {v.desc}
                   </p>
                   <div className="mt-4 flex items-center gap-2 text-white/20 group-hover:text-white/40 group-hover:gap-3 transition-all duration-500">
