@@ -38,6 +38,10 @@ export default function ChengduGallery() {
     window.addEventListener("keydown", k); return () => window.removeEventListener("keydown", k);
   }, []);
 
+  const isMobile = typeof window !== "undefined" && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  const visible = isMobile ? 5 : 10;
+  const gSpeed = isMobile ? 0.3 : 0.6;
+
   const handleClick = useCallback((i: number) => { setActive(i); }, []);
   const thumbs = PHOTOS.map((p) => `${THUMB_BASE}/${p}`);
 
@@ -46,7 +50,7 @@ export default function ChengduGallery() {
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos/chengdu" label="返回" /></div>
       <button onClick={() => musicStore.togglePlay()} className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300">{musicPlaying ? <Pause size={16} /> : <Play size={16} />}</button>
       <AnimatePresence>{showTitle && (<motion.div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}><h1 className="font-bold tracking-[0.2em] select-none" style={{ fontSize: "clamp(4rem, 10vw, 8rem)", fontFamily: '"PingFang SC","Noto Serif SC","SimSun",serif', WebkitTextStroke: "1.5px rgba(255,255,255,0.45)", WebkitTextFillColor: "transparent", textShadow: "0 0 80px rgba(255,255,255,0.08)" }}>成都</h1></motion.div>)}</AnimatePresence>
-      <InfiniteGallery images={thumbs} className="h-full w-full" visibleCount={10} speed={0.6} fadeSettings={{ fadeIn: { start: 0.03, end: 0.15 }, fadeOut: { start: 0.78, end: 0.92 } }} blurSettings={{ blurIn: { start: 0.0, end: 0.08 }, blurOut: { start: 0.75, end: 0.9 }, maxBlur: 3.5 }} onImageClick={handleClick} />
+      <InfiniteGallery images={thumbs} className="h-full w-full" visibleCount={visible} speed={gSpeed} fadeSettings={{ fadeIn: { start: 0.03, end: 0.15 }, fadeOut: { start: 0.78, end: 0.92 } }} blurSettings={{ blurIn: { start: 0.0, end: 0.08 }, blurOut: { start: 0.75, end: 0.9 }, maxBlur: 3.5 }} onImageClick={handleClick} />
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none text-white/30 text-xs tracking-[0.2em]">滚轮浏览 · 自动播放 · 点击看大图</div>
       <AnimatePresence>{active !== null && (<motion.div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)}><button className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10" onClick={() => setActive(null)}><X size={20} /></button><motion.img src={`${LIGHTBOX_BASE}/${PHOTOS[active]}`} alt="" className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }} transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }} onClick={(e) => e.stopPropagation()} /><div className="absolute bottom-8 text-white/45 text-sm tracking-widest">{active + 1} / {PHOTOS.length}</div></motion.div>)}</AnimatePresence>
     </div>

@@ -98,8 +98,9 @@ export const musicStore = {
     // Never attempt autoplay before user gesture — prevents Safari/iOS
     // from permanently blocking audio for the entire page
     const prime = () => {
-      document.body.removeEventListener('touchend', prime);
-      document.body.removeEventListener('click', prime);
+      ['touchstart','touchend','click','mousedown'].forEach((ev) => {
+        document.body.removeEventListener(ev, prime);
+      });
       if (_isPlaying || !_tracks[0]) return;
       const src = _tracks[0].src;
       if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
@@ -132,8 +133,9 @@ export const musicStore = {
         requestAnimationFrame(fi);
       }).catch(() => {});
     };
-    document.body.addEventListener('touchend', prime, { once: true });
-    document.body.addEventListener('click', prime, { once: true });
+    ['touchstart','touchend','click','mousedown'].forEach((ev) => {
+      document.body.addEventListener(ev, prime, { once: true });
+    });
   },
 
   get tracks() { return _tracks; },
