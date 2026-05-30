@@ -326,14 +326,22 @@ export default function ScrollExpandMedia({
                 )}
 
                 <div className="flex flex-col items-center text-center relative z-10 mt-4 transition-none">
-                  {date && <p className="text-2xl text-white/80" style={{ transform: `translateX(-${textTranslateX}vw)` }}>{date}</p>}
+                  {date && <p className="text-lg tracking-[0.3em] text-white/40 font-light" style={{ transform: `translateX(-${textTranslateX}vw)`, fontFamily: '"PingFang SC","Noto Serif SC",serif' }}>{date}</p>}
                   {scrollToExpand && <p className="text-white/50 font-medium text-center" style={{ transform: `translateX(${textTranslateX}vw)` }}>{scrollToExpand}</p>}
                 </div>
               </div>
 
               <div className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${textBlend ? "mix-blend-difference" : "mix-blend-normal"}`}>
-                <motion.h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white transition-none"
-                  style={{ transform: `translateX(-${textTranslateX}vw)` }}>{title}</motion.h2>
+                <motion.h2 className="font-bold transition-none select-none"
+                  style={{
+                    transform: `translateX(-${textTranslateX}vw)`,
+                    fontSize: "clamp(3rem, 8vw, 7rem)",
+                    fontFamily: '"PingFang SC","Noto Serif SC","SimSun",serif',
+                    WebkitTextStroke: "1.5px rgba(255,255,255,0.4)",
+                    WebkitTextFillColor: "transparent",
+                    textShadow: "0 0 100px rgba(255,255,255,0.06)",
+                    letterSpacing: "0.12em",
+                  }}>{title}</motion.h2>
               </div>
             </div>
 
