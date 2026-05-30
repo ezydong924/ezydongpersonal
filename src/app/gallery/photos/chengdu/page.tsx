@@ -22,9 +22,14 @@ export default function Page() {
   const linkClass = "inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300";
 
   const handleMuteToggle = () => {
-    musicStore.toggleMute();
     const audio = musicStore.audioEl;
-    if (audio && audio.paused) audio.play().catch(() => {});
+    if (!audio) return;
+    if (audio.paused) {
+      audio.muted = false;
+      audio.play().catch(() => {});
+    } else {
+      musicStore.toggleMute();
+    }
   };
 
   return (

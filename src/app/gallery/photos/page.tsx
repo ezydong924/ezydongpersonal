@@ -73,17 +73,15 @@ export default function PhotosMapPage() {
 
       cities.forEach((city: (typeof cities)[0]) => {
         const iconHtml =
-          '<div style="display:flex;align-items:center;gap:6px;cursor:pointer">' +
-          '<div style="position:relative;width:10px;height:10px;flex-shrink:0">' +
-          '<div style="width:10px;height:10px;background:white;border-radius:50%;box-shadow:0 0 14px rgba(255,255,255,0.6);border:2px solid rgba(255,255,255,0.5);position:relative;z-index:1"></div>' +
-          '</div>' +
-          '<span style="color:rgba(255,255,255,0.7);font-size:12px;font-weight:300;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.8)">' + city.name + '</span>' +
+          '<div style="position:relative;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center">' +
+          '<div style="position:absolute;width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);animation:marker-pulse 2.5s ease-out infinite"></div>' +
+          '<div style="width:6px;height:6px;background:white;border-radius:50%;box-shadow:0 0 12px rgba(255,255,255,0.9),0 0 4px rgba(255,255,255,0.6)"></div>' +
           '</div>';
         const icon = L.divIcon({
           className: "",
           html: iconHtml,
-          iconSize: [80, 16],
-          iconAnchor: [5, 8],
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
         });
         const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
         marker.on("click", () => {
@@ -97,7 +95,10 @@ export default function PhotosMapPage() {
 
       // Dark filter only on tile layers, not markers
       const style = document.createElement("style");
-      style.textContent = `.leaflet-tile-pane { filter: invert(85%) hue-rotate(180deg) brightness(0.85) contrast(1.1); }`;
+      style.textContent = `
+        .leaflet-tile-pane { filter: invert(85%) hue-rotate(180deg) brightness(0.85) contrast(1.1); }
+        @keyframes marker-pulse { 0% { transform: scale(0.6); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
+      `;
       document.head.appendChild(style);
 
       setLoaded(true);
@@ -146,27 +147,23 @@ export default function PhotosMapPage() {
               >
                 <motion.div
                   key={active}
-                  initial={{ opacity: 0, y: 24, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -24, scale: 0.95 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative px-10 py-5 rounded-2xl bg-white/[0.04] backdrop-blur-3xl border border-white/[0.06] text-center overflow-hidden group"
-                  style={{ boxShadow: "0 4px 40px rgba(0,0,0,0.5), inset 0 0.5px 0 rgba(255,255,255,0.06)" }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="text-center"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <motion.div
-                    className="flex flex-col items-center"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <p className="text-white/85 text-2xl font-light tracking-[0.04em] leading-none" style={{ fontFamily: "var(--font-serif)" }}>
-                      {cities.find((c) => c.slug === active)?.name}
-                    </p>
-                    <p className="text-white/25 text-[11px] tracking-[0.25em] uppercase mt-2 leading-none">
+                  <p className="text-white/90 text-5xl md:text-6xl font-thin tracking-[0.12em] leading-tight"
+                    style={{ fontFamily: '"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif' }}>
+                    {cities.find((c) => c.slug === active)?.name}
+                  </p>
+                  <div className="flex items-center justify-center gap-4 mt-4">
+                    <span className="h-px w-8 bg-white/15" />
+                    <p className="text-white/65 text-sm tracking-[0.3em] uppercase font-normal">
                       {cities.find((c) => c.slug === active)?.en}
                     </p>
-                  </motion.div>
+                    <span className="h-px w-8 bg-white/15" />
+                  </div>
                 </motion.div>
               </Link>
             )}
