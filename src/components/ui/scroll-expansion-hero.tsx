@@ -325,23 +325,43 @@ export default function ScrollExpandMedia({
                   </div>
                 )}
 
-                <div className="flex flex-col items-center text-center relative z-10 mt-4 transition-none">
-                  {date && <p className="text-lg tracking-[0.3em] text-white/40 font-light" style={{ transform: `translateX(-${textTranslateX}vw)`, fontFamily: '"PingFang SC","Noto Serif SC",serif' }}>{date}</p>}
-                  {scrollToExpand && <p className="text-white/50 font-medium text-center" style={{ transform: `translateX(${textTranslateX}vw)` }}>{scrollToExpand}</p>}
+                <div className="flex flex-col items-center text-center relative z-10 mt-6 transition-none gap-2">
+                  {date && (
+                    <p className="text-sm md:text-base tracking-[0.4em] uppercase text-white/30 font-light"
+                      style={{ transform: `translateX(-${textTranslateX}vw)`, fontFamily: '"Inter","PingFang SC",sans-serif' }}>
+                      {date}
+                    </p>
+                  )}
+                  {scrollToExpand && (
+                    <p className="text-white/25 text-xs tracking-[0.5em] uppercase"
+                      style={{ transform: `translateX(${textTranslateX}vw)`, fontFamily: '"Inter","PingFang SC",sans-serif' }}>
+                      {scrollToExpand}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div className={`flex items-center justify-center text-center gap-4 w-full relative z-10 transition-none flex-col ${textBlend ? "mix-blend-difference" : "mix-blend-normal"}`}>
-                <motion.h2 className="font-bold transition-none select-none"
+              <div className="relative z-10 flex flex-col items-center gap-3 transition-none"
+                style={{ transform: `translateX(-${textTranslateX * 0.5}vw)` }}>
+                {/* Decorative line */}
+                <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                {/* Main title with cinematic treatment */}
+                <h1 className="font-black select-none text-center leading-[0.85]"
                   style={{
-                    transform: `translateX(-${textTranslateX}vw)`,
-                    fontSize: "clamp(3rem, 8vw, 7rem)",
+                    fontSize: "clamp(4rem, 12vw, 10rem)",
                     fontFamily: '"PingFang SC","Noto Serif SC","SimSun",serif',
-                    WebkitTextStroke: "1.5px rgba(255,255,255,0.4)",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.3) 100%)",
+                    WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                    textShadow: "0 0 100px rgba(255,255,255,0.06)",
-                    letterSpacing: "0.12em",
-                  }}>{title}</motion.h2>
+                    backgroundClip: "text",
+                    textShadow: "0 0 120px rgba(255,255,255,0.08), 0 20px 60px rgba(0,0,0,0.5)",
+                    letterSpacing: "0.08em",
+                    filter: `blur(${scrollProgress * 3}px)`,
+                  }}>
+                  {title}
+                </h1>
+                {/* Bottom decorative line */}
+                <div className="h-px w-24 md:w-40 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
               </div>
             </div>
 
