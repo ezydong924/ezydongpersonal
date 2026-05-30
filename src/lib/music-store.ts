@@ -17,6 +17,8 @@ function notify() {
   listeners.forEach((fn) => fn());
 }
 
+let _audioCtx: AudioContext | null = null;
+
 function rebuildAudio() {
   if (!audio || !_tracks[_index]) return;
   const src = _tracks[_index].src;
@@ -28,7 +30,6 @@ function rebuildAudio() {
   a.setAttribute('playsinline', '');
   a.setAttribute('webkit-playsinline', '');
   a.preload = 'auto';
-  a.muted = false;
   a.volume = 1;
   a.addEventListener('ended', () => {
     if (_tracks.length > 1) {
@@ -40,12 +41,23 @@ function rebuildAudio() {
   a.addEventListener('play', () => { _isPlaying = true; notify(); });
   a.addEventListener('pause', () => { _isPlaying = false; notify(); });
   audio = a;
-  // Synchronous play within user gesture
+
+  // Route through AudioContext for Android WeChat/QQ X5 kernel
+  // which blocks HTMLAudioElement.play() but allows AudioContext
+  const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+  if (AC && !_audioCtx) {
+    try {
+      _audioCtx = new AC();
+      if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx!.resume();
+      const srcNode = _audioCtx!.createMediaElementSource(a);
+      srcNode.connect(_audioCtx!.destination);
+    } catch (_) { /* fallback to direct play */ }
+  }
+
   a.muted = _isMuted;
-  a.play().catch(() => {
-    // One more try with muted-first
+  a.play().then(() => { _isPlaying = true; notify(); }).catch(() => {
     a.muted = true;
-    a.play().then(() => { a.muted = _isMuted; _isPlaying = true; notify(); }).catch(() => {});
+    a.play().then(() => { a.muted = false; _isPlaying = true; notify(); }).catch(() => {});
   });
 }
 
@@ -83,32 +95,8 @@ export const musicStore = {
     if (audio && audio.src !== tracks[0]?.src) {
       audio.muted = _isMuted;
       loadTrack();
-      audio.volume = 0;
-
-      const tryPlay = () => {
-        if (!audio) return;
-        audio.play().then(() => {
-          _isPlaying = true;
-          notify();
-          const start = performance.now();
-          const fadeIn = () => {
-            if (!audio) return;
-            const elapsed = (performance.now() - start) / 1000;
-            audio.volume = Math.min(elapsed / 3, 1);
-            if (audio.volume < 1) requestAnimationFrame(fadeIn);
-          };
-          requestAnimationFrame(fadeIn);
-        }).catch(() => {});
-      };
-
-      tryPlay();
-
-      // WeChat / QQ X5: retry via WeixinJSBridge
-      const wx = (window as any).WeixinJSBridge;
-      if (wx) wx.invoke('getNetworkType', {}, tryPlay);
-      document.addEventListener('WeixinJSBridgeReady', () => {
-        (window as any).WeixinJSBridge?.invoke('getNetworkType', {}, tryPlay);
-      }, { once: true });
+      audio.volume = 1;
+      // Don't autoplay — wait for user gesture via resume()
     }
   },
 
