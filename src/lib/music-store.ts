@@ -1,7 +1,6 @@
 "use client";
 
 type Track = { src: string; cover?: string; title?: string };
-
 type Listener = () => void;
 
 let audio: HTMLAudioElement | null = null;
@@ -11,56 +10,10 @@ let _isPlaying = false;
 let _isMuted = false;
 let _active = false;
 let _releaseTimer: ReturnType<typeof setTimeout> | null = null;
+let _audioCtx: AudioContext | null = null;
 const listeners = new Set<Listener>();
 
-function notify() {
-  listeners.forEach((fn) => fn());
-}
-
-let _audioCtx: AudioContext | null = null;
-
-function rebuildAudio() {
-  if (!audio || !_tracks[_index]) return;
-  const src = _tracks[_index].src;
-  audio.pause();
-  audio.removeAttribute('src');
-  audio.load();
-  const a = document.createElement('audio');
-  a.src = src;
-  a.setAttribute('playsinline', '');
-  a.setAttribute('webkit-playsinline', '');
-  a.preload = 'auto';
-  a.volume = 1;
-  a.addEventListener('ended', () => {
-    if (_tracks.length > 1) {
-      _index = (_index + 1) % _tracks.length;
-      if (audio) { audio.src = _tracks[_index].src; audio.load(); }
-      audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {});
-    }
-  });
-  a.addEventListener('play', () => { _isPlaying = true; notify(); });
-  a.addEventListener('pause', () => { _isPlaying = false; notify(); });
-  audio = a;
-
-  // Route through AudioContext for Android WeChat/QQ X5 kernel
-  // which blocks HTMLAudioElement.play() but allows AudioContext
-  const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
-  if (AC) {
-    try {
-      if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
-      _audioCtx = new AC();
-      if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx!.resume();
-      const srcNode = _audioCtx!.createMediaElementSource(a);
-      srcNode.connect(_audioCtx!.destination);
-    } catch (_) { /* fallback to direct play */ }
-  }
-
-  a.muted = _isMuted;
-  a.play().then(() => { _isPlaying = true; notify(); }).catch(() => {
-    a.muted = true;
-    a.play().then(() => { a.muted = false; _isPlaying = true; notify(); }).catch(() => {});
-  });
-}
+function notify() { listeners.forEach((fn) => fn()); }
 
 function ensureAudio() {
   if (typeof window === "undefined") return;
@@ -84,6 +37,45 @@ function loadTrack() {
   audio.load();
 }
 
+function rebuildAudio() {
+  if (!audio || !_tracks[_index]) return;
+  const src = _tracks[_index].src;
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
+
+  const a = document.createElement("audio");
+  a.src = src;
+  a.setAttribute("playsinline", "");
+  a.setAttribute("webkit-playsinline", "");
+  a.preload = "auto";
+  a.volume = 1;
+  a.addEventListener("ended", () => {
+    if (_tracks.length > 1) {
+      _index = (_index + 1) % _tracks.length;
+      if (audio) { audio.src = _tracks[_index].src; audio.load(); }
+      audio?.play().then(() => { _isPlaying = true; notify(); }).catch(() => {});
+    }
+  });
+  a.addEventListener("play", () => { _isPlaying = true; notify(); });
+  a.addEventListener("pause", () => { _isPlaying = false; notify(); });
+  audio = a;
+
+  const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
+  if (AC) {
+    try {
+      if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
+      _audioCtx = new AC();
+      if (_audioCtx!.state === "suspended") _audioCtx!.resume();
+      const sn = _audioCtx!.createMediaElementSource(a);
+      sn.connect(_audioCtx!.destination);
+    } catch (_) { _audioCtx = null; }
+  }
+
+  a.muted = _isMuted;
+  a.play().catch(() => {});
+}
+
 export const musicStore = {
   init(tracks: Track[]) {
     if (typeof window === "undefined") return;
@@ -96,28 +88,8 @@ export const musicStore = {
     if (audio && audio.src !== tracks[0]?.src) {
       audio.muted = _isMuted;
       loadTrack();
-      audio.volume = 0;
-      // Gentle autoplay attempt (desktop only — mobile blocks this silently)
-      audio.muted = true;
-      audio.play().then(() => {
-        _isPlaying = true;
-        audio!.muted = false;
-        notify();
-        const s = performance.now();
-        const fi = () => {
-          if (!audio) return;
-          audio.volume = Math.min((performance.now() - s) / 3000, 1);
-          if (audio.volume < 1) requestAnimationFrame(fi);
-        };
-        requestAnimationFrame(fi);
-      }).catch(() => {});
+      audio.volume = 1;
     }
-  },
-
-  // Force-play from user gesture (works on all mobile browsers)
-  resume() {
-    if (!audio || !_tracks[_index]) return;
-    rebuildAudio();
   },
 
   get tracks() { return _tracks; },
@@ -127,13 +99,15 @@ export const musicStore = {
   get currentTrack() { return _tracks[_index] ?? _tracks[0]; },
   get audioEl() { return audio; },
 
+  resume() {
+    if (!audio || !_tracks[_index]) return;
+    rebuildAudio();
+  },
+
   togglePlay() {
     if (!audio) return;
-    if (_isPlaying) {
-      audio.pause();
-    } else {
-      audio.play().catch(() => {});
-    }
+    if (_isPlaying) { audio.pause(); }
+    else { rebuildAudio(); }
   },
 
   toggleMute() {
@@ -177,10 +151,8 @@ export const musicStore = {
 
   destroy() {
     if (_releaseTimer) clearTimeout(_releaseTimer);
-    if (audio) {
-      audio.pause();
-      audio.src = "";
-    }
+    if (audio) { audio.pause(); audio.src = ""; }
+    if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
     _isPlaying = false;
     _active = false;
     notify();
