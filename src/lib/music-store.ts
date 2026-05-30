@@ -45,8 +45,9 @@ function rebuildAudio() {
   // Route through AudioContext for Android WeChat/QQ X5 kernel
   // which blocks HTMLAudioElement.play() but allows AudioContext
   const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
-  if (AC && !_audioCtx) {
+  if (AC) {
     try {
+      if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
       _audioCtx = new AC();
       if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx!.resume();
       const srcNode = _audioCtx!.createMediaElementSource(a);
@@ -96,32 +97,20 @@ export const musicStore = {
       audio.muted = _isMuted;
       loadTrack();
       audio.volume = 0;
-
-      // Try autoplay via AudioContext (works on some mobile browsers)
-      const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
-      if (AC && !_audioCtx) {
-        try {
-          _audioCtx = new AC();
-          if (_audioCtx!.state === 'suspended') _audioCtx!.resume();
-          const sn = _audioCtx!.createMediaElementSource(audio!);
-          sn.connect(_audioCtx!.destination);
-        } catch (_) { _audioCtx = null; }
-      }
-
+      // Gentle autoplay attempt (desktop only — mobile blocks this silently)
       audio.muted = true;
       audio.play().then(() => {
         _isPlaying = true;
-        audio!.muted = _isMuted;
+        audio!.muted = false;
         notify();
-        // Fade volume in
-        const start = performance.now();
+        const s = performance.now();
         const fi = () => {
           if (!audio) return;
-          audio.volume = Math.min((performance.now() - start) / 3000, 1);
+          audio.volume = Math.min((performance.now() - s) / 3000, 1);
           if (audio.volume < 1) requestAnimationFrame(fi);
         };
         requestAnimationFrame(fi);
-      }).catch(() => { /* Blocked — wait for resume() */ });
+      }).catch(() => {});
     }
   },
 
