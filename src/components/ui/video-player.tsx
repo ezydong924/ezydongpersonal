@@ -138,7 +138,7 @@ const VideoPlayer = ({ src }: { src: string }) => {
         className="w-full"
         onTimeUpdate={handleTimeUpdate}
         src={src}
-        onClick={() => { setShowControls(true); togglePlay(); }}
+        onClick={() => setShowControls(true)}
       />
       <AnimatePresence>
         {showControls && (
