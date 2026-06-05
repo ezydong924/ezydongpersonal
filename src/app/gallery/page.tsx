@@ -18,10 +18,10 @@ export default function GalleryPage() {
           distortion={0.6}
           swirl={0.08}
           speed={0.8}
-          colors={["hsl(216, 90%, 27%)", "hsl(243, 68%, 36%)", "hsl(205, 91%, 64%)", "hsl(211, 61%, 57%)"]}
+          colors={["hsl(0, 0%, 3%)", "hsl(0, 0%, 12%)", "hsl(0, 0%, 25%)", "hsl(0, 0%, 55%)"]}
         />
       </div>
-      <div className="fixed inset-0 bg-black/10 pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-black/5 pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
         <div className="absolute top-8 left-8">
           <BackButton href="/explore" label="返回" />
