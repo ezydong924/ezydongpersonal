@@ -1,4 +1,4 @@
-import ThreeShaderBg from "@/components/three-shader-bg";
+import EnergyRingBg from "@/components/energy-ring-bg";
 import BackButton from "@/components/back-button";
 import Link from "next/link";
 
@@ -10,7 +10,7 @@ const entries = [
 export default function GalleryPage() {
   return (
     <>
-      <ThreeShaderBg />
+      <EnergyRingBg />
       <div className="fixed inset-0 bg-black/20 pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
         <div className="absolute top-8 left-8">
