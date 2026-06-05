@@ -1,6 +1,6 @@
 "use client";
 
-import { MeshGradient } from "@paper-design/shaders-react";
+import UnicornStudioBg from "@/components/ui/unicorn-studio-bg";
 import BackButton from "@/components/back-button";
 import Link from "next/link";
 
@@ -12,16 +12,8 @@ const entries = [
 export default function GalleryPage() {
   return (
     <>
-      <div className="fixed inset-0 z-0">
-        <MeshGradient
-          style={{ height: "100vh", width: "100vw" }}
-          distortion={0.6}
-          swirl={0.08}
-          speed={0.8}
-          colors={["hsl(0, 0%, 3%)", "hsl(0, 0%, 12%)", "hsl(0, 0%, 25%)", "hsl(0, 0%, 55%)"]}
-        />
-      </div>
-      <div className="fixed inset-0 bg-black/5 pointer-events-none z-0" />
+      <UnicornStudioBg />
+      <div className="fixed inset-0 bg-black/10 pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
         <div className="absolute top-8 left-8">
           <BackButton href="/explore" label="返回" />
