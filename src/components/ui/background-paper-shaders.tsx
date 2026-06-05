@@ -79,7 +79,7 @@ function ShaderPlane({
 
 function EnergyRing({
   radius = 1,
-  position = [0, 0, 0] as [number, number, number],
+  position = [0, 0, 0],
 }: {
   radius?: number;
   position?: [number, number, number];
@@ -111,7 +111,7 @@ function Scene() {
   );
 }
 
-export default function EnergyRingBg() {
+export default function BackgroundPaperShaders() {
   return (
     <div className="fixed inset-0 z-0">
       <Canvas

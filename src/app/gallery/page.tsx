@@ -1,4 +1,4 @@
-import EnergyRingBg from "@/components/energy-ring-bg";
+import BackgroundPaperShaders from "@/components/ui/background-paper-shaders";
 import BackButton from "@/components/back-button";
 import Link from "next/link";
 
@@ -10,7 +10,7 @@ const entries = [
 export default function GalleryPage() {
   return (
     <>
-      <EnergyRingBg />
+      <BackgroundPaperShaders />
       <div className="fixed inset-0 bg-black/20 pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
         <div className="absolute top-8 left-8">
