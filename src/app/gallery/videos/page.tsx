@@ -26,12 +26,10 @@ export default function VideosPage() {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-24 relative overflow-hidden">
       <AnimatedGradientBackground
-        Breathing={true}
-        animationSpeed={0.01}
-        breathingRange={3}
-        startingGap={120}
-        gradientColors={["#0a0a14", "#1a1040", "#0d1b3e", "#1a0a2e", "#0f1a30", "#150d28", "#0a0a14"]}
-        gradientStops={[30, 45, 60, 70, 80, 90, 100]}
+        Breathing={false}
+        startingGap={125}
+        gradientColors={["#0A0A0A", "#2979FF", "#FF80AB", "#FF6D00", "#FFD600", "#00E676", "#3D5AFE"]}
+        gradientStops={[35, 50, 60, 70, 80, 90, 100]}
       />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery" label="返回" /></div>
       <div className="relative w-full max-w-md mx-auto" style={{ height: "520px" }}>
@@ -46,7 +44,7 @@ export default function VideosPage() {
             <div key={v.slug} className="absolute inset-0 transition-transform duration-300 select-none cursor-grab active:cursor-grabbing" style={style}
               onMouseDown={(e) => { if (isActive) hDS(e.clientX); }} onTouchStart={(e) => { if (isActive) hDS(e.touches[0].clientX); }}>
               <Link href={isActive ? `/gallery/videos/${v.slug}` : "#"} className="block h-full">
-                <div className="backdrop-blur-xl rounded-3xl overflow-hidden h-full border border-white/[0.06]" style={{ background: "rgba(8,8,16,0.5)" }}>
+                <div className="glass-effect rounded-3xl overflow-hidden h-full">
                   <div className="relative h-[55%] overflow-hidden">
                     <img src={v.cover} alt={v.title} className="h-full w-full object-cover transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
