@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
+import AnimatedGradientBackground from "@/components/ui/animated-gradient-bg";
 
 const videos = [
   { title: "大连", desc: "滨城 · With light storm", cover: "/dalian.jpg", slug: "dalian", grad: "linear-gradient(135deg, #1a3a5c, #0d1f33)" },
@@ -24,17 +25,14 @@ export default function VideosPage() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-24 relative overflow-hidden">
-      {/* Animated background blobs for glass effect */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full blur-[200px] opacity-[0.15] animate-pulse"
-          style={{ background: "radial-gradient(circle, rgba(140,100,200,0.6), transparent 70%)", animationDuration: "8s" }} />
-        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full blur-[180px] opacity-[0.1] animate-pulse"
-          style={{ background: "radial-gradient(circle, rgba(100,140,220,0.5), transparent 70%)", animationDuration: "10s", animationDelay: "2s" }} />
-        <div className="absolute bottom-0 left-1/3 w-[450px] h-[450px] rounded-full blur-[160px] opacity-[0.12] animate-pulse"
-          style={{ background: "radial-gradient(circle, rgba(180,130,160,0.5), transparent 70%)", animationDuration: "9s", animationDelay: "4s" }} />
-      </div>
-      {/* Noise texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
+      <AnimatedGradientBackground
+        Breathing={true}
+        animationSpeed={0.01}
+        breathingRange={3}
+        startingGap={120}
+        gradientColors={["#0a0a14", "#1a1040", "#0d1b3e", "#1a0a2e", "#0f1a30", "#150d28", "#0a0a14"]}
+        gradientStops={[30, 45, 60, 70, 80, 90, 100]}
+      />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery" label="返回" /></div>
       <div className="relative w-full max-w-md mx-auto" style={{ height: "520px" }}>
         {videos.map((v, i) => {
