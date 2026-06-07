@@ -24,10 +24,17 @@ export default function VideosPage() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-24 relative overflow-hidden">
+      {/* Animated background blobs for glass effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[180px] opacity-[0.12]" style={{ background: "radial-gradient(circle, rgba(120,120,180,0.5), transparent 70%)" }} />
-        <div className="absolute bottom-1/3 right-1/3 w-[400px] h-[400px] rounded-full blur-[150px] opacity-[0.08]" style={{ background: "radial-gradient(circle, rgba(180,160,200,0.4), transparent 70%)" }} />
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full blur-[200px] opacity-[0.15] animate-pulse"
+          style={{ background: "radial-gradient(circle, rgba(140,100,200,0.6), transparent 70%)", animationDuration: "8s" }} />
+        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full blur-[180px] opacity-[0.1] animate-pulse"
+          style={{ background: "radial-gradient(circle, rgba(100,140,220,0.5), transparent 70%)", animationDuration: "10s", animationDelay: "2s" }} />
+        <div className="absolute bottom-0 left-1/3 w-[450px] h-[450px] rounded-full blur-[160px] opacity-[0.12] animate-pulse"
+          style={{ background: "radial-gradient(circle, rgba(180,130,160,0.5), transparent 70%)", animationDuration: "9s", animationDelay: "4s" }} />
       </div>
+      {/* Noise texture */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery" label="返回" /></div>
       <div className="relative w-full max-w-md mx-auto" style={{ height: "520px" }}>
         {videos.map((v, i) => {
@@ -41,7 +48,7 @@ export default function VideosPage() {
             <div key={v.slug} className="absolute inset-0 transition-transform duration-300 select-none cursor-grab active:cursor-grabbing" style={style}
               onMouseDown={(e) => { if (isActive) hDS(e.clientX); }} onTouchStart={(e) => { if (isActive) hDS(e.touches[0].clientX); }}>
               <Link href={isActive ? `/gallery/videos/${v.slug}` : "#"} className="block h-full">
-                <div className="backdrop-blur-xl rounded-3xl overflow-hidden h-full border border-white/[0.06]" style={{ background: "rgba(8,8,16,0.7)" }}>
+                <div className="backdrop-blur-xl rounded-3xl overflow-hidden h-full border border-white/[0.06]" style={{ background: "rgba(8,8,16,0.5)" }}>
                   <div className="relative h-[55%] overflow-hidden">
                     <img src={v.cover} alt={v.title} className="h-full w-full object-cover transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
