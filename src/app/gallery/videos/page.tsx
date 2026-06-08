@@ -3,7 +3,7 @@
 import Link from "next/link";
 import BackButton from "@/components/back-button";
 import { motion } from "framer-motion";
-import AnimatedGradientBackground from "@/components/ui/animated-gradient-bg";
+import { StarsBackground } from "@/components/ui/stars-background";
 
 const videos = [
   { title: "大连", desc: "滨城 · With light storm", cover: "/dalian.jpg", slug: "dalian" },
@@ -17,14 +17,7 @@ const item = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, trans
 export default function VideosPage() {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6 py-24 relative overflow-hidden">
-      <AnimatedGradientBackground
-        Breathing={false}
-        startingGap={125}
-        gradientColors={["#0A0A0A", "#2979FF", "#FF80AB", "#FF6D00", "#FFD600", "#00E676", "#3D5AFE"]}
-        gradientStops={[35, 50, 60, 70, 80, 90, 100]}
-      />
-      {/* Subtle dark veil for text readability */}
-      <div className="absolute inset-0 bg-black/30 pointer-events-none z-[1]" />
+      <StarsBackground speed={60} starColor="rgba(255,255,255,0.6)" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery" label="返回" />
       </div>
