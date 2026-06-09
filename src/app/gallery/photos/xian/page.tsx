@@ -15,7 +15,7 @@ const categories = [
 export default function Page() {
   return (
     <div className="relative min-h-screen">
-      <GradientBackground colors={["hsl(38, 75%, 30%)", "hsl(22, 55%, 22%)", "hsl(48, 50%, 18%)"]} />
+      <GradientBackground colors={["hsl(220, 45%, 22%)", "hsl(210, 35%, 16%)", "hsl(190, 25%, 12%)"]} />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos" label="返回" />
       </div>
