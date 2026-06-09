@@ -66,7 +66,7 @@ function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClic
 }
 
 export default function BeijingGallery() {
-  const [active, setActive] = useState<number | null>(null);
+  const [activePhoto, setActivePhoto] = useState<string | null>(null);
   const [cols, setCols] = useState(3);
   const [musicPlaying, setMusicPlaying] = useState(false);
 
@@ -122,7 +122,7 @@ export default function BeijingGallery() {
                     key={photo}
                     src={`/beijing/thumbs/${photo}`}
                     alt={`Beijing ${colIdx}-${idx}`}
-                    onClick={() => setActive(PHOTOS.indexOf(photo))}
+                    onClick={() => setActivePhoto(photo)}
                   />
                 ))}
               </div>
@@ -133,23 +133,23 @@ export default function BeijingGallery() {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {active !== null && (
+        {activePhoto !== null && (
           <motion.div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setActive(null)}
+            onClick={() => setActivePhoto(null)}
           >
             <button
               className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10"
-              onClick={() => setActive(null)}
+              onClick={() => setActivePhoto(null)}
             >
               <X size={20} />
             </button>
 
             <motion.img
-              src={`/beijing/lightbox/${PHOTOS[active]}`}
+              src={`/beijing/lightbox/${activePhoto}`}
               alt=""
               className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
               initial={{ scale: 0.92, opacity: 0 }}
@@ -160,7 +160,7 @@ export default function BeijingGallery() {
             />
 
             <div className="absolute bottom-8 text-white/45 text-sm tracking-widest">
-              {active + 1} / {PHOTOS.length}
+              {PHOTOS.indexOf(activePhoto) + 1} / {PHOTOS.length}
             </div>
           </motion.div>
         )}

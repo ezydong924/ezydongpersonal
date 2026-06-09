@@ -179,6 +179,9 @@ export default function ScrollExpandMedia({
     if (!videoRef.current) return;
     videoRef.current.muted = !isMuted;
     setIsMuted(!isMuted);
+    if (!isMuted) {
+      videoRef.current.play().catch(() => {});
+    }
   };
 
   const handleTimeUpdate = () => {
