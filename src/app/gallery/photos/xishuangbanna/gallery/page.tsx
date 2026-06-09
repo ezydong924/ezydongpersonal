@@ -8,16 +8,16 @@ import { musicStore } from "@/lib/music-store";
 import { MasonryGrid } from "@/components/masonry-grid";
 
 const photos = [
+  "IMG20260130181112.jpg",
   "IMG_20260127_182934.jpg",
-  "IMG20260127191803.jpg",
-  "IMG20260127194945.jpg",
-  "IMG20260127200856.jpg",
   "IMG20260128141217.jpg",
   "IMG20260128141505.jpg",
+  "IMG20260127194945.jpg",
   "IMG20260128144709.jpg",
   "IMG20260129171048.jpg",
+  "IMG20260127191803.jpg",
+  "IMG20260127200856.jpg",
   "IMG20260129182308.jpg",
-  "IMG20260130181112.jpg",
 ];
 
 export default function XishuangbannaGallery() {
