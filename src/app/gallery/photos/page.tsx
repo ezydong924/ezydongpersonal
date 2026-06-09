@@ -31,6 +31,7 @@ const cities = [
   { name: "重庆", en: "Chongqing", lat: 29.56, lng: 106.55, slug: "chongqing" },
   { name: "丽江", en: "Lijiang", lat: 26.86, lng: 100.23, slug: "lijiang" },
   { name: "西双版纳", en: "Xishuangbanna", lat: 22.01, lng: 100.80, slug: "xishuangbanna" },
+  { name: "西安", en: "Xi'an", lat: 34.34, lng: 108.94, slug: "xian" },
   { name: "迪庆州", en: "Diqing", lat: 27.82, lng: 99.70, slug: "diqing" },
 ];
 
