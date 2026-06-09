@@ -114,16 +114,16 @@ const InteractiveImageBentoGallery: React.FC<
   return (
     <section
       ref={targetRef}
-      className="relative w-full overflow-hidden bg-background py-16 sm:py-24"
+      className="relative w-full overflow-hidden py-16 sm:py-24"
     >
       <motion.div
         style={{ opacity, y }}
         className="container mx-auto px-4 text-center"
       >
-        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="text-3xl font-bold tracking-tight text-white/80 sm:text-4xl">
           {title}
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-white/40">
           {description}
         </p>
       </motion.div>
@@ -150,7 +150,7 @@ const InteractiveImageBentoGallery: React.FC<
                 key={item.id}
                 variants={itemVariants}
                 className={cn(
-                  "group relative flex h-full min-h-[15rem] w-full min-w-[15rem] cursor-pointer items-end overflow-hidden rounded-xl border bg-card p-4 shadow-sm transition-shadow duration-300 ease-in-out hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  "group relative flex h-full min-h-[15rem] w-full min-w-[15rem] cursor-pointer items-end overflow-hidden rounded-xl bg-white/[0.04] border border-white/[0.06] p-4 transition-shadow duration-300 ease-in-out hover:shadow-lg",
                   item.span,
                 )}
                 whileHover={{ scale: 1.02 }}
