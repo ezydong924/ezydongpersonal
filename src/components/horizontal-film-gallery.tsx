@@ -24,13 +24,25 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const pendingWrap = useRef<number>(0); // 0=none, -1=waiting left wrap, 1=waiting right wrap
+
   const navigate = useCallback(
     (dir: number) => {
       setActive((prev) => {
-        const next = prev + dir;
-        if (next < 0) return photos.length - 1;
-        if (next >= photos.length) return 0;
-        return next;
+        const atStart = prev === 0 && dir < 0;
+        const atEnd = prev === photos.length - 1 && dir > 0;
+
+        if (atStart || atEnd) {
+          if (pendingWrap.current === dir) {
+            pendingWrap.current = 0;
+            return atStart ? photos.length - 1 : 0;
+          }
+          pendingWrap.current = dir;
+          return prev;
+        }
+
+        pendingWrap.current = 0;
+        return prev + dir;
       });
     },
     [photos.length]
@@ -50,8 +62,8 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLightbox(null);
-      if (e.key === "ArrowLeft") navigate(-1);
-      if (e.key === "ArrowRight") navigate(1);
+      if (e.key === "ArrowLeft") { e.preventDefault(); navigate(-1); }
+      if (e.key === "ArrowRight") { e.preventDefault(); navigate(1); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
