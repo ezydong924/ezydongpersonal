@@ -57,9 +57,11 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
     return () => window.removeEventListener("keydown", onKey);
   }, [navigate]);
 
-  const ITEM_W = 240;
-  const GAP = 12;
-  const STEP = ITEM_W + GAP;
+  const GAP = 8;
+  const SMALL_W = 60;
+  const MID_W = 120;
+  const BIG_W = 400;
+  const BIG_H = 420;
 
   return (
     <div className="relative w-full h-screen bg-[#0a0a0c] overflow-hidden select-none" ref={containerRef}>
@@ -67,24 +69,31 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
         <p className="text-white/30 text-xs tracking-[0.3em]">滚轮切换 · 点击放大 · 方向键浏览</p>
       </div>
 
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 flex items-center overflow-hidden">
         <motion.div
-          className="flex items-center gap-3"
-          animate={{ x: -(active * STEP) + vw / 2 - ITEM_W / 2 }}
-          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          className="flex items-center gap-2 h-[420px]"
+          animate={{
+            x: vw / 2 - BIG_W / 2 - active * (SMALL_W + GAP) - (active > 0 ? MID_W - SMALL_W : 0),
+          }}
+          transition={{ type: "spring", stiffness: 100, damping: 18 }}
         >
           {photos.map((photo, i) => {
-            const isActive = i === active;
+            const dist = Math.min(Math.abs(i - active), photos.length - Math.abs(i - active));
+            const isActive = dist === 0;
+            const isNear = dist <= 1;
+
             return (
               <motion.div
                 key={photo.file}
                 onClick={() => setLightbox(i)}
                 className="relative shrink-0 cursor-pointer rounded-xl overflow-hidden border-2"
                 animate={{
-                  width: ITEM_W,
-                  height: isActive ? 400 : 300,
-                  borderColor: isActive ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.06)",
-                  scale: isActive ? 1.05 : 1,
+                  width: isActive ? BIG_W : isNear ? MID_W : SMALL_W,
+                  height: isActive ? BIG_H : isNear ? 320 : 240,
+                  borderColor: isActive ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.04)",
+                  boxShadow: isActive
+                    ? "0 24px 80px rgba(0,0,0,0.6)"
+                    : "0 4px 16px rgba(0,0,0,0.2)",
                 }}
                 transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
               >
@@ -95,7 +104,7 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
                   draggable={false}
                 />
                 {isActive && (
-                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 to-transparent" />
                 )}
               </motion.div>
             );
