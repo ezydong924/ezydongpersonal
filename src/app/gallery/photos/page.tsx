@@ -42,12 +42,23 @@ export default function PhotosMapPage() {
   const [hintVisible, setHintVisible] = useState(true);
   const [active, setActive] = useState<string | null>(null);
   const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Debounced hover to avoid flickering between close markers
+  const handleMarkerOver = (slug: string) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setActive(slug), 150);
+  };
+  const handleMarkerOut = (slug: string) => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    setActive((prev) => (prev === slug ? null : prev));
+  };
 
   // Auto-dismiss bottom info after 3s
   useEffect(() => {
     if (dismissTimer.current) clearTimeout(dismissTimer.current);
     if (active) {
-      dismissTimer.current = setTimeout(() => setActive(null), 2000);
+      dismissTimer.current = setTimeout(() => setActive(null), 3000);
     }
     return () => { if (dismissTimer.current) clearTimeout(dismissTimer.current); };
   }, [active]);
@@ -102,8 +113,8 @@ export default function PhotosMapPage() {
         marker.on("click", () => {
           window.location.href = "/gallery/photos/" + city.slug;
         });
-        marker.on("mouseover", () => setActive(city.slug));
-        marker.on("mouseout", () => setActive(null));
+        marker.on("mouseover", () => handleMarkerOver(city.slug));
+        marker.on("mouseout", () => handleMarkerOut(city.slug));
       });
 
       map.on("mousedown touchstart dragstart zoomstart", () => setHintVisible(false));
