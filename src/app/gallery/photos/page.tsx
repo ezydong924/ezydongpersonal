@@ -59,7 +59,7 @@ export default function PhotosMapPage() {
       if (!L) return;
 
       const map = L.map(mapRef.current, {
-        center: [35, 105],
+        center: [33, 105],
         zoom: 4.5,
         zoomControl: false,
         attributionControl: false,
