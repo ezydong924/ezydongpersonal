@@ -15,7 +15,7 @@ export default function GalleryPage() {
       <UnicornStudioBg />
       <div className="fixed inset-0 bg-black/10 pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
-        <div className="absolute top-8 left-8">
+        <div className="absolute top-8 left-8 z-50">
           <BackButton href="/explore" label="返回" />
         </div>
         <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-10 px-8 md:px-16 lg:px-24">
