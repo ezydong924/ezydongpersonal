@@ -1,32 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Play, Pause } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Pause, X } from "lucide-react";
 import BackButton from "@/components/back-button";
 import { musicStore } from "@/lib/music-store";
-import InteractiveImageBentoGallery from "@/components/interactive-bento-gallery";
+import { MasonryGrid } from "@/components/masonry-grid";
 
-const imageItems = [
-  { id: 1,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG_20260127_182934.jpg", span: "" },
-  { id: 2,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260127191803.jpg", span: "" },
-  { id: 3,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260127194945.jpg", span: "" },
-  { id: 4,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260127200856.jpg", span: "" },
-  { id: 5,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260128141217.jpg", span: "" },
-  { id: 6,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260128141505.jpg", span: "" },
-  { id: 7,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260128144709.jpg", span: "" },
-  { id: 8,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260129171048.jpg", span: "" },
-  { id: 9,  title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260129182308.jpg", span: "" },
-  { id: 10, title: "", desc: "", url: "/xishuangbanna/lightbox/IMG20260130181112.jpg", span: "" },
+const photos = [
+  "IMG_20260127_182934.jpg",
+  "IMG20260127191803.jpg",
+  "IMG20260127194945.jpg",
+  "IMG20260127200856.jpg",
+  "IMG20260128141217.jpg",
+  "IMG20260128141505.jpg",
+  "IMG20260128144709.jpg",
+  "IMG20260129171048.jpg",
+  "IMG20260129182308.jpg",
+  "IMG20260130181112.jpg",
 ];
 
 export default function XishuangbannaGallery() {
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [active, setActive] = useState<number | null>(null);
 
   useEffect(() => {
     setMusicPlaying(musicStore.isPlaying);
     musicStore.acquire();
     const unsub = musicStore.subscribe(() => setMusicPlaying(musicStore.isPlaying));
     return () => { unsub(); musicStore.release(); };
+  }, []);
+
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { if (e.key === "Escape") setActive(null); };
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
   }, []);
 
   return (
@@ -40,11 +48,59 @@ export default function XishuangbannaGallery() {
       >
         {musicPlaying ? <Pause size={16} /> : <Play size={16} />}
       </button>
-      <InteractiveImageBentoGallery
-        imageItems={imageItems}
-        title="西双版纳"
-        description="影笺"
-      />
+
+      <div className="pt-24 pb-16 px-4 md:px-8">
+        <MasonryGrid columns={3} gap={4}>
+          {photos.map((photo, i) => (
+            <motion.div
+              key={photo}
+              className="cursor-pointer overflow-hidden rounded-lg"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setActive(i)}
+            >
+              <img
+                src={`/xishuangbanna/lightbox/${photo}`}
+                alt=""
+                className="w-full h-auto block"
+                loading="lazy"
+              />
+            </motion.div>
+          ))}
+        </MasonryGrid>
+      </div>
+
+      <AnimatePresence>
+        {active !== null && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActive(null)}
+          >
+            <button
+              className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10"
+              onClick={() => setActive(null)}
+            >
+              <X size={20} />
+            </button>
+            <motion.img
+              src={`/xishuangbanna/lightbox/${photos[active]}`}
+              alt=""
+              className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <div className="absolute bottom-8 text-white/45 text-sm tracking-widest">
+              {active + 1} / {photos.length} · 点击或 ESC 退出
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
