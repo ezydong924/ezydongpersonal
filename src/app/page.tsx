@@ -47,7 +47,7 @@ export default function HomePage() {
           </motion.div>
         </main>
         <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
-          <p className="text-white text-base tracking-[0.15em]">by EZYDong</p>
+          <p className="text-white text-xl font-semibold tracking-[-0.02em]">by EZYDong</p>
         </div>
       </div>
     </>
