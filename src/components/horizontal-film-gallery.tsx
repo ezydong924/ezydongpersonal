@@ -14,17 +14,7 @@ interface HorizontalFilmGalleryProps {
 export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFilmGalleryProps) {
   const [active, setActive] = useState<number>(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const [loaded, setLoaded] = useState<number[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    photos.forEach((_, i) => {
-      timers.push(setTimeout(() => setLoaded((prev) => [...prev, i]), i * 120));
-    });
-    return () => timers.forEach(clearTimeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const navigate = useCallback(
     (dir: number) => {
@@ -61,17 +51,14 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
 
   return (
     <div className="relative w-full h-screen bg-[#0a0a0c] overflow-hidden select-none" ref={containerRef}>
-      {/* Hint */}
       <div className="absolute top-32 left-0 right-0 text-center pointer-events-none z-10">
         <p className="text-white/30 text-xs tracking-[0.3em]">滚轮切换 · 点击放大 · 方向键浏览</p>
       </div>
 
-      {/* Film strip */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="flex items-center gap-3 px-6 h-[420px] w-full max-w-[960px]">
           {photos.map((photo, i) => {
             const isActive = i === active;
-            const visible = loaded.includes(i);
             const distance = Math.abs(i - active);
             const wrapDistance = Math.min(distance, photos.length - distance);
 
@@ -79,56 +66,37 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
               <motion.div
                 key={photo.file}
                 onClick={() => setLightbox(i)}
-                className="relative overflow-hidden rounded-xl cursor-pointer shrink-0 border-2 transition-colors duration-700"
+                className="relative overflow-hidden rounded-xl cursor-pointer shrink-0 border-2"
                 style={{
-                  borderColor: isActive ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.08)",
+                  height: "100%",
+                  borderColor: isActive ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.06)",
                   boxShadow: isActive
                     ? "0 20px 60px rgba(0,0,0,0.55)"
-                    : "0 8px 24px rgba(0,0,0,0.3)",
+                    : "0 4px 16px rgba(0,0,0,0.2)",
                   background: "#18181b",
-                  opacity: visible ? 1 : 0,
                 }}
                 animate={{
-                  width: isActive ? "55%" : wrapDistance <= 2 ? "12%" : "6%",
-                  minWidth: isActive ? 320 : wrapDistance <= 2 ? 100 : 50,
+                  width: isActive ? "50%" : wrapDistance <= 2 ? "10%" : "4%",
+                  minWidth: isActive ? 300 : wrapDistance <= 2 ? 80 : 30,
                 }}
-                transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <img
                   src={`${basePath}/${photo.file}`}
-                  alt={photo.title}
+                  alt=""
                   className="absolute inset-0 w-full h-full object-cover"
                   draggable={false}
                 />
-                <div
-                  className="absolute inset-x-0 bottom-0 pointer-events-none transition-opacity duration-700"
-                  style={{
-                    height: "120px",
-                    background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
-                    opacity: isActive ? 1 : 0,
-                  }}
-                />
-                <div
-                  className="absolute left-4 bottom-4 transition-all duration-700"
-                  style={{
-                    opacity: isActive ? 1 : 0,
-                    transform: isActive ? "translateY(0)" : "translateY(10px)",
-                  }}
-                >
-                  <p className="text-white/90 text-sm font-medium">{photo.title}</p>
-                </div>
               </motion.div>
             );
           })}
         </div>
       </div>
 
-      {/* Counter */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/25 text-xs tracking-[0.2em] pointer-events-none">
         {active + 1} / {photos.length}
       </div>
 
-      {/* Lightbox */}
       <AnimatePresence>
         {lightbox !== null && (
           <motion.div
