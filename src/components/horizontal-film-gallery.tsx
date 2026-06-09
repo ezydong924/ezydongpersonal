@@ -16,6 +16,9 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [vw, setVw] = useState(1200);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dragStart = useRef<number>(0);
+  const dragging = useRef(false);
+  const moved = useRef(false);
 
   useEffect(() => {
     setVw(window.innerWidth);
@@ -67,6 +70,40 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [navigate]);
+
+  useEffect(() => {
+    const onDown = (e: MouseEvent | TouchEvent) => {
+      dragging.current = true;
+      moved.current = false;
+      const p = "touches" in e ? e.touches[0] : e;
+      dragStart.current = p.clientX;
+    };
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!dragging.current) return;
+      const p = "touches" in e ? e.touches[0] : e;
+      if (Math.abs(p.clientX - dragStart.current) > 30) moved.current = true;
+    };
+    const onUp = (e: MouseEvent | TouchEvent) => {
+      if (!dragging.current || !moved.current) { dragging.current = false; return; }
+      dragging.current = false;
+      const p = "changedTouches" in e ? e.changedTouches[0] : e;
+      navigate(p.clientX < dragStart.current ? 1 : -1);
+    };
+    window.addEventListener("mousedown", onDown);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchstart", onDown, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchstart", onDown);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
+    };
   }, [navigate]);
 
   const GAP = 8;
