@@ -46,6 +46,9 @@ export default function HomePage() {
             </Link>
           </motion.div>
         </main>
+        <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
+          <p className="text-white/20 text-xs tracking-[0.15em]">by EZYDong</p>
+        </div>
       </div>
     </>
   );
