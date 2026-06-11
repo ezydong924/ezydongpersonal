@@ -44,7 +44,7 @@ const MountainVistaParallax = ({ title = "", subtitle = "" }: { title?: string; 
           width: 100%;
           height: 100vh;
           overflow: hidden;
-          background: linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460);
+          background: #0d1b2a;
           z-index: 0;
         }
         .parallax-layer {

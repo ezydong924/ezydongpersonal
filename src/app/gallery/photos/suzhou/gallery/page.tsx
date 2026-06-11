@@ -54,7 +54,7 @@ export default function SuzhouGallery() {
   }, []);
 
   return (
-    <div className="relative min-h-screen" style={{ background: "linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460)" }}>
+    <div className="relative min-h-screen">
       <MountainParallaxBg />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/suzhou" label="返回" />
