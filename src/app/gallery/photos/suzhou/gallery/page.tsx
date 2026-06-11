@@ -56,7 +56,7 @@ export default function SuzhouGallery() {
     <div className="relative min-h-screen">
       <div
         className="absolute inset-0 z-0"
-        style={{ backgroundImage: "radial-gradient(circle 500px at 50% 200px, #3e3e3e, transparent)" }}
+        style={{ backgroundImage: "radial-gradient(circle 500px at 50% 200px, #278066, transparent)" }}
       />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/suzhou" label="返回" />
