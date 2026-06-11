@@ -4,11 +4,11 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
+import "leaflet/dist/leaflet.css";
 
 let L: any = null;
 if (typeof window !== "undefined") {
   L = require("leaflet");
-  require("leaflet/dist/leaflet.css");
 }
 
 const cities = [
