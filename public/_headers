@@ -1,0 +1,6 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://s3-us-west-2.amazonaws.com https://t0.tianditu.gov.cn https://t1.tianditu.gov.cn https://t2.tianditu.gov.cn https://t3.tianditu.gov.cn https://t4.tianditu.gov.cn https://t5.tianditu.gov.cn https://t6.tianditu.gov.cn https://t7.tianditu.gov.cn; img-src 'self' data: https://t0.tianditu.gov.cn https://t1.tianditu.gov.cn https://t2.tianditu.gov.cn https://t3.tianditu.gov.cn https://t4.tianditu.gov.cn https://t5.tianditu.gov.cn https://t6.tianditu.gov.cn https://t7.tianditu.gov.cn; media-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'
