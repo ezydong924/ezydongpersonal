@@ -95,7 +95,7 @@ export default function VerticalImageStack({
   const lightboxPhoto = lightbox !== null && lightboxPhotos ? lightboxPhotos[lightbox] : null;
 
   return (
-    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#0a0a0c]">
+    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-transparent">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.02] blur-3xl" />
       </div>
@@ -136,7 +136,7 @@ export default function VerticalImageStack({
                   className="w-full h-full object-cover"
                   draggable={false}
                 />
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0a0a0c]/60 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
             </motion.div>
           );

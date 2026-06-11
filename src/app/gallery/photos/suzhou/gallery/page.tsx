@@ -5,6 +5,7 @@ import { Play, Pause } from "lucide-react";
 import BackButton from "@/components/back-button";
 import { musicStore } from "@/lib/music-store";
 import VerticalImageStack from "@/components/vertical-image-stack";
+import MountainParallaxBg from "@/components/mountain-parallax-bg";
 
 const photos = [
   "IMG20250403204755.jpg",
@@ -53,7 +54,8 @@ export default function SuzhouGallery() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0c]">
+    <div className="relative min-h-screen" style={{ background: "linear-gradient(to bottom, #1a1a2e, #16213e, #0f3460)" }}>
+      <MountainParallaxBg />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/suzhou" label="返回" />
       </div>
