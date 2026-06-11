@@ -1,37 +1,70 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
-
-const categories = [
-  { name: "晨光", icon: "🌅", slug: "dawn", desc: "拙政园的晨雾" },
-  { name: "午后", icon: "☀️", slug: "noon", desc: "平江路的慢时光" },
-  { name: "蓝调", icon: "🌆", slug: "blue", desc: "金鸡湖蓝调" },
-  { name: "夜景", icon: "🌃", slug: "night", desc: "山塘街灯笼" },
-];
+import AudioPlayer from "@/components/ui/audio-player";
 
 export default function Page() {
+  const [muted, setMuted] = useState(false);
+
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(160, 50%, 30%)", "hsl(40, 40%, 45%)", "hsl(140, 40%, 35%)"]} />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos" label="返回" />
       </div>
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16">
-        <h1 className="text-4xl font-light tracking-wide text-white/80">苏州</h1>
-        <p className="text-white/30 text-sm mt-2 mb-16">园林 · 咫尺乾坤</p>
-        <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
-          {categories.map((cat, i) => (
-            <motion.div key={cat.slug} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-              <Link href={"/gallery/photos/suzhou/" + cat.slug} className="block p-6 rounded-2xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 text-center">
-                <span className="text-3xl">{cat.icon}</span>
-                <h3 className="text-white/70 text-sm font-medium mt-3">{cat.name}</h3>
-                <p className="text-white/25 text-xs mt-1">{cat.desc}</p>
-              </Link>
-            </motion.div>
-          ))}
+      <button
+        onClick={() => setMuted(!muted)}
+        className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
+      >
+        {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+      </button>
+      <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
+        <div className="w-full max-w-2xl">
+          <motion.h1
+            className="text-4xl font-light tracking-wide text-white/80 mb-12"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            苏州
+          </motion.h1>
+          <motion.div
+            className="space-y-6 text-white/55 text-lg leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <p>文案待写。</p>
+          </motion.div>
+          <motion.div
+            className="mt-14"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <AudioPlayer playlist={[]} muted={muted} onMutedChange={setMuted} />
+          </motion.div>
+          <motion.div
+            className="mt-12"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <Link
+              href="/gallery/photos/suzhou/gallery"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300"
+            >
+              翻开影笺
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </div>

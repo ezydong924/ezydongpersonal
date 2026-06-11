@@ -2,13 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import ShaderBackground from "@/components/shader-background";
+import MountainParallaxBg from "@/components/mountain-parallax-bg";
 import AnimatedText from "@/components/animated-text";
 
 export default function HomePage() {
   return (
     <>
-      <ShaderBackground />
+      <MountainParallaxBg />
       <div className="fixed inset-0 bg-black/[0.07] pointer-events-none z-0" />
       <div className="relative z-10 min-h-screen">
         <main className="absolute bottom-12 left-6 right-6 max-w-3xl overflow-visible">
