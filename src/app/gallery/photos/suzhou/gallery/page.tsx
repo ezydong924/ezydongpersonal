@@ -5,6 +5,7 @@ import { Play, Pause } from "lucide-react";
 import BackButton from "@/components/back-button";
 import { musicStore } from "@/lib/music-store";
 import VerticalImageStack from "@/components/vertical-image-stack";
+import { ShaderAnimation } from "@/components/shader-animation-bg";
 
 const photos = [
   "IMG20250403204755.jpg",
@@ -54,10 +55,7 @@ export default function SuzhouGallery() {
 
   return (
     <div className="relative min-h-screen">
-      <div
-        className="absolute inset-0 z-0"
-        style={{ backgroundImage: "radial-gradient(circle 500px at 50% 200px, #278066, transparent)" }}
-      />
+      <ShaderAnimation />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/suzhou" label="返回" />
       </div>
