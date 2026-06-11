@@ -5,17 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
 
-function loadLeafletAssets(): Promise<void> {
-  return new Promise((resolve) => {
-    if ((window as any).L) return resolve();
-    const css = document.createElement("link");
-    css.rel = "stylesheet"; css.href = "/leaflet.css";
-    document.head.appendChild(css);
-    const js = document.createElement("script");
-    js.src = "/leaflet.js";
-    js.onload = () => resolve();
-    document.head.appendChild(js);
-  });
+let L: any = null;
+if (typeof window !== "undefined") {
+  L = require("leaflet");
+  require("leaflet/dist/leaflet.css");
 }
 
 const cities = [
@@ -67,8 +60,6 @@ export default function PhotosMapPage() {
     let cancelled = false;
     const loadLeaflet = () => {
       if (cancelled || !mapRef.current) return;
-      const L = (window as any).L;
-      if (!L) return;
 
       const map = L.map(mapRef.current, {
         center: [33, 105],
@@ -132,9 +123,7 @@ export default function PhotosMapPage() {
       setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 500);
     };
 
-    loadLeafletAssets().then(() => {
-      if (!cancelled) loadLeaflet();
-    });
+    loadLeaflet();
     return () => { cancelled = true; };
   }, []);
 

@@ -8,8 +8,9 @@ let _tracks: Track[] = [];
 let _index = 0;
 let _isPlaying = false;
 let _isMuted = false;
-let _active = false;
+let _refs = 0; // Reference counter — multiple components can hold a reference
 let _releaseTimer: ReturnType<typeof setTimeout> | null = null;
+let _fadeRaf: number | null = null; // Track fade animation frame for cancellation
 let _audioCtx: AudioContext | null = null;
 const listeners = new Set<Listener>();
 
@@ -103,12 +104,14 @@ export const musicStore = {
         _isPlaying = true;
         notify();
         const s = performance.now();
+        if (_fadeRaf) cancelAnimationFrame(_fadeRaf);
         const fi = () => {
-          if (!audio) return;
+          if (!audio || !_isPlaying) { _fadeRaf = null; return; }
           audio.volume = Math.min((performance.now() - s) / 3000, 1);
-          if (audio.volume < 1) requestAnimationFrame(fi);
+          if (audio.volume < 1) _fadeRaf = requestAnimationFrame(fi);
+          else _fadeRaf = null;
         };
-        requestAnimationFrame(fi);
+        _fadeRaf = requestAnimationFrame(fi);
       }).catch(() => {});
     };
 
@@ -118,7 +121,12 @@ export const musicStore = {
     // 2. WeChat iOS/iPad: retry via WeixinJSBridge (with fresh element)
     const wxPlay = () => {
       if (_isPlaying || !_tracks[0]) return;
-      if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+      if (audio) {
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+        audio.remove(); // Clean up DOM element to prevent listener leaks
+      }
       const a = document.createElement('audio');
       a.src = _tracks[0].src;
       a.setAttribute('playsinline', '');
@@ -148,7 +156,7 @@ export const musicStore = {
       });
       if (_isPlaying || !_tracks[0]) return;
       const src = _tracks[0].src;
-      if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+      if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); audio.remove(); }
       const a = document.createElement('audio');
       a.src = src;
       a.setAttribute('playsinline', '');
@@ -170,12 +178,14 @@ export const musicStore = {
         _isPlaying = true;
         notify();
         const s = performance.now();
+        if (_fadeRaf) cancelAnimationFrame(_fadeRaf);
         const fi = () => {
-          if (!audio) return;
+          if (!audio || !_isPlaying) { _fadeRaf = null; return; }
           audio.volume = Math.min((performance.now() - s) / 3000, 1);
-          if (audio.volume < 1) requestAnimationFrame(fi);
+          if (audio.volume < 1) _fadeRaf = requestAnimationFrame(fi);
+          else _fadeRaf = null;
         };
-        requestAnimationFrame(fi);
+        _fadeRaf = requestAnimationFrame(fi);
       }).catch(() => {});
     };
     ['touchstart','touchend','click','mousedown'].forEach((ev) => {
@@ -227,17 +237,19 @@ export const musicStore = {
   },
 
   acquire() {
+    _refs++;
     if (_releaseTimer) { clearTimeout(_releaseTimer); _releaseTimer = null; }
-    _active = true;
   },
 
   release() {
-    _active = false;
+    _refs = Math.max(0, _refs - 1);
+    if (_refs > 0) return; // Still held by other components
     if (_releaseTimer) clearTimeout(_releaseTimer);
     _releaseTimer = setTimeout(() => {
-      if (!_active && audio && !audio.paused) {
+      if (_refs === 0 && audio && !audio.paused) {
         audio.pause();
         _isPlaying = false;
+        if (_fadeRaf) { cancelAnimationFrame(_fadeRaf); _fadeRaf = null; }
         notify();
       }
     }, 1000);
@@ -245,15 +257,27 @@ export const musicStore = {
 
   destroy() {
     if (_releaseTimer) clearTimeout(_releaseTimer);
+    if (_fadeRaf) { cancelAnimationFrame(_fadeRaf); _fadeRaf = null; }
     if (audio) { audio.pause(); audio.src = ""; }
     if (_audioCtx) { _audioCtx.close().catch(() => {}); _audioCtx = null; }
     _isPlaying = false;
-    _active = false;
+    _refs = 0;
     notify();
   },
 
   subscribe(fn: Listener) {
     listeners.add(fn);
     return () => { listeners.delete(fn); };
+  },
+
+  /** Snapshot for useSyncExternalStore — concurrent-safe state read */
+  getSnapshot() {
+    return {
+      isPlaying: _isPlaying,
+      isMuted: _isMuted,
+      currentTrack: _tracks[_index] ?? _tracks[0],
+      tracks: _tracks,
+      index: _index,
+    };
   },
 };
