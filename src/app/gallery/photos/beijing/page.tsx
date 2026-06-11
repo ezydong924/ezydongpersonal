@@ -7,6 +7,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 import AudioPlayer from "@/components/ui/audio-player";
+import { MEDIA_BASE } from "@/lib/media";
 
 export default function Page() {
   const [muted, setMuted] = useState(false);
@@ -59,8 +60,8 @@ export default function Page() {
           >
             <AudioPlayer
               playlist={[
-                { src: "/music/beijing/赵雷 - 鼓楼.mp3", cover: "/music/beijing/PlayerAlbumCover_-10307425451780037044033.jpg", title: "赵雷 - 鼓楼" },
-                { src: "/music/beijing/赵雷 - 南方姑娘 (电影《米花之味》广告宣传曲).mp3", cover: "/music/beijing/PlayerAlbumCover_-9833554241780037081968.jpg", title: "赵雷 - 南方姑娘" },
+                { src: `${MEDIA_BASE}/beijing/赵雷 - 鼓楼.mp3`, cover: `${MEDIA_BASE}/beijing/PlayerAlbumCover_-10307425451780037044033.jpg`, title: "赵雷 - 鼓楼" },
+                { src: `${MEDIA_BASE}/beijing/赵雷 - 南方姑娘 (电影《米花之味》广告宣传曲).mp3`, cover: `${MEDIA_BASE}/beijing/PlayerAlbumCover_-9833554241780037081968.jpg`, title: "赵雷 - 南方姑娘" },
               ]}
               muted={muted}
               onMutedChange={setMuted}

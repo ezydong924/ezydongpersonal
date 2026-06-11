@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
+import { MEDIA_BASE } from "@/lib/media";
 import BackButton from "@/components/back-button";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 
@@ -18,7 +19,7 @@ export default function ChengduPage() {
 
       <ScrollExpandMedia
         mediaType="video"
-        mediaSrc="/shuxiu-compressed.mp4"
+        mediaSrc={`${MEDIA_BASE}/shuxiu-compressed.mp4`}
         posterSrc="/chengdu-cover.jpg"
         bgImageSrc="/chengdu-bg.jpg"
         title="成都"

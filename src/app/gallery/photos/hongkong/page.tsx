@@ -7,6 +7,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 import AudioPlayer from "@/components/ui/audio-player";
+import { MEDIA_BASE } from "@/lib/media";
 
 export default function Page() {
   const [muted, setMuted] = useState(false);
@@ -80,8 +81,8 @@ export default function Page() {
           >
             <AudioPlayer
               playlist={[
-                { src: "/music/hongkong/song.mp3", cover: "/music/hongkong/cover.jpg", title: "Gareth.T - 早到的u" },
-                { src: "/music/hongkong/陈奕迅 - 粤语残片.mp3", cover: "/music/hongkong/PlayerAlbumCover_-17281211551780031877266.jpg", title: "陈奕迅 - 粤语残片" },
+                { src: `${MEDIA_BASE}/hongkong/song.mp3`, cover: `${MEDIA_BASE}/hongkong/cover.jpg`, title: "Gareth.T - 早到的u" },
+                { src: `${MEDIA_BASE}/hongkong/陈奕迅 - 粤语残片.mp3`, cover: `${MEDIA_BASE}/hongkong/PlayerAlbumCover_-17281211551780031877266.jpg`, title: "陈奕迅 - 粤语残片" },
               ]}
               muted={muted}
               onMutedChange={setMuted}

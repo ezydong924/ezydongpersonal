@@ -7,6 +7,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 import AudioPlayer from "@/components/ui/audio-player";
+import { MEDIA_BASE } from "@/lib/media";
 import { musicStore } from "@/lib/music-store";
 
 export default function Page() {
@@ -44,7 +45,7 @@ export default function Page() {
             <p>离开成都之后偶尔会想起那场雨。它轻柔，下起来不急不慢。还有都江堰的水，青城山的苔，武侯祠的竹影。这座城里最吵的东西来来去去，只有那些不说话的留下来了，这是我眼中的蜀地。</p>
           </motion.div>
           <motion.div className="mt-14" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-            <AudioPlayer playlist={[{ src: "/music/chengdu/莫文蔚 - 阴天.mp3", cover: "/music/chengdu/cover2.jpg", title: "莫文蔚 - 阴天" }, { src: "/music/chengdu/窦唯、朝简 - 下雨了.mp3", cover: "/music/chengdu/cover1.jpg", title: "窦唯、朝简 - 下雨了" }]} muted={muted} onMutedChange={setMuted} />
+            <AudioPlayer playlist={[{ src: `${MEDIA_BASE}/chengdu/莫文蔚 - 阴天.mp3`, cover: `${MEDIA_BASE}/chengdu/cover1.jpg`, title: "莫文蔚 - 阴天" }, { src: `${MEDIA_BASE}/chengdu/窦唯、朝简 - 下雨了.mp3`, cover: `${MEDIA_BASE}/chengdu/cover2.jpg`, title: "窦唯、朝简 - 下雨了" }]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div className="mt-12" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
             <Link href="/gallery/photos/chengdu/gallery" className={lc}>翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>

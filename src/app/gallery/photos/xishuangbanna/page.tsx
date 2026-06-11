@@ -7,6 +7,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 import AudioPlayer from "@/components/ui/audio-player";
+import { MEDIA_BASE } from "@/lib/media";
 import { musicStore } from "@/lib/music-store";
 
 export default function Page() {
@@ -48,7 +49,7 @@ export default function Page() {
             <p>版纳没有在一开始就惊艳我。它有点普通，有点商业，也有点陈旧。可后来几天里，它又不声不响地把风、光、潮湿的空气，还有那种可以慢下来的感觉，一点点还给了我。</p>
           </motion.div>
           <motion.div className="mt-14" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-            <AudioPlayer playlist={[{ src: "/music/xishuangbanna/歌顿花园-Gordon Flanders P1 歌顿花园-Gordon Flanders.mp3", cover: "/music/xishuangbanna/微信图片_20260608214646_295_20.jpg", title: "Gordon Flanders - 歌顿花园" }, { src: "/music/xishuangbanna/【日推歌单】黑裙子乐队《Love is all》 P1 【日推歌单】黑裙子乐队《Love is all》.mp3", cover: "/music/xishuangbanna/微信图片_20260608213632_294_20.jpg", title: "黑裙子乐队 - Love is all" }]} muted={muted} onMutedChange={setMuted} />
+            <AudioPlayer playlist={[{ src: `${MEDIA_BASE}/xishuangbanna/歌顿花园-Gordon Flanders P1 歌顿花园-Gordon Flanders.mp3`, cover: `${MEDIA_BASE}/xishuangbanna/微信图片_20260608214646_295_20.jpg`, title: "Gordon Flanders - 歌顿花园" }, { src: `${MEDIA_BASE}/xishuangbanna/【日推歌单】黑裙子乐队《Love is all》 P1 【日推歌单】黑裙子乐队《Love is all》.mp3`, cover: `${MEDIA_BASE}/xishuangbanna/微信图片_20260608213632_294_20.jpg`, title: "黑裙子乐队 - Love is all" }]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div className="mt-12" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
             <Link href="/gallery/photos/xishuangbanna/gallery" className={lc}>翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>
