@@ -1,7 +1,10 @@
-/** Base URL for media files.
- *  Currently served locally from /public/. After R2 migration:
- *  - Replace with "https://<your-r2-bucket>.r2.dev"
- *  - Upload all files in public/music/ and public/*.mp4 to the bucket
- *  - Delete local media files from git
+/** Base URL for music files (served locally from /public/music/).
+ *  Music stays in Git for now — copyright review pending.
  */
-export const MEDIA_BASE = ""; // "" = local /public/ — change to R2 URL after bucket creation
+export const MEDIA_BASE = "";
+
+/** Base URL for video files hosted on Cloudflare R2.
+ *  After R2 bucket creation, replace with "https://pub-xxx.r2.dev".
+ *  Videos have no copyright concerns — user's own footage.
+ */
+export const VIDEO_BASE = "https://pub-2aaa93b9527343de85c1d5f47125a768.r2.dev";

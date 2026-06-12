@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
-import { MEDIA_BASE } from "@/lib/media";
+import { VIDEO_BASE } from "@/lib/media";
 import BackButton from "@/components/back-button";
 import { AnimatedContainer } from "@/components/ui/animated-container";
 
@@ -19,7 +19,7 @@ export default function DalianPage() {
 
       <ScrollExpandMedia
         mediaType="video"
-        mediaSrc={`${MEDIA_BASE}/dalian-video.mp4`}
+        mediaSrc={`${VIDEO_BASE}/dalian-video.mp4`}
         posterSrc="/dalian.jpg"
         bgImageSrc="/dalian-bg.jpg"
         title="大连"
