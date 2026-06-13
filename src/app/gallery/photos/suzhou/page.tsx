@@ -7,6 +7,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 import AudioPlayer from "@/components/ui/audio-player";
+import { MEDIA_BASE } from "@/lib/media";
 
 export default function Page() {
   const [muted, setMuted] = useState(false);
@@ -54,7 +55,7 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <AudioPlayer playlist={[]} muted={muted} onMutedChange={setMuted} />
+            <AudioPlayer playlist={[{ src: `${MEDIA_BASE}/suzhou/5_6172414796638461853.flac`, cover: `${MEDIA_BASE}/suzhou/PlayerAlbumCover_-13820554581781357243438.jpg`, title: "" }]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div
             className="mt-12"
