@@ -1,38 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
-import AudioPlayer from "@/components/ui/audio-player";
-import { MEDIA_BASE } from "@/lib/media";
-import { musicStore } from "@/lib/music-store";
 
 export default function Page() {
-  const [muted, setMuted] = useState(false);
-
-  useEffect(() => {
-    const unsub = musicStore.subscribe(() => setMuted(musicStore.isMuted));
-    return unsub;
-  }, []);
-
-  const bc = "fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300";
-  const lc = "inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300";
-
-  const toggle = () => {
-    const audio = musicStore.audioEl;
-    if (!audio) return;
-    if (audio.paused) { musicStore.resume(); }
-    else { musicStore.toggleMute(); }
-  };
-
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(18, 60%, 30%)", "hsl(30, 50%, 28%)", "hsl(10, 40%, 22%)"]} />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
-      <button onClick={toggle} className={bc}>{muted ? <VolumeX size={18} /> : <Volume2 size={18} />}</button>
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">
           <motion.h1 className="text-4xl font-light tracking-wide text-white/80 mb-12" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>成都</motion.h1>
@@ -43,9 +20,6 @@ export default function Page() {
             <p>锦江的夜船从合江亭滑出去。两岸的灯光碎在水面上，碎了又聚，碎了又聚。过安顺廊桥的时候，桥洞的金边倒影落进水里——一座在上，一座在下，分不清哪座更安静。河风是凉的，带着熟悉的潮湿却令人安心。岸边的酒吧在放民谣，虽然全国各地都是一个样子的民谣酒吧，丽江，大理，重庆，香格里拉，苏州......为什么有古镇的地方总有一模一样的酒吧，但是在成都放成都我也找不到什么奇怪的点。远远的，调子很熟，歌词一直回荡在锦江周围。水不管上面在唱什么，只管往前流。</p>
             <p>武侯祠的红墙夹道，竹影落在墙上像墨洒了。出师表刻在碑上，临表涕零不知所言——太沉了，读了两行没再往下读。惠陵埋着刘备，外面却放着三国杀的卡牌。坟头比想象中小得多，长了草，安安静静的。君臣合祀，生前死后都在一起。红墙外面就是锦里，人声隐隐传过来——不到两百米，隔了一千八百年。</p>
             <p>离开成都之后偶尔会想起那场雨。它轻柔，下起来不急不慢。还有都江堰的水，青城山的苔，武侯祠的竹影。这座城里最吵的东西来来去去，只有那些不说话的留下来了，这是我眼中的蜀地。</p>
-          </motion.div>
-          <motion.div className="mt-14" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-            <AudioPlayer playlist={[{ src: `${MEDIA_BASE}/chengdu/莫文蔚 - 阴天.mp3`, cover: `${MEDIA_BASE}/chengdu/cover1.jpg`, title: "莫文蔚 - 阴天" }, { src: `${MEDIA_BASE}/chengdu/窦唯、朝简 - 下雨了.mp3`, cover: `${MEDIA_BASE}/chengdu/cover2.jpg`, title: "窦唯、朝简 - 下雨了" }]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div className="mt-12" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
             <Link href="/gallery/photos/chengdu/gallery" className={lc}>翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>

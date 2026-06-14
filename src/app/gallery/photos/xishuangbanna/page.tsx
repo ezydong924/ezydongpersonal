@@ -1,38 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
-import AudioPlayer from "@/components/ui/audio-player";
-import { MEDIA_BASE } from "@/lib/media";
-import { musicStore } from "@/lib/music-store";
 
 export default function Page() {
-  const [muted, setMuted] = useState(false);
-
-  useEffect(() => {
-    const unsub = musicStore.subscribe(() => setMuted(musicStore.isMuted));
-    return unsub;
-  }, []);
-
-  const bc = "fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300";
-  const lc = "inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300";
-
-  const toggle = () => {
-    const audio = musicStore.audioEl;
-    if (!audio) return;
-    if (audio.paused) { musicStore.resume(); }
-    else { musicStore.toggleMute(); }
-  };
-
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(160, 50%, 25%)", "hsl(140, 45%, 20%)", "hsl(120, 35%, 15%)"]} />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
-      <button onClick={toggle} className={bc}>{muted ? <VolumeX size={18} /> : <Volume2 size={18} />}</button>
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">
           <motion.h1 className="text-4xl font-light tracking-wide text-white/80 mb-12" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>西双版纳</motion.h1>
@@ -47,9 +24,6 @@ export default function Page() {
             <p>版纳的味道也很让人记得住。撒撇米线的苦味一开始有点出乎意料。它不是中药那种涩苦，而是一种青草一样的苦，被酸和辣包着，从舌根慢慢返上来。吃到后面，竟然在闷热里吃出一点清凉。星光夜市旁边那家711也让我印象很深。刚从人潮里挤出来，推开玻璃门，冷气一下子罩下来。货架上有很多平时少见的零食，泰式奶茶也意外好喝。那种感觉很奇怪，前一秒还在夜市里闻着小米辣和烧烤烟，下一秒就站在冷气很足的便利店里喝泰式奶茶。版纳就是这样。它有江风、植物、夜市和潮湿的空气，也有便利店、电动车、和很普通的晚上。它不是一个纯粹的远方，它也有很日常的部分。</p>
             <p>离开那天下午，我又骑车经过了一次桥。那天的光和第一天不一样。第一天的光是软的，带着粉橘和赤金；走的时候，光让江面被照得有点晃眼。我把车停在桥旁，扶着栏杆往下看了很久。水流的速度好像没变，还是不急不慢地往南走。过了边境线，这条江就不叫澜沧江了，会换成另一个名字。可水还是桥下这趟水。名字会变，流向不会变。我忽然觉得，旅行大概也是这样。最后留下来的，往往不是那些构图最好的照片。可能只是某天傍晚，江面上的风灌进领口；可能是夜市灯光下，摊主带着烟火气的笑；可能是植物园里，落在脚边的一块阳光；也可能是临走前站在桥上，看着一条即将改名的河，继续往南流。</p>
             <p>版纳没有在一开始就惊艳我。它有点普通，有点商业，也有点陈旧。可后来几天里，它又不声不响地把风、光、潮湿的空气，还有那种可以慢下来的感觉，一点点还给了我。</p>
-          </motion.div>
-          <motion.div className="mt-14" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-            <AudioPlayer playlist={[{ src: `${MEDIA_BASE}/xishuangbanna/歌顿花园-Gordon Flanders P1 歌顿花园-Gordon Flanders.mp3`, cover: `${MEDIA_BASE}/xishuangbanna/微信图片_20260608214646_295_20.jpg`, title: "Gordon Flanders - 歌顿花园" }, { src: `${MEDIA_BASE}/xishuangbanna/【日推歌单】黑裙子乐队《Love is all》 P1 【日推歌单】黑裙子乐队《Love is all》.mp3`, cover: `${MEDIA_BASE}/xishuangbanna/微信图片_20260608213632_294_20.jpg`, title: "黑裙子乐队 - Love is all" }]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div className="mt-12" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
             <Link href="/gallery/photos/xishuangbanna/gallery" className={lc}>翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>

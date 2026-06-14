@@ -1,31 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
-import AudioPlayer from "@/components/ui/audio-player";
-import { MEDIA_BASE } from "@/lib/media";
 
 export default function Page() {
-  const [muted, setMuted] = useState(false);
-
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(5, 75%, 30%)", "hsl(40, 70%, 35%)", "hsl(0, 60%, 25%)"]} />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos" label="返回" />
       </div>
-
-      <button
-        onClick={() => setMuted(!muted)}
-        className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
-      >
-        {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-      </button>
-
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">
           <motion.h1
@@ -36,7 +22,6 @@ export default function Page() {
           >
             北京
           </motion.h1>
-
           <motion.div
             className="space-y-6 text-white/55 text-lg leading-relaxed"
             initial={{ opacity: 0 }}
@@ -50,22 +35,6 @@ export default function Page() {
             <p>天坛的国槐让我看见了一草一木的生机。几十棵百年老树搭成天然的遮阳廊道，树干粗壮，枝不往高处长，横着伸出去，像把时间的方向掰歪了。树下的人总在变换，但天坛一直在那里。国槐和一般的树不一样——它不急。一根枝朝一个方向伸出去可能要十年，十年在它眼里不算什么。它见过明朝的落日、清朝的雪、民国换旗那天的风。什么都没说过，但什么都记得。北京最老的居民，可能不是住在胡同里的人，也不是某一座宫殿，而是这些站着不动的树。它们什么都不说，但你站在下面，就会觉得有些东西确实被它们记住了。</p>
             <p>当然，北京也不是每一口都如此厚重。豆汁真的很难喝。不过也正因为有豆汁，北京才没那么像一座只供人仰望的城市。它有故宫、天坛、红墙、老树，也有这种让人喝一口就皱眉头的东西。</p>
             <p>赵雷那首《鼓楼》听了太多遍，最后只是在出租车上远远看了一眼鼓楼。有些地方好像就是要欠一次。不那么圆满，才有理由再来。北京懂这一点。它等了几百上千年，也不差再多等一次。离开的时候，我没有觉得自己来过北京，这个城市太大。它有它的厚重，也有很普通的日子；有红墙金瓦，也有广厦摩天。你走，它还是北京。</p>
-          </motion.div>
-
-          <motion.div
-            className="mt-14"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <AudioPlayer
-              playlist={[
-                { src: `${MEDIA_BASE}/beijing/赵雷 - 鼓楼.mp3`, cover: `${MEDIA_BASE}/beijing/PlayerAlbumCover_-10307425451780037044033.jpg`, title: "赵雷 - 鼓楼" },
-                { src: `${MEDIA_BASE}/beijing/赵雷 - 南方姑娘 (电影《米花之味》广告宣传曲).mp3`, cover: `${MEDIA_BASE}/beijing/PlayerAlbumCover_-9833554241780037081968.jpg`, title: "赵雷 - 南方姑娘" },
-              ]}
-              muted={muted}
-              onMutedChange={setMuted}
-            />
           </motion.div>
 
           <motion.div
