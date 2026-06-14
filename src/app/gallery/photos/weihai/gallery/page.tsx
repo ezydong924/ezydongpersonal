@@ -35,7 +35,7 @@ export default function WeihaiGallery() {
       photos={photos}
       cityName="威海"
       backHref="/gallery/photos/weihai"
-      thumbBase="/weihai/thumbs"
+      thumbBase="/weihai/lightbox"
       lightboxBase="/weihai/lightbox"
       layoutSeed={20241014}
     />
