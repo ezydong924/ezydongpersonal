@@ -5,34 +5,20 @@ import Link from "next/link";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 
-const categories = [
-  { name: "晨光", icon: "🌅", slug: "dawn", desc: "滇池的第一缕光" },
-  { name: "午后", icon: "☀️", slug: "noon", desc: "翠湖的梧桐影" },
-  { name: "蓝调", icon: "🌆", slug: "blue", desc: "金马碧鸡的暮色" },
-  { name: "夜景", icon: "🌃", slug: "night", desc: "文林街的微醺" },
-];
-
 export default function Page() {
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(330, 60%, 45%)", "hsl(150, 50%, 35%)", "hsl(45, 70%, 50%)"]} />
-      <div className="fixed top-8 left-8 z-50">
-        <BackButton href="/gallery/photos" label="返回" />
-      </div>
+      <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16">
         <h1 className="text-4xl font-light tracking-wide text-white/80">昆明</h1>
-        <p className="text-white/30 text-sm mt-2 mb-16">春城 · 四季花开</p>
-        <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
-          {categories.map((cat, i) => (
-            <motion.div key={cat.slug} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-              <Link href={"/gallery/photos/kunming/" + cat.slug} className="block p-6 rounded-2xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 text-center">
-                <span className="text-3xl">{cat.icon}</span>
-                <h3 className="text-white/70 text-sm font-medium mt-3">{cat.name}</h3>
-                <p className="text-white/25 text-xs mt-1">{cat.desc}</p>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+        <p className="text-white/30 text-sm mt-2 mb-16">春城 · 花开四季</p>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <Link href="/gallery/photos/kunming/gallery" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300">
+            翻开影笺
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </Link>
+        </motion.div>
       </div>
     </div>
   );
