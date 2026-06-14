@@ -22,7 +22,7 @@ export default function Page() {
             <p>离开成都之后偶尔会想起那场雨。它轻柔，下起来不急不慢。还有都江堰的水，青城山的苔，武侯祠的竹影。这座城里最吵的东西来来去去，只有那些不说话的留下来了，这是我眼中的蜀地。</p>
           </motion.div>
           <motion.div className="mt-12" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
-            <Link href="/gallery/photos/chengdu/gallery" className={lc}>翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>
+            <Link href="/gallery/photos/chengdu/gallery" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300">翻开影笺<svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg></Link>
           </motion.div>
         </div>
       </div>
