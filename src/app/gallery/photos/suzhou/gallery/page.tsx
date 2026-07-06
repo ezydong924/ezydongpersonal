@@ -5,16 +5,11 @@ import VerticalImageStack from "@/components/vertical-image-stack";
 import { ShaderAnimation } from "@/components/shader-animation-bg";
 
 const photos = [
-  "IMG20250403204755.jpg",
   "IMG20250404093514.jpg",
-  "IMG20250404164455.jpg",
   "IMG20250404194917.jpg",
   "IMG20250404210021.jpg",
-  "IMG20250404214623.jpg",
   "IMG20250405102500.jpg",
   "IMG20250405115858.jpg",
-  "IMG20250405183216.jpg",
-  "IMG_20250404_093300.jpg",
   "IMG_20250404_182545.jpg",
   "IMG_20250405_192956.jpg",
   "IMG_20250405_193104.jpg",
@@ -31,7 +26,6 @@ const photos = [
   "retouch_2025040418182106.jpg",
   "retouch_2025040418252278.jpg",
   "retouch_2025040512220051.jpg",
-  "retouch_2025040519220866.jpg",
 ];
 
 const images = photos.map((p, i) => ({

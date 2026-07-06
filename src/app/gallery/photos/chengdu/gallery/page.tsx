@@ -7,13 +7,17 @@ import { X } from "lucide-react";
 import InfiniteGallery from "@/components/infinite-gallery";
 
 const PHOTOS = [
-  "IMG20250214092206.jpg", "DSC_2444(2).jpg", "IMG_20250212_194849.jpg",
-  "DSC_2482.jpg", "IMG20250212195618.jpg", "DSC_2381(1).jpg",
-  "IMG20250213191750.jpg", "DSC_2453.jpg", "IMG_20250211_153016.jpg",
-  "DSC_2490-已增强-降噪.jpg", "IMG20250212161755.jpg", "DSC_2413(1).jpg",
-  "IMG20250212085251.jpg", "DSC_2510-已增强-降噪.jpg", "DSC_2442-已增强-降噪.jpg",
-  "DSC_2520-已增强-降噪.jpg", "DSC_2536.jpg", "DSC_3150-已增强-降噪.jpg",
-  "DSC_3160.JPG", "DSC_3153-已增强-降噪.jpg",
+  "IMG20250214092206.jpg",
+  "IMG_20250212_194849.jpg",
+  "DSC_2482.jpg",
+  "IMG20250212195618.jpg",
+  "IMG20250213191750.jpg",
+  "IMG_20250211_153016.jpg",
+  "IMG20250212161755.jpg",
+  "DSC_2510-已增强-降噪.jpg",
+  "DSC_2442-已增强-降噪.jpg",
+  "DSC_2536.jpg",
+  "DSC_3150-已增强-降噪.jpg",
 ];
 
 const THUMB_BASE = "/chengdu/thumbs";

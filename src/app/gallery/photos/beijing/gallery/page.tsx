@@ -7,13 +7,22 @@ import BackButton from "@/components/back-button";
 import { X } from "lucide-react";
 
 const PHOTOS = [
-  "IMG_20260503_141244.jpg", "IMG_20260503_141934.jpg", "IMG_20260503_142002.jpg",
-  "IMG_20260504_220605.jpg", "IMG_20260505_143706.jpg",
-  "IMG_2925.jpg", "IMG_2935.jpg", "IMG_3162.jpg", "IMG_3174.jpg", "IMG_3186.jpg",
-  "retouch_2025103013054637.jpg", "retouch_2026050314153105.jpg",
-  "retouch_2026050421575970.jpg", "retouch_2026050422090729.jpg",
-  "retouch_2026050422233621.jpg", "retouch_2026050422350449.jpg",
-  "retouch_2026050422401591.jpg", "retouch_2026050422472990.jpg",
+  "IMG_20260503_141244.jpg",
+  "IMG_20260503_141934.jpg",
+  "IMG_20260503_142002.jpg",
+  "IMG_20260504_220605.jpg",
+  "IMG_20260505_143706.jpg",
+  "IMG_2925.jpg",
+  "IMG_2935.jpg",
+  "IMG_3174.jpg",
+  "retouch_2025103013054637.jpg",
+  "retouch_2026050314153105.jpg",
+  "retouch_2026050421575970.jpg",
+  "retouch_2026050422090729.jpg",
+  "retouch_2026050422233621.jpg",
+  "retouch_2026050422350449.jpg",
+  "retouch_2026050422401591.jpg",
+  "retouch_2026050422472990.jpg",
 ];
 
 function shuffle(arr: string[]) {

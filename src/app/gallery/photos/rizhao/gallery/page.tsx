@@ -7,7 +7,6 @@ const photos = [
   { file: "000000290021.jpg", title: "" },
   { file: "IMG_20250501_193352.jpg", title: "" },
   { file: "IMG_20250503_180537.jpg", title: "" },
-  { file: "IMG_20250504_162003.jpg", title: "" },
   { file: "IMG_20250504_164155.jpg", title: "" },
   { file: "IMG_20250504_214254.jpg", title: "" },
   { file: "IMG_20250505_220003.jpg", title: "" },
