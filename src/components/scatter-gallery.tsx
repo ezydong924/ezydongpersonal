@@ -1,9 +1,8 @@
 "use client";
 
 import { useRef, useEffect, useState, useMemo, useCallback } from "react";
-import { Plus, Minus, Maximize2, Play, Pause } from "lucide-react";
+import { Plus, Minus, Maximize2 } from "lucide-react";
 import BackButton from "@/components/back-button";
-import { musicStore } from "@/lib/music-store";
 
 // ——— Layout constants ———————
 const SPREAD_A = 950;
@@ -53,8 +52,8 @@ function buildLayout(n: number, seedValue: number) {
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {
         const a = items[i], b = items[j];
-        let dx = b.x - a.x, dy = b.y - a.y;
-        let dist = Math.hypot(dx, dy) || 0.001;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
         const min = (a.r + b.r) * 0.9 + 30;
         if (dist < min) {
           const push = (min - dist) / 2;
@@ -112,14 +111,6 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
   const [ready, setReady] = useState(false);
   const [hint, setHint] = useState(true);
   const [active, setActive] = useState<number | null>(null);
-  const [musicPlaying, setMusicPlaying] = useState(false);
-
-  useEffect(() => {
-    setMusicPlaying(musicStore.isPlaying);
-    musicStore.acquire();
-    const unsub = musicStore.subscribe(() => setMusicPlaying(musicStore.isPlaying));
-    return () => { unsub(); musicStore.release(); };
-  }, []);
 
   const measure = useCallback(() => {
     const el = containerRef.current;
@@ -142,6 +133,8 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
   }, [dims, ready]);
 
   useEffect(() => {
+    // Initial layout measurement requires the container to be mounted first.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     measure();
     const el = containerRef.current;
     if (!el) return;
@@ -152,7 +145,7 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
 
   const zoomAt = useCallback((mx: number, my: number, factor: number) => {
     const s = scale.current;
-    let ns = clamp(s * factor, minScale.current, maxScale.current);
+    const ns = clamp(s * factor, minScale.current, maxScale.current);
     if (ns === s) return;
     focal.current = { wx: cam.current.x + mx / s, wy: cam.current.y + my / s, sx: mx, sy: my, active: true };
     scaleTarget.current = ns;
@@ -333,9 +326,6 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
         <div className="sg-zbtn" style={btnStyle} onClick={() => zoomBtn(1)}><Plus size={17} /></div>
         <div className="sg-zbtn" style={btnStyle} onClick={() => zoomBtn(-1)}><Minus size={17} /></div>
         <div className="sg-zbtn" style={btnStyle} onClick={resetView} title="全景"><Maximize2 size={15} /></div>
-        <div className="sg-zbtn" style={btnStyle} onClick={() => musicStore.togglePlay()} title={musicPlaying ? "暂停" : "播放"}>
-          {musicPlaying ? <Pause size={14} /> : <Play size={14} />}
-        </div>
       </div>
 
       <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)",

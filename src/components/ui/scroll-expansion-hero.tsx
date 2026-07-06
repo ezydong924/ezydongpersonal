@@ -34,8 +34,6 @@ export default function ScrollExpandMedia({
   bgImageSrc,
   title,
   date,
-  scrollToExpand,
-  textBlend,
   children,
 }: ScrollExpandMediaProps) {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
@@ -77,12 +75,6 @@ export default function ScrollExpandMedia({
       v.play().catch(() => {});
     }
   };
-
-  useEffect(() => {
-    setScrollProgress(0);
-    setShowContent(false);
-    setMediaFullyExpanded(false);
-  }, [mediaType]);
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {

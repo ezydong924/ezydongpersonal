@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Pause, X } from "lucide-react";
+import { X } from "lucide-react";
 import BackButton from "@/components/back-button";
-import { musicStore } from "@/lib/music-store";
 import { MasonryGrid } from "@/components/masonry-grid";
 
 const photos = [
@@ -21,18 +20,14 @@ const photos = [
 ];
 
 export default function XishuangbannaGallery() {
-  const [musicPlaying, setMusicPlaying] = useState(false);
   const [active, setActive] = useState<number | null>(null);
 
   useEffect(() => {
-    setMusicPlaying(musicStore.isPlaying);
-    musicStore.acquire();
-    const unsub = musicStore.subscribe(() => setMusicPlaying(musicStore.isPlaying));
-    return () => { unsub(); musicStore.release(); };
-  }, []);
-
-  useEffect(() => {
-    const k = (e: KeyboardEvent) => { if (e.key === "Escape") setActive(null); };
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActive(null);
+      else if (e.key === "ArrowRight") setActive((p) => (p === null ? p : (p + 1) % photos.length));
+      else if (e.key === "ArrowLeft") setActive((p) => (p === null ? p : (p - 1 + photos.length) % photos.length));
+    };
     window.addEventListener("keydown", k);
     return () => window.removeEventListener("keydown", k);
   }, []);
@@ -42,13 +37,6 @@ export default function XishuangbannaGallery() {
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xishuangbanna" label="返回" />
       </div>
-      <button
-        onClick={() => musicStore.togglePlay()}
-        className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
-      >
-        {musicPlaying ? <Pause size={16} /> : <Play size={16} />}
-      </button>
-
       <div className="pt-24 pb-16 px-4 md:px-8">
         <MasonryGrid columns={3} gap={4}>
           {photos.map((photo, i) => (
@@ -80,6 +68,7 @@ export default function XishuangbannaGallery() {
             onClick={() => setActive(null)}
           >
             <button
+              aria-label="关闭大图"
               className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10"
               onClick={() => setActive(null)}
             >

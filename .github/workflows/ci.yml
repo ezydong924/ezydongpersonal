@@ -23,9 +23,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Lint
-        run: npx next lint
+        run: npm run lint
 
       - name: Build (static export)
         run: npm run build
-        env:
-          STATIC_EXPORT: "1"

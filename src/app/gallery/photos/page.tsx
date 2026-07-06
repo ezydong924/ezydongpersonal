@@ -1,35 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import BackButton from "@/components/back-button";
+import { cities } from "@/lib/cities";
 import "leaflet/dist/leaflet.css";
 
-let L: any = null;
-if (typeof window !== "undefined") {
-  L = require("leaflet");
-}
-
-const cities = [
-  { name: "大连", en: "Dalian", lat: 38.92, lng: 121.63, slug: "dalian" },
-  { name: "成都", en: "Chengdu", lat: 30.57, lng: 104.07, slug: "chengdu" },
-  { name: "大理", en: "Dali", lat: 25.61, lng: 100.27, slug: "dali" },
-  { name: "昆明", en: "Kunming", lat: 25.04, lng: 102.68, slug: "kunming" },
-  { name: "香港", en: "Hong Kong", lat: 22.32, lng: 114.17, slug: "hongkong" },
-  { name: "威海", en: "Weihai", lat: 37.51, lng: 122.12, slug: "weihai" },
-  { name: "苏州", en: "Suzhou", lat: 31.30, lng: 120.63, slug: "suzhou" },
-  { name: "北京", en: "Beijing", lat: 39.90, lng: 116.41, slug: "beijing" },
-  { name: "日照", en: "Rizhao", lat: 35.42, lng: 119.53, slug: "rizhao" },
-  { name: "重庆", en: "Chongqing", lat: 29.56, lng: 106.55, slug: "chongqing" },
-  { name: "丽江", en: "Lijiang", lat: 26.86, lng: 100.23, slug: "lijiang" },
-  { name: "西双版纳", en: "Xishuangbanna", lat: 22.01, lng: 100.80, slug: "xishuangbanna" },
-  { name: "西安", en: "Xi'an", lat: 34.34, lng: 108.94, slug: "xian" },
-  { name: "迪庆州", en: "Diqing", lat: 27.82, lng: 99.70, slug: "diqing" },
-];
-
-
 export default function PhotosMapPage() {
+  const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
   const [hintVisible, setHintVisible] = useState(true);
@@ -58,7 +38,8 @@ export default function PhotosMapPage() {
 
   useEffect(() => {
     let cancelled = false;
-    const loadLeaflet = () => {
+    const loadLeaflet = async () => {
+      const { default: L } = await import("leaflet");
       if (cancelled || !mapRef.current) return;
 
       const map = L.map(mapRef.current, {
@@ -72,7 +53,8 @@ export default function PhotosMapPage() {
         doubleClickZoom: true,
       });
 
-      const key = "db316d7883d50adf407d700495555ab8";
+      // 天地图浏览器端 key（必然随页面暴露）。请务必在天地图控制台为该 key 绑定域名白名单。
+      const key = process.env.NEXT_PUBLIC_TIANDITU_KEY ?? "db316d7883d50adf407d700495555ab8";
       // Tianditu base + transparent labels
       L.tileLayer(
         "https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&FORMAT=tiles&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + key,
@@ -100,9 +82,13 @@ export default function PhotosMapPage() {
           iconSize: [28, 28],
           iconAnchor: [14, 14],
         });
-        const marker = L.marker([city.lat, city.lng], { icon }).addTo(map);
+        const marker = L.marker([city.lat, city.lng], {
+          icon,
+          alt: city.name,
+          keyboard: true,
+        }).addTo(map);
         marker.on("click", () => {
-          window.location.href = "/gallery/photos/" + city.slug;
+          router.push("/gallery/photos/" + city.slug);
         });
         marker.on("mouseover", () => handleMarkerOver(city.slug));
         marker.on("mouseout", () => handleMarkerOut(city.slug));
@@ -119,13 +105,13 @@ export default function PhotosMapPage() {
       document.head.appendChild(style);
 
       setLoaded(true);
-      setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 100);
-      setTimeout(() => { try { map.invalidateSize(); } catch (_) {} }, 500);
+      setTimeout(() => { try { map.invalidateSize(); } catch { /* ignore */ } }, 100);
+      setTimeout(() => { try { map.invalidateSize(); } catch { /* ignore */ } }, 500);
     };
 
     loadLeaflet();
     return () => { cancelled = true; };
-  }, []);
+  }, [router]);
 
   return (
     <div className="relative min-h-screen bg-black overflow-hidden">

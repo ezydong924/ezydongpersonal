@@ -1,28 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Volume2, VolumeX } from "lucide-react";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
-import AudioPlayer from "@/components/ui/audio-player";
 
 export default function Page() {
-  const [muted, setMuted] = useState(false);
-
   return (
     <div className="relative min-h-screen">
       <GradientBackground colors={["hsl(25, 90%, 55%)", "hsl(15, 60%, 40%)", "hsl(40, 80%, 50%)"]} />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos" label="返回" />
       </div>
-      <button
-        onClick={() => setMuted(!muted)}
-        className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
-      >
-        {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-      </button>
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">
           <motion.h1
@@ -44,14 +33,6 @@ export default function Page() {
             <p>一卷三十六张的胶片，一片海，一些光，一片草地，一棵伸到画面里的松树，远处几栋安静的房子。日照不只有海，它还有一种被风吹干净的绿，树和树之间留着空，光可以落下来撒到地上，人也可以从里面慢慢走过去。摩天轮挂在一大片蓝天里，它没有转出什么童话感，倒像一只巨大的表盘，慢慢把时间拨过去。轿厢一格一格停在天上，底下的人抬头看一眼，又继续往前走。</p>
             <p>到了晚上的烟火秀，演出里的水汽、灯光和人的影子混在一起，整片空间像被火烧过。戴斗笠的人站在红色里，动作被光拉成剪影，像从某个旧故事里走出来。烟花升起来的时候更像另一个日照。白天那些海、船、草地、蓝天都太安静了，到了夜里，它才把压着的声音一下子放出来。可烟花再亮却也只是一下。真正留在记忆里的反而还是那些空下来的部分。</p>
             <p>离开的时候，跑道外面的天已经黑了。远处有一点城市的灯，飞机停在夜色里，像一只暂时收起翅膀的鸟。白天看过的海、沙滩、松树和草地都退到后面，只剩下停机坪上一块冷白的光。你在那里待几天，不一定发生什么大事，也不一定非要留下多漂亮的照片。只是某个瞬间，蓝天太空，海面太宽，风从身边过去，人就突然安静了一点。</p>
-          </motion.div>
-          <motion.div
-            className="mt-14"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            <AudioPlayer playlist={[]} muted={muted} onMutedChange={setMuted} />
           </motion.div>
           <motion.div
             className="mt-12"

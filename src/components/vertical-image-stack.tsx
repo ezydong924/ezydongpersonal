@@ -201,6 +201,7 @@ export default function VerticalImageStack({
             onClick={() => setLightbox(null)}
           >
             <button
+              aria-label="关闭大图"
               className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10"
               onClick={() => setLightbox(null)}
             >

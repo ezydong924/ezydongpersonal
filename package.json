@@ -6,9 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "npm run build-deploy && npx wrangler pages deploy out --branch main",
-    "build-deploy": "set NEXT_EXPORT=1 && next build",
-    "lint": "eslint"
+    "deploy": "npm run build && npx wrangler pages deploy out --branch main",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.76",

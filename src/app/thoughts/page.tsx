@@ -4,23 +4,23 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/back-button";
 
+const messages = [
+  "别点了！",
+  "我说了别点了！！",
+  "你好执着啊...",
+  "好吧你赢了",
+  "其实我什么都没写",
+  "但这不代表我没有想法",
+  "只是...还没想好怎么说",
+  "也许最好的想法，就是空白本身。",
+];
+
 export default function ThoughtsPage() {
   const [escapes, setEscapes] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const messages = [
-    "别点了！",
-    "我说了别点了！！",
-    "你好执着啊...",
-    "好吧你赢了",
-    "其实我什么都没写",
-    "但这不代表我没有想法",
-    "只是...还没想好怎么说",
-    "也许最好的想法，就是空白本身。",
-  ];
 
   const flee = useCallback(() => {
     if (!containerRef.current || revealed) return;

@@ -4,8 +4,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useInView } from "framer-motion";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/back-button";
-import { X, Play, Pause } from "lucide-react";
-import { musicStore } from "@/lib/music-store";
+import { X } from "lucide-react";
 
 const PHOTOS = [
   "IMG_20260503_141244.jpg", "IMG_20260503_141934.jpg", "IMG_20260503_142002.jpg",
@@ -68,13 +67,17 @@ function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClic
 export default function BeijingGallery() {
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
   const [cols, setCols] = useState(3);
-  const [musicPlaying, setMusicPlaying] = useState(false);
 
   useEffect(() => {
-    setMusicPlaying(musicStore.isPlaying);
-    musicStore.acquire();
-    const unsub = musicStore.subscribe(() => setMusicPlaying(musicStore.isPlaying));
-    return () => { unsub(); musicStore.release(); };
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActivePhoto(null);
+      else if (e.key === "ArrowRight")
+        setActivePhoto((p) => (p === null ? p : PHOTOS[(PHOTOS.indexOf(p) + 1) % PHOTOS.length]));
+      else if (e.key === "ArrowLeft")
+        setActivePhoto((p) => (p === null ? p : PHOTOS[(PHOTOS.indexOf(p) - 1 + PHOTOS.length) % PHOTOS.length]));
+    };
+    window.addEventListener("keydown", k);
+    return () => window.removeEventListener("keydown", k);
   }, []);
 
   useEffect(() => {
@@ -96,13 +99,6 @@ export default function BeijingGallery() {
         <BackButton href="/gallery/photos/beijing" label="返回" />
       </div>
 
-      <button
-        onClick={() => musicStore.togglePlay()}
-        className="fixed top-8 right-8 z-50 w-10 h-10 rounded-xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/15 text-white/70 hover:bg-white/20 hover:text-white transition-all duration-300"
-      >
-        {musicPlaying ? <Pause size={16} /> : <Play size={16} />}
-      </button>
-
       <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-24">
         <div className="w-full max-w-6xl">
           <motion.h1
@@ -121,7 +117,7 @@ export default function BeijingGallery() {
                   <AnimatedImage
                     key={photo}
                     src={`/beijing/thumbs/${photo}`}
-                    alt={`Beijing ${colIdx}-${idx}`}
+                    alt={`北京影笺 第 ${shuffled.indexOf(photo) + 1} 张`}
                     onClick={() => setActivePhoto(photo)}
                   />
                 ))}
@@ -142,6 +138,7 @@ export default function BeijingGallery() {
             onClick={() => setActivePhoto(null)}
           >
             <button
+              aria-label="关闭大图"
               className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 text-white/70 hover:text-white hover:bg-white/20 transition-all z-10"
               onClick={() => setActivePhoto(null)}
             >

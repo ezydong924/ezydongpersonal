@@ -5,13 +5,6 @@ import Link from "next/link";
 import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 
-const categories = [
-  { name: "晨光", icon: "🌅", slug: "dawn", desc: "第一缕光穿过海雾" },
-  { name: "午后", icon: "☀️", slug: "noon", desc: "梧桐树影斑驳的街道" },
-  { name: "蓝调", icon: "🌆", slug: "blue", desc: "天际线沉入深蓝" },
-  { name: "夜景", icon: "🌃", slug: "night", desc: "渔人码头的灯火" },
-];
-
 export default function Page() {
   return (
     <div className="relative min-h-screen">
@@ -19,19 +12,50 @@ export default function Page() {
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos" label="返回" />
       </div>
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16">
-        <h1 className="text-4xl font-light tracking-wide text-white/80">大连</h1>
-        <p className="text-white/30 text-sm mt-2 mb-16">滨城 · 山海之间</p>
-        <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
-          {categories.map((cat, i) => (
-            <motion.div key={cat.slug} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-              <Link href={"/gallery/photos/dalian/" + cat.slug} className="block p-6 rounded-2xl bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] hover:border-white/15 transition-all duration-300 text-center">
-                <span className="text-3xl">{cat.icon}</span>
-                <h3 className="text-white/70 text-sm font-medium mt-3">{cat.name}</h3>
-                <p className="text-white/25 text-xs mt-1">{cat.desc}</p>
-              </Link>
-            </motion.div>
-          ))}
+      <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
+        <div className="w-full max-w-2xl">
+          <motion.h1
+            className="text-4xl font-light tracking-wide text-white/80 mb-3"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            大连
+          </motion.h1>
+          <motion.p
+            className="text-white/30 text-sm mb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            滨城 · 山海之间
+          </motion.p>
+          <motion.div
+            className="space-y-6 text-white/55 text-lg leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <p>海雾散去时，光从不迟到。这座城市把历史砌进斑驳的街墙，把浪漫藏进每一班老电车驶过梧桐的午后。潮汐往复，而滨城始终在那里，沉默地蔚蓝。</p>
+            <p>这座城市的影像，此刻更适合以流动的方式打开——静态的影笺还在整理中，先去溯影里看看它。</p>
+          </motion.div>
+
+          <motion.div
+            className="mt-12"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Link
+              href="/gallery/videos/dalian"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300"
+            >
+              观看溯影
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </div>

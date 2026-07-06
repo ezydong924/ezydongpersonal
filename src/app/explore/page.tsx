@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import ShaderBackground from "@/components/shader-background";
 import Narrative from "@/components/flow-art";
 import BackButton from "@/components/back-button";
+
+export const metadata: Metadata = {
+  title: "探索",
+  description: "摄影、随笔与关于——从这里开始探索影岑 Shadow 的三个入口。",
+};
 
 export default function ExplorePage() {
   return (

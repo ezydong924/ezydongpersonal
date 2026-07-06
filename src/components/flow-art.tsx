@@ -26,19 +26,19 @@ export default function Narrative() {
       </section>
 
       <div className="max-w-3xl mx-auto px-6 md:px-10">
-        <section className="bg-white/[0.18] border border-white/[0.25] rounded-[2rem] p-10 md:p-14 mb-8">
+        <section className="bg-white/[0.06] border border-white/[0.12] rounded-[2rem] p-10 md:p-14 mb-8">
           <p className="text-sm font-medium tracking-[0.15em] text-white/50 uppercase">01 / Lens</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-[-0.02em] leading-[1.08] mt-6">摄影作品</h2>
           <p className="mt-4 text-lg text-white/70 font-light leading-relaxed max-w-lg">光和时间的化石。——森山大道</p>
           <Link href="/gallery" className="inline-block mt-8 text-base text-white/70 hover:text-white font-medium transition-colors">进入画廊 &rarr;</Link>
         </section>
-        <section className="bg-white/[0.18] border border-white/[0.25] rounded-[2rem] p-10 md:p-14 mb-8">
+        <section className="bg-white/[0.06] border border-white/[0.12] rounded-[2rem] p-10 md:p-14 mb-8">
           <p className="text-sm font-medium tracking-[0.15em] text-white/50 uppercase">02 / Mind</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-[-0.02em] leading-[1.08] mt-6">我的思考</h2>
           <p className="mt-4 text-lg text-white/70 font-light leading-relaxed max-w-lg">有些东西拍不到。写下来不会丢。</p>
           <Link href="/thoughts" className="inline-block mt-8 text-base text-white/70 hover:text-white font-medium transition-colors">阅读文章 &rarr;</Link>
         </section>
-        <section className="bg-white/[0.18] border border-white/[0.25] rounded-[2rem] p-10 md:p-14">
+        <section className="bg-white/[0.06] border border-white/[0.12] rounded-[2rem] p-10 md:p-14">
           <p className="text-sm font-medium tracking-[0.15em] text-white/50 uppercase">03 / Identity</p>
           <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-[-0.02em] leading-[1.08] mt-6">关于我</h2>
           <p className="mt-4 text-lg text-white/70 font-light leading-relaxed max-w-lg">一直在走。走了几年，还没停。</p>
