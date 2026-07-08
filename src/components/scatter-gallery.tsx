@@ -303,7 +303,7 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
           >
             <img
               src={`${thumbBase}/${photos[it.i]}`}
-              alt=""
+              alt={`${cityName} photo ${it.i + 1}`}
               draggable={false}
               decoding="async"
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -343,7 +343,7 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
           <div onClick={(e) => e.stopPropagation()} style={{
             maxWidth: "82vw", maxHeight: "76vh", borderRadius: 6, overflow: "hidden",
             boxShadow: "0 40px 120px rgba(0,0,0,.7)", animation: "sgLbPop .35s cubic-bezier(.2,.8,.2,1)", cursor: "default" }}>
-            <img src={`${lightboxBase}/${activePhoto}`} alt=""
+            <img src={`${lightboxBase}/${activePhoto}`} alt={active !== null ? `${cityName} photo ${active + 1}` : cityName}
               decoding="async"
               style={{ display: "block", maxWidth: "82vw", maxHeight: "76vh", objectFit: "contain" }} />
           </div>

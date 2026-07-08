@@ -38,6 +38,8 @@ export default function PhotosMapPage() {
 
   useEffect(() => {
     let cancelled = false;
+    let leafletMap: { remove: () => void } | null = null;
+    let injectedStyle: HTMLStyleElement | null = null;
     const loadLeaflet = async () => {
       const { default: L } = await import("leaflet");
       if (cancelled || !mapRef.current) return;
@@ -52,6 +54,7 @@ export default function PhotosMapPage() {
         touchZoom: true,
         doubleClickZoom: true,
       });
+      leafletMap = map;
 
       // 天地图浏览器端 key（必然随页面暴露）。请务必在天地图控制台为该 key 绑定域名白名单。
       const key = process.env.NEXT_PUBLIC_TIANDITU_KEY ?? "db316d7883d50adf407d700495555ab8";
@@ -103,6 +106,7 @@ export default function PhotosMapPage() {
         @keyframes marker-pulse { 0% { transform: scale(0.5); opacity: 0.4; } 50% { opacity: 0.15; } 100% { transform: scale(2.8); opacity: 0; } }
       `;
       document.head.appendChild(style);
+      injectedStyle = style;
 
       setLoaded(true);
       setTimeout(() => { try { map.invalidateSize(); } catch { /* ignore */ } }, 100);
@@ -110,7 +114,11 @@ export default function PhotosMapPage() {
     };
 
     loadLeaflet();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      leafletMap?.remove();
+      injectedStyle?.remove();
+    };
   }, [router]);
 
   return (
