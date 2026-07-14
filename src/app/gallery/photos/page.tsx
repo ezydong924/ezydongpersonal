@@ -8,6 +8,38 @@ import BackButton from "@/components/back-button";
 import { cities } from "@/lib/cities";
 import "leaflet/dist/leaflet.css";
 
+const EARTH_RADIUS = 6378245;
+const ECCENTRICITY_SQUARED = 0.00669342162296594323;
+
+function isOutsideChina(lat: number, lng: number) {
+  return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271;
+}
+
+function wgs84ToGcj02(lat: number, lng: number): [number, number] {
+  if (isOutsideChina(lat, lng)) return [lat, lng];
+
+  const x = lng - 105;
+  const y = lat - 35;
+  let latitudeOffset = -100 + 2 * x + 3 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+  let longitudeOffset = 300 + x + 2 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+
+  latitudeOffset += (20 * Math.sin(6 * x * Math.PI) + 20 * Math.sin(2 * x * Math.PI)) * 2 / 3;
+  longitudeOffset += (20 * Math.sin(6 * x * Math.PI) + 20 * Math.sin(2 * x * Math.PI)) * 2 / 3;
+  latitudeOffset += (20 * Math.sin(y * Math.PI) + 40 * Math.sin(y / 3 * Math.PI)) * 2 / 3;
+  longitudeOffset += (20 * Math.sin(x * Math.PI) + 40 * Math.sin(x / 3 * Math.PI)) * 2 / 3;
+  latitudeOffset += (160 * Math.sin(y / 12 * Math.PI) + 320 * Math.sin(y * Math.PI / 30)) * 2 / 3;
+  longitudeOffset += (150 * Math.sin(x / 12 * Math.PI) + 300 * Math.sin(x / 30 * Math.PI)) * 2 / 3;
+
+  const radians = lat * Math.PI / 180;
+  const magic = 1 - ECCENTRICITY_SQUARED * Math.sin(radians) ** 2;
+  const sqrtMagic = Math.sqrt(magic);
+
+  latitudeOffset = latitudeOffset * 180 / ((EARTH_RADIUS * (1 - ECCENTRICITY_SQUARED)) / (magic * sqrtMagic) * Math.PI);
+  longitudeOffset = longitudeOffset * 180 / (EARTH_RADIUS / sqrtMagic * Math.cos(radians) * Math.PI);
+
+  return [lat + latitudeOffset, lng + longitudeOffset];
+}
+
 export default function PhotosMapPage() {
   const router = useRouter();
   const mapRef = useRef<HTMLDivElement>(null);
@@ -70,6 +102,8 @@ export default function PhotosMapPage() {
       map.setMaxBounds(L.latLngBounds([5, 60], [55, 150]));
 
       cities.forEach((city: (typeof cities)[0]) => {
+        // Gaode road tiles are rendered in GCJ-02, while the source city data is WGS-84.
+        const [markerLat, markerLng] = wgs84ToGcj02(city.lat, city.lng);
         const iconHtml =
           '<div style="position:relative;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center">' +
           '<div style="position:absolute;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);animation:marker-pulse 3s ease-out infinite"></div>' +
@@ -82,7 +116,7 @@ export default function PhotosMapPage() {
           iconSize: [28, 28],
           iconAnchor: [14, 14],
         });
-        const marker = L.marker([city.lat, city.lng], {
+        const marker = L.marker([markerLat, markerLng], {
           icon,
           alt: city.name,
           keyboard: true,
