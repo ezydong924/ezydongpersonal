@@ -48,7 +48,7 @@ export default function PhotosMapPage() {
         center: [33, 105],
         zoom: 4.5,
         zoomControl: false,
-        attributionControl: false,
+        attributionControl: true,
         scrollWheelZoom: true,
         dragging: true,
         touchZoom: true,
@@ -56,16 +56,13 @@ export default function PhotosMapPage() {
       });
       leafletMap = map;
 
-      // 天地图浏览器端 key（必然随页面暴露）。请务必在天地图控制台为该 key 绑定域名白名单。
-      const key = process.env.NEXT_PUBLIC_TIANDITU_KEY ?? "db316d7883d50adf407d700495555ab8";
-      // Tianditu base + transparent labels
+      // Use a no-key fallback while the configured TianDiTu key returns 403.
       L.tileLayer(
-        "https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&FORMAT=tiles&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + key,
-        { subdomains: ["0","1","2","3","4","5","6","7"] },
-      ).addTo(map);
-      L.tileLayer(
-        "https://t{s}.tianditu.gov.cn/cva_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&FORMAT=tiles&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=" + key,
-        { subdomains: ["0","1","2","3","4","5","6","7"] },
+        "https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+        {
+          subdomains: ["1", "2", "3", "4"],
+          attribution: '&copy; <a href="https://ditu.amap.com/" target="_blank" rel="noreferrer">高德地图</a>',
+        },
       ).addTo(map);
 
       map.setMinZoom(4.5);
