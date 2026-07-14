@@ -1,3 +1,7 @@
+param(
+    [switch]$Yes
+)
+
 Write-Host "Deploying to Cloudflare + GitHub..." -ForegroundColor Cyan
 
 try {
@@ -8,10 +12,14 @@ try {
 
     # 2. Commit and push to GitHub if there are changes.
     Write-Host "GitHub..." -ForegroundColor Cyan
-    git status --short
-    git add -A
-    $status = git status --porcelain
-    if ($status) {
+    $pending = git status --porcelain
+    if ($pending) {
+        git status --short
+        if (-not $Yes) {
+            $confirmation = Read-Host "Commit and deploy all listed changes? [y/N]"
+            if ($confirmation -notmatch "^[Yy]$") { throw "Deployment cancelled before staging changes" }
+        }
+        git add -A
         $stamp = Get-Date -Format "yyyy-MM-dd HH:mm"
         git commit -m "deploy: $stamp"
         if ($LASTEXITCODE -ne 0) { throw "Git commit failed" }

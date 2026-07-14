@@ -2,6 +2,7 @@
 
 import UnicornStudioBg from "@/components/ui/unicorn-studio-bg";
 import BackButton from "@/components/back-button";
+import { Reveal, TiltCard } from "@/components/motion";
 import Link from "next/link";
 
 const entries = [
@@ -19,9 +20,11 @@ export default function GalleryPage() {
           <BackButton href="/explore" label="返回" />
         </div>
         <div className="flex flex-col md:flex-row items-center justify-center min-h-screen gap-10 px-8 md:px-16 lg:px-24">
-          {entries.map((entry) => (
-            <Link key={entry.title} href={entry.href}
-              className="group relative flex-1 max-w-lg w-full overflow-hidden rounded-3xl border border-white/[0.06] hover:border-white/[0.15] transition-all duration-700"
+          {entries.map((entry, index) => (
+            <Reveal key={entry.title} className="flex-1 max-w-lg w-full" delay={index * 0.12}>
+              <TiltCard className="w-full" maxTilt={3}>
+                <Link href={entry.href}
+              className="group relative block w-full overflow-hidden rounded-3xl border border-white/[0.06] hover:border-white/[0.15] transition-all duration-700"
               style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%)" }}>
               <div className="absolute inset-0 bg-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="relative p-10 md:p-14 lg:p-16">
@@ -43,7 +46,9 @@ export default function GalleryPage() {
                   <span className="text-lg">→</span>
                 </div>
               </div>
-            </Link>
+                </Link>
+              </TiltCard>
+            </Reveal>
           ))}
         </div>
       </div>

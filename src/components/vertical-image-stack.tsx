@@ -48,12 +48,13 @@ export default function VerticalImageStack({
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
+      if (lightbox !== null) return;
       if (Math.abs(e.deltaY) > 30) {
         if (e.deltaY > 0) navigate(1);
         else navigate(-1);
       }
     },
-    [navigate]
+    [lightbox, navigate]
   );
 
   useEffect(() => {
@@ -64,12 +65,13 @@ export default function VerticalImageStack({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setLightbox(null);
+      if (lightbox !== null) return;
       if (e.key === "ArrowDown") navigate(1);
       if (e.key === "ArrowUp") navigate(-1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [lightbox, navigate]);
 
   const getCardStyle = (index: number) => {
     const total = images.length;
