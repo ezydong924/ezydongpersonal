@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -68,13 +67,11 @@ export default function AboutPage() {
           >
             {moments.map((moment, index) => (
               <figure key={moment.src} className={`group relative m-0 overflow-hidden bg-white/[0.04] ${moment.className}`}>
-                <Image
+                <img
                   src={moment.src}
                   alt={moment.alt}
-                  fill
-                  priority={index === 0}
-                  sizes={moment.sizes}
-                  className="object-cover opacity-85 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-transparent" />
               </figure>
