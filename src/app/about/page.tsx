@@ -1,15 +1,44 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpRight, Camera, MapPin } from "lucide-react";
 import BackButton from "@/components/back-button";
-import { CameraIcon, MapPinIcon, MailIcon } from "@/components/icons";
 
 const secrets = [
   "你找到了第一个秘密。",
-  "继续点，还有呢。",
+  "继续点，还有哦。",
   "差不多了...",
   "好吧，这是最后一个：\n这个网站是用爱和咖啡因搭建的。",
+];
+
+const moments = [
+  {
+    src: "/dalian.jpg",
+    alt: "大连的海岸",
+    className: "col-span-2 row-span-4",
+    sizes: "(min-width: 1024px) 38vw, 100vw",
+  },
+  {
+    src: "/dali-cover.jpg",
+    alt: "大理的湖面",
+    className: "col-span-1 row-span-2",
+    sizes: "(min-width: 1024px) 19vw, 50vw",
+  },
+  {
+    src: "/hongkong/lightbox/IMG20260111142441.jpg",
+    alt: "香港的海港",
+    className: "col-span-1 row-span-2",
+    sizes: "(min-width: 1024px) 19vw, 50vw",
+  },
+];
+
+const destinations = [
+  { index: "01", title: "影笺", subtitle: "PHOTOGRAPHY", href: "/gallery/photos" },
+  { index: "02", title: "地图", subtitle: "PLACES", href: "/gallery/photos" },
+  { index: "03", title: "随笔", subtitle: "THOUGHTS", href: "/thoughts" },
 ];
 
 export default function AboutPage() {
@@ -19,73 +48,111 @@ export default function AboutPage() {
   const handleCameraClick = () => {
     const next = clicks + 1;
     setClicks(next);
-    if (next >= 5 && !showSecret) setShowSecret(true);
+    if (next >= 5) setShowSecret(true);
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-16">
-      <BackButton href="/" label="首页" />
+    <main className="min-h-screen overflow-hidden bg-[#090b0e] text-white">
+      <div className="mx-auto max-w-[1440px] px-5 py-7 md:px-10 md:py-9 lg:px-14">
+        <header className="flex items-center justify-between border-b border-white/[0.09] pb-5">
+          <BackButton href="/" label="首页" />
+          <p className="text-[10px] font-medium tracking-[0.28em] text-white/35">ABOUT / EZYDONG</p>
+        </header>
 
-      <div className="mt-12">
-        <div
-          className="w-24 h-24 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center mb-8 cursor-pointer select-none relative"
-          onClick={handleCameraClick}
-        >
-          <CameraIcon className="w-10 h-10 text-white/30" />
-          <AnimatePresence>
-            {showSecret && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full"
-              />
-            )}
-          </AnimatePresence>
-        </div>
+        <section className="grid gap-12 py-12 lg:min-h-[calc(100vh-130px)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-20 lg:py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="grid h-[450px] grid-cols-2 grid-rows-6 gap-2 sm:h-[560px] lg:h-[640px]"
+          >
+            {moments.map((moment, index) => (
+              <figure key={moment.src} className={`group relative m-0 overflow-hidden bg-white/[0.04] ${moment.className}`}>
+                <Image
+                  src={moment.src}
+                  alt={moment.alt}
+                  fill
+                  priority={index === 0}
+                  sizes={moment.sizes}
+                  className="object-cover opacity-85 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
+                />
+                <div className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-transparent" />
+              </figure>
+            ))}
+          </motion.div>
 
-        <h1 className="text-4xl font-light tracking-wide text-white/90">
-          关于我
-        </h1>
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl lg:py-8"
+          >
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 bg-white/30" />
+              <p className="text-[10px] font-medium tracking-[0.3em] text-white/45">SHADOW MEMORY</p>
+            </div>
 
-        <div className="mt-10 space-y-6 text-white/60 leading-relaxed text-lg font-light">
-          <p>
-            我是一名摄影爱好者，热衷于用镜头捕捉生活中的光影瞬间。
-            这个网站是我的个人画廊，用来存放我的摄影作品和零散的想法。
-          </p>
-          <p>
-            我相信每一张照片背后都有一个故事，每一次按下快门都是一次与世界的对话。
-          </p>
-        </div>
+            <div className="mt-7 flex items-end justify-between gap-6">
+              <h1 className="font-serif text-6xl font-normal leading-none text-white/95 sm:text-7xl md:text-8xl">关于我</h1>
+              <button
+                type="button"
+                onClick={handleCameraClick}
+                aria-label="隐藏彩蛋"
+                title="隐藏彩蛋"
+                className="grid h-11 w-11 shrink-0 place-items-center border border-white/15 text-white/55 transition-colors hover:border-white/45 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                <Camera size={18} strokeWidth={1.4} />
+              </button>
+            </div>
 
-        <AnimatePresence>
-          {showSecret && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-8 overflow-hidden"
-            >
-              <div className="p-6 rounded-2xl bg-white/[0.04] border border-white/[0.06]">
-                <p className="text-white/40 text-sm leading-relaxed whitespace-pre-line">
+            <div className="mt-11 max-w-xl space-y-6 text-base font-light leading-8 text-white/64 md:text-lg md:leading-9">
+              <p>
+                我是一名摄影爱好者，热衷于用镜头捕捉生活中的光影瞬间。这个网站是我的个人画廊，用来存放我的摄影作品和零散的想法。
+              </p>
+              <p>
+                我相信每一张照片背后都有一个故事，每一次按下快门都是一次与世界的对话。
+              </p>
+            </div>
+
+            <AnimatePresence initial={false}>
+              {showSecret && (
+                <motion.p
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="mt-8 max-w-md border-l border-white/30 pl-4 text-sm leading-6 text-white/45 whitespace-pre-line"
+                >
                   {secrets[Math.min(clicks - 5, secrets.length - 1)]}
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                </motion.p>
+              )}
+            </AnimatePresence>
 
-        <div className="mt-16 space-y-4">
-          <div className="flex items-center gap-3 text-white/40">
-            <MapPinIcon />
-            <span className="text-sm">中国</span>
-          </div>
-          <div className="flex items-center gap-3 text-white/40">
-            <MailIcon />
-            <span className="text-sm">your-email@example.com</span>
-          </div>
-        </div>
+            <div className="mt-12 flex items-center gap-3 text-sm text-white/42">
+              <MapPin size={16} strokeWidth={1.4} />
+              <span>中国</span>
+              <span className="h-px w-8 bg-white/15" />
+              <span>摄影 / 随笔</span>
+            </div>
+          </motion.div>
+        </section>
+
+        <nav aria-label="关于我页面导航" className="border-t border-white/[0.09]">
+          {destinations.map((destination) => (
+            <Link
+              key={destination.title}
+              href={destination.href}
+              className="group grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-white/[0.09] py-5 transition-colors hover:bg-white/[0.035] sm:grid-cols-[4rem_1fr_auto] sm:py-6"
+            >
+              <span className="text-[10px] tracking-[0.16em] text-white/30">{destination.index}</span>
+              <span>
+                <span className="block text-xl font-light text-white/85 transition-transform duration-300 group-hover:translate-x-1 sm:text-2xl">{destination.title}</span>
+                <span className="mt-1 block text-[10px] tracking-[0.24em] text-white/35">{destination.subtitle}</span>
+              </span>
+              <ArrowUpRight size={19} strokeWidth={1.25} className="text-white/35 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white" />
+            </Link>
+          ))}
+        </nav>
       </div>
-    </div>
+    </main>
   );
 }
