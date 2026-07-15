@@ -7,6 +7,8 @@ export interface City {
   lat: number;
   lng: number;
   slug: string;
+  /** Small visual correction for a city anchor rendered by the map provider. */
+  markerOffset?: { x: number; y: number };
   /** Has a /gallery/photos/[slug]/gallery photo gallery page */
   hasGallery?: boolean;
   /** Has a /gallery/videos/[slug] video page */
@@ -17,7 +19,7 @@ export const cities: City[] = [
   { name: "大连", en: "Dalian", lat: 38.914, lng: 121.615, slug: "dalian", hasVideo: true },
   { name: "成都", en: "Chengdu", lat: 30.573, lng: 104.067, slug: "chengdu", hasGallery: true, hasVideo: true },
   { name: "大理", en: "Dali", lat: 25.606, lng: 100.268, slug: "dali", hasVideo: true },
-  { name: "昆明", en: "Kunming", lat: 25.041, lng: 102.712, slug: "kunming" },
+  { name: "昆明", en: "Kunming", lat: 25.041, lng: 102.712, slug: "kunming", markerOffset: { x: 4, y: 8 } },
   { name: "香港", en: "Hong Kong", lat: 22.319, lng: 114.169, slug: "hongkong", hasGallery: true },
   { name: "威海", en: "Weihai", lat: 37.513, lng: 122.121, slug: "weihai", hasGallery: true },
   { name: "苏州", en: "Suzhou", lat: 31.299, lng: 120.585, slug: "suzhou", hasGallery: true },

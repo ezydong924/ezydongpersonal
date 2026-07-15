@@ -104,6 +104,7 @@ export default function PhotosMapPage() {
       cities.forEach((city: (typeof cities)[0]) => {
         // Gaode road tiles are rendered in GCJ-02, while the source city data is WGS-84.
         const [markerLat, markerLng] = wgs84ToGcj02(city.lat, city.lng);
+        const markerOffset = city.markerOffset ?? { x: 0, y: 0 };
         const iconHtml =
           '<div style="position:relative;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center">' +
           '<div style="position:absolute;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);animation:marker-pulse 3s ease-out infinite"></div>' +
@@ -114,7 +115,7 @@ export default function PhotosMapPage() {
           className: "",
           html: iconHtml,
           iconSize: [28, 28],
-          iconAnchor: [14, 14],
+          iconAnchor: [14 - markerOffset.x, 14 - markerOffset.y],
         });
         const marker = L.marker([markerLat, markerLng], {
           icon,
