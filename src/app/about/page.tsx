@@ -13,27 +13,6 @@ const secrets = [
   "好吧，这是最后一个：\n这个网站是用爱和咖啡因搭建的。",
 ];
 
-const moments = [
-  {
-    src: "/dalian.jpg",
-    alt: "大连的海岸",
-    className: "col-span-2 row-span-4",
-    sizes: "(min-width: 1024px) 38vw, 100vw",
-  },
-  {
-    src: "/dali-cover.jpg",
-    alt: "大理的湖面",
-    className: "col-span-1 row-span-2",
-    sizes: "(min-width: 1024px) 19vw, 50vw",
-  },
-  {
-    src: "/hongkong/lightbox/IMG20260111142441.jpg",
-    alt: "香港的海港",
-    className: "col-span-1 row-span-2",
-    sizes: "(min-width: 1024px) 19vw, 50vw",
-  },
-];
-
 const destinations = [
   { index: "01", title: "影笺", subtitle: "PHOTOGRAPHY", href: "/gallery/photos" },
   { index: "02", title: "地图", subtitle: "PLACES", href: "/gallery/photos" },
@@ -51,58 +30,45 @@ export default function AboutPage() {
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#090b0e] text-white">
-      <div className="mx-auto max-w-[1440px] px-5 py-7 md:px-10 md:py-9 lg:px-14">
+    <main className="min-h-screen bg-[#090b0e] text-white">
+      <div className="mx-auto max-w-[1280px] px-5 py-7 md:px-10 md:py-9 lg:px-14">
         <header className="flex items-center justify-between border-b border-white/[0.09] pb-5">
           <BackButton href="/" label="首页" />
-          <p className="text-[10px] font-medium tracking-[0.28em] text-white/35">ABOUT / EZYDONG</p>
+          <p className="text-[10px] font-medium tracking-[0.28em] text-white/35">EZYDONG</p>
         </header>
 
-        <section className="grid gap-12 py-12 lg:min-h-[calc(100vh-130px)] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-20 lg:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="grid h-[450px] grid-cols-2 grid-rows-6 gap-2 sm:h-[560px] lg:h-[640px]"
-          >
-            {moments.map((moment, index) => (
-              <figure key={moment.src} className={`group relative m-0 overflow-hidden bg-white/[0.04] ${moment.className}`}>
-                <img
-                  src={moment.src}
-                  alt={moment.alt}
-                  loading={index === 0 ? "eager" : "lazy"}
-                  className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-black/10 transition-colors duration-500 group-hover:bg-transparent" />
-              </figure>
-            ))}
-          </motion.div>
-
-          <motion.div
+        <section className="grid gap-12 py-14 lg:min-h-[calc(100vh-132px)] lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,0.55fr)] lg:items-center lg:gap-20 lg:py-20">
+          <motion.article
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-2xl lg:py-8"
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl"
           >
             <div className="flex items-center gap-3">
               <span className="h-px w-10 bg-white/30" />
-              <p className="text-[10px] font-medium tracking-[0.3em] text-white/45">SHADOW MEMORY</p>
+              <p className="text-[10px] font-medium tracking-[0.3em] text-white/45">ABOUT / SHADOW MEMORY</p>
             </div>
 
-            <div className="mt-7 flex items-end justify-between gap-6">
+            <div className="mt-8 flex items-end justify-between gap-5">
               <h1 className="font-serif text-6xl font-normal leading-none text-white/95 sm:text-7xl md:text-8xl">关于我</h1>
               <button
                 type="button"
                 onClick={handleCameraClick}
                 aria-label="隐藏彩蛋"
                 title="隐藏彩蛋"
-                className="grid h-11 w-11 shrink-0 place-items-center border border-white/15 text-white/55 transition-colors hover:border-white/45 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="grid h-10 w-10 shrink-0 place-items-center border border-white/15 text-white/50 transition-colors hover:border-white/45 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
-                <Camera size={18} strokeWidth={1.4} />
+                <Camera size={17} strokeWidth={1.35} />
               </button>
             </div>
 
-            <div className="mt-11 max-w-xl space-y-6 text-base font-light leading-8 text-white/64 md:text-lg md:leading-9">
+            <blockquote className="mt-12 border-l border-white/30 pl-5">
+              <p className="text-xl font-light leading-relaxed text-white/82 md:text-2xl">Forever is composed of Nows.</p>
+              <p className="mt-2 text-sm tracking-[0.12em] text-white/38">永恒，由一个个此刻组成。</p>
+              <cite className="mt-4 block text-[10px] not-italic tracking-[0.22em] text-white/30">EMILY DICKINSON</cite>
+            </blockquote>
+
+            <div className="mt-12 max-w-xl space-y-6 text-base font-light leading-8 text-white/64 md:text-lg md:leading-9">
               <p>
                 我是一名摄影爱好者，热衷于用镜头捕捉生活中的光影瞬间。这个网站是我的个人画廊，用来存放我的摄影作品和零散的想法。
               </p>
@@ -117,7 +83,7 @@ export default function AboutPage() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="mt-8 max-w-md border-l border-white/30 pl-4 text-sm leading-6 text-white/45 whitespace-pre-line"
+                  className="mt-8 max-w-md border-l border-white/20 pl-4 text-sm leading-6 text-white/45 whitespace-pre-line"
                 >
                   {secrets[Math.min(clicks - 5, secrets.length - 1)]}
                 </motion.p>
@@ -130,7 +96,28 @@ export default function AboutPage() {
               <span className="h-px w-8 bg-white/15" />
               <span>摄影 / 随笔</span>
             </div>
-          </motion.div>
+          </motion.article>
+
+          <motion.figure
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="m-0 lg:justify-self-end"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden bg-white/[0.03] sm:aspect-[16/10] lg:h-[560px] lg:aspect-auto lg:w-[320px]">
+              <img
+                src="/hongkong/lightbox/IMG20260111142441.jpg"
+                alt="香港的海港"
+                loading="eager"
+                className="absolute inset-0 h-full w-full object-cover object-center opacity-80"
+              />
+              <div className="absolute inset-0 bg-black/15" />
+            </div>
+            <figcaption className="mt-3 flex items-center justify-between text-[10px] tracking-[0.2em] text-white/32">
+              <span>HONG KONG</span>
+              <span>2026</span>
+            </figcaption>
+          </motion.figure>
         </section>
 
         <nav aria-label="关于我页面导航" className="border-t border-white/[0.09]">
