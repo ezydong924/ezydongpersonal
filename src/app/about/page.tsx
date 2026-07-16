@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Camera, MapPin } from "lucide-react";
+import { ArrowUpRight, Camera } from "lucide-react";
 import BackButton from "@/components/back-button";
 
 const secrets = [
@@ -70,10 +70,10 @@ export default function AboutPage() {
 
             <div className="mt-12 max-w-xl space-y-6 text-base font-light leading-8 text-white/64 md:text-lg md:leading-9">
               <p>
-                我是一名摄影爱好者，热衷于用镜头捕捉生活中的光影瞬间。这个网站是我的个人画廊，用来存放我的摄影作品和零散的想法。
+                我用相机记录途经的城市、天气和那些短暂的时刻。这里放照片，也放一些尚未整理成答案的想法。
               </p>
               <p>
-                我相信每一张照片背后都有一个故事，每一次按下快门都是一次与世界的对话。
+                有些东西消失得很快。拍下它们，不是为了留住，而是为了在很久以后，还能想起。
               </p>
             </div>
 
@@ -90,12 +90,7 @@ export default function AboutPage() {
               )}
             </AnimatePresence>
 
-            <div className="mt-12 flex items-center gap-3 text-sm text-white/42">
-              <MapPin size={16} strokeWidth={1.4} />
-              <span>中国</span>
-              <span className="h-px w-8 bg-white/15" />
-              <span>摄影 / 随笔</span>
-            </div>
+            <p className="mt-12 text-sm text-white/42">摄影 / 随笔</p>
           </motion.article>
 
           <motion.figure
