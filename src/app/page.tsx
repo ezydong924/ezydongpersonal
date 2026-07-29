@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <>
       <ShaderBackground />
-      <div className="fixed inset-0 bg-black/[0.07] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-black/[0.07] pointer-events-none z-[2]" />
       <div className="relative z-10 min-h-screen">
         <main className="absolute bottom-12 left-6 right-6 max-w-3xl overflow-visible">
           <motion.div className="text-left leading-[0.85] tracking-tight">
