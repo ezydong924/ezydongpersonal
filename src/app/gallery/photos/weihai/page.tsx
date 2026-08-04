@@ -2,13 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { GradientBackground } from "@/components/ui/gradient-background";
+import ZinePosterBackground from "@/components/zine-poster-background";
 import BackButton from "@/components/back-button";
 
 export default function Page() {
   return (
     <div className="relative min-h-screen">
-      <GradientBackground colors={["hsl(15, 85%, 50%)", "hsl(200, 70%, 40%)", "hsl(30, 60%, 45%)"]} />
+      <ZinePosterBackground poster="/assets/atlas/posters/weihai-zine-v2.png" alt="威海城市影笺" />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">
@@ -16,7 +16,7 @@ export default function Page() {
           <motion.div className="space-y-6 text-white/55 text-lg leading-relaxed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
             <p>威海在记忆里，是一次靠岸。从大连启程，搭乘渤海恒生。夜里的船像一只铁皮匣子，载着人、行李、睡意和没说完的话，一头扎进黑夜，往海那边去。推开舱门上甲板，海和天已经黑成一块，边界全没了。远处没有岸，也没有灯，只有船身旁边翻起来的白沫，一卷，一散，一亮，很快又被黑暗收回去。</p>
             <p>风从海面灌进外套里，衣角被吹得发响。夜海有一种奇怪的美。它什么都不给你看，却让你觉得什么都在。浪声在船底下，风在耳边，城市在还看不见的前方。那时候的威海还没有出现，只是黑暗尽头一个将要抵达的名字。</p>
-            <p>快靠岸时，天亮了。再上甲板，海面已经铺了一层薄光。不是照片里那种明亮的日出，而是很淡、很轻的一层，像有人把夜色从水面上一点点擦开。船还在往前，船尾的水痕白了一路，又慢慢散掉。朋友站在旁边，各自看着海，谁也没说话。太阳慢慢升起来，海面跟着亮，岸线在远处一点点清楚，威海就这样从水汽里浮出来。</p>
+            <p>快靠岸时，天亮了。再上甲板，海面已经铺了一层薄光，很淡，很轻，像有人把夜色从水面上一点点擦开。船还在往前，船尾的水痕白了一路，又慢慢散掉。朋友站在旁边，各自看着海，谁也没说话。太阳慢慢升起来，海面跟着亮，岸线在远处一点点清楚，威海就这样从水汽里浮出来。</p>
             <p>这座城第一眼给人的不是热闹，是干净。海蓝得澄澈方正，浪白得干净纯粹。威海的蓝更清，像被风擦过。岸边的松树被吹得朝一个方向偏，不像特意修过的景观树，倒像这些年一直在和海风商量，最后长成了这个方向。远处的风车慢慢转，白色叶片一圈一圈划过天边。风在威海不是空的，它有形，有声，有去处。它在松针里，在浪边上，在风车的转动里，也在人的衣袖和头发里。</p>
             <p>踩着黄昏的光影去浅滩，脚下的沙细得像揉碎的水晶。脚踩下去，先是软，水一冲，沙子从脚底慢慢抽走，人也跟着陷下去一点。那一下很小，却很真实，像被海轻轻拽住。海水漫过脚踝，凉意顺着脚背一寸寸漫上来，浪在腿边碎成绒绒的白絮，退去后，皮肤上沾着淡淡的海盐味。人们的影子被夕阳拖得很长。太阳压低，水面碎成一片一片的金光，好像整片海都在慢慢发亮。</p>
             <p>威海的美不绕弯。它不是隔着雾的江南，也不是要等人慢慢辨认的古城。它美得明白，蓝、白、金，风一吹，全都摊开。海太大，天太高，人在里面反而会安静下来。很多事情不用说，海已经替你空出地方。</p>

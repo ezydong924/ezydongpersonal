@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { GradientBackground } from "@/components/ui/gradient-background";
+import ZinePosterBackground from "@/components/zine-poster-background";
 import BackButton from "@/components/back-button";
 
 export default function Page() {
   return (
     <div className="relative min-h-screen">
-      <GradientBackground colors={["hsl(230, 70%, 30%)", "hsl(45, 80%, 40%)", "hsl(260, 50%, 25%)"]} />
+      <ZinePosterBackground poster="/assets/atlas/posters/diqing-zine-v2.png" alt="迪庆州城市影笺" />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16">
         <h1 className="text-4xl font-light tracking-wide text-white/80">迪庆州</h1>

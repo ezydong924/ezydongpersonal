@@ -2,20 +2,20 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { GradientBackground } from "@/components/ui/gradient-background";
+import ZinePosterBackground from "@/components/zine-poster-background";
 import BackButton from "@/components/back-button";
 
 export default function Page() {
   return (
     <div className="relative min-h-screen">
-      <GradientBackground colors={["hsl(280, 60%, 35%)", "hsl(340, 70%, 45%)", "hsl(30, 80%, 40%)"]} />
+      <ZinePosterBackground poster="/assets/atlas/posters/dali-zine-v2.png" alt="大理城市影笺" />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16">
         <h1 className="text-4xl font-light tracking-wide text-white/80">大理</h1>
         <p className="text-white/30 text-sm mt-2 mb-16">风花雪月 · 苍山洱海</p>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Link href="/gallery/photos/dali/gallery" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300">
-            翻开影笺
+          <Link href="/gallery/videos/dali" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium hover:bg-white/25 transition-all duration-300">
+            进入影像
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>
         </motion.div>
