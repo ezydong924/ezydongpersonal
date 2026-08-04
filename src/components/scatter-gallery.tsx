@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState, useMemo, useCallback } from "react";
 import { Plus, Minus, Maximize2 } from "lucide-react";
 import BackButton from "@/components/back-button";
+import GalleryPosterBackground from "@/components/gallery-poster-background";
 
 // ——— Layout constants ———————
 const SPREAD_A = 950;
@@ -82,9 +83,11 @@ interface ScatterGalleryProps {
   thumbBase: string;
   lightboxBase: string;
   layoutSeed: number;
+  poster?: string;
+  posterAlt?: string;
 }
 
-export default function ScatterGallery({ photos, cityName, backHref, thumbBase, lightboxBase, layoutSeed }: ScatterGalleryProps) {
+export default function ScatterGallery({ photos, cityName, backHref, thumbBase, lightboxBase, layoutSeed, poster, posterAlt }: ScatterGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
   const layout = useMemo(() => buildLayout(photos.length, layoutSeed), [photos.length, layoutSeed]);
@@ -276,6 +279,7 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
       onMouseDown={onDown}
       onTouchStart={onDown}
     >
+      {poster && <GalleryPosterBackground poster={poster} alt={posterAlt ?? `${cityName}影笺背景`} />}
       <style>{`
         .sg-tile { transition: filter .35s ease, box-shadow .35s ease; cursor: pointer; }
         .sg-tile:hover { filter: brightness(1.14) saturate(1.05); box-shadow: 0 24px 60px rgba(0,0,0,.6) !important; z-index: 50; }

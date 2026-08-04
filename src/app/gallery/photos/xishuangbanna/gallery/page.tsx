@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import BackButton from "@/components/back-button";
 import { MasonryGrid } from "@/components/masonry-grid";
+import GalleryPosterBackground from "@/components/gallery-poster-background";
 
 const photos = [
   "IMG20260130181112.jpg",
@@ -33,6 +34,7 @@ export default function XishuangbannaGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
+      <GalleryPosterBackground poster="/assets/atlas/posters/xishuangbanna-zine-v2.png" alt="西双版纳影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xishuangbanna" label="返回" />
       </div>

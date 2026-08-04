@@ -2,13 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import ZinePosterBackground from "@/components/zine-poster-background";
+import { GradientBackground } from "@/components/ui/gradient-background";
 import BackButton from "@/components/back-button";
 
 export default function Page() {
   return (
     <div className="relative min-h-screen">
-      <ZinePosterBackground poster="/assets/atlas/posters/xishuangbanna-zine-v2.png" alt="西双版纳城市影笺" />
+      <GradientBackground colors={["hsl(160, 50%, 25%)", "hsl(140, 45%, 20%)", "hsl(120, 35%, 15%)"]} />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos" label="返回" /></div>
       <div className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
         <div className="w-full max-w-2xl">

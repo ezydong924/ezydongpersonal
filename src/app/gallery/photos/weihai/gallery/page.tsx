@@ -37,6 +37,8 @@ export default function WeihaiGallery() {
       thumbBase="/weihai/lightbox"
       lightboxBase="/weihai/lightbox"
       layoutSeed={20241014}
+      poster="/assets/atlas/posters/weihai-zine-v2.png"
+      posterAlt="威海影笺背景"
     />
   );
 }

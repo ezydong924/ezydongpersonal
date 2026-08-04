@@ -2,7 +2,7 @@
 
 import BackButton from "@/components/back-button";
 import VerticalImageStack from "@/components/vertical-image-stack";
-import { ShaderAnimation } from "@/components/shader-animation-bg";
+import GalleryPosterBackground from "@/components/gallery-poster-background";
 
 const photos = [
   "IMG_20260706_155244.jpg",
@@ -21,7 +21,7 @@ const images = photos.map((p, i) => ({
 export default function XianGallery() {
   return (
     <div className="relative min-h-screen">
-      <ShaderAnimation />
+      <GalleryPosterBackground poster="/assets/atlas/posters/xian-zine-v2.png" alt="西安影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xian" label="返回" />
       </div>

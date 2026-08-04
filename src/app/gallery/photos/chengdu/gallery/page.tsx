@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/back-button";
 import { X } from "lucide-react";
 import InfiniteGallery from "@/components/infinite-gallery";
+import GalleryPosterBackground from "@/components/gallery-poster-background";
 
 const PHOTOS = [
   "IMG20250214092206.jpg",
@@ -51,6 +52,7 @@ export default function ChengduGallery() {
 
   return (
     <div className="relative h-screen w-full bg-[#0a0a0c] overflow-hidden">
+      <GalleryPosterBackground poster="/assets/atlas/posters/chengdu-zine-v2.png" alt="成都影笺背景" />
       <div className="fixed top-8 left-8 z-50"><BackButton href="/gallery/photos/chengdu" label="返回" /></div>
       <AnimatePresence>{showTitle && (<motion.div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}><h1 className="font-bold tracking-[0.2em] select-none" style={{ fontSize: "clamp(4rem, 10vw, 8rem)", fontFamily: '"PingFang SC","Noto Serif SC","SimSun",serif', WebkitTextStroke: "1.5px rgba(255,255,255,0.45)", WebkitTextFillColor: "transparent", textShadow: "0 0 80px rgba(255,255,255,0.08)" }}>成都</h1></motion.div>)}</AnimatePresence>
       <InfiniteGallery images={thumbs} className="h-full w-full" visibleCount={visible} speed={gSpeed} fadeSettings={{ fadeIn: { start: 0.03, end: 0.15 }, fadeOut: { start: 0.78, end: 0.92 } }} blurSettings={{ blurIn: { start: 0.0, end: 0.08 }, blurOut: { start: 0.75, end: 0.9 }, maxBlur: 3.5 }} onImageClick={handleClick} />

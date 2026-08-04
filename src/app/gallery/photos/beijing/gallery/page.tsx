@@ -5,6 +5,7 @@ import { useInView } from "framer-motion";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/back-button";
 import { X } from "lucide-react";
+import GalleryPosterBackground from "@/components/gallery-poster-background";
 
 const PHOTOS = [
   "IMG_20260503_141244.jpg",
@@ -104,6 +105,7 @@ export default function BeijingGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
+      <GalleryPosterBackground poster="/assets/atlas/posters/beijing-zine-v2.png" alt="北京影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/beijing" label="返回" />
       </div>
