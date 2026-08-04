@@ -6,20 +6,20 @@ export default function GalleryPosterBackground({ poster, alt }: { poster: strin
       <img src={poster} alt={alt} decoding="async" fetchPriority="high" />
       <style jsx>{`
         .gallery-poster-background {
-          position: absolute;
+          position: fixed;
           inset: 0;
           z-index: 0;
           overflow: hidden;
-          background: #070b0d;
+          background: #e9e0d2;
           pointer-events: none;
         }
         .gallery-poster-background img {
           display: block;
           width: 100%;
           height: 100%;
-          object-fit: contain;
+          object-fit: cover;
           object-position: center;
-          opacity: .34;
+          opacity: .46;
           filter: none;
         }
       `}</style>

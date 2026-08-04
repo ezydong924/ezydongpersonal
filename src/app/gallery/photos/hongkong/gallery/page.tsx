@@ -37,7 +37,7 @@ export default function HongKongGallery() {
       thumbBase="/hongkong/thumbs"
       lightboxBase="/hongkong/lightbox"
       layoutSeed={20260528}
-      poster="/assets/atlas/posters/hongkong-zine-v2.png"
+      poster="/assets/atlas/gallery-backgrounds/hongkong-gallery-bg.png"
       posterAlt="香港影笺背景"
     />
   );

@@ -37,7 +37,7 @@ const images = photos.map((p, i) => ({
 export default function SuzhouGallery() {
   return (
     <div className="relative min-h-screen">
-      <GalleryPosterBackground poster="/assets/atlas/posters/suzhou-zine-v2.png" alt="苏州影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/suzhou-gallery-bg.png" alt="苏州影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/suzhou" label="返回" />
       </div>

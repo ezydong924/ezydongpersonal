@@ -105,7 +105,7 @@ export default function BeijingGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
-      <GalleryPosterBackground poster="/assets/atlas/posters/beijing-zine-v2.png" alt="北京影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/beijing-gallery-bg.png" alt="北京影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/beijing" label="返回" />
       </div>

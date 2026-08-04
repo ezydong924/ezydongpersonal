@@ -34,7 +34,7 @@ export default function XishuangbannaGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
-      <GalleryPosterBackground poster="/assets/atlas/posters/xishuangbanna-zine-v2.png" alt="西双版纳影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xishuangbanna-gallery-bg.png" alt="西双版纳影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xishuangbanna" label="返回" />
       </div>

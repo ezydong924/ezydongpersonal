@@ -21,7 +21,7 @@ const images = photos.map((p, i) => ({
 export default function XianGallery() {
   return (
     <div className="relative min-h-screen">
-      <GalleryPosterBackground poster="/assets/atlas/posters/xian-zine-v2.png" alt="西安影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xian-gallery-bg.png" alt="西安影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xian" label="返回" />
       </div>
