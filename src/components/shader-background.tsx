@@ -41,11 +41,9 @@ uniform vec4 u_cursor;
 #define u_vignette u_finish.y
 #define u_blur u_finish.z
 #define u_grain u_finish.w
-#ifdef GL_FRAGMENT_PRECISION_HIGH
-#define u_seed u_transform.x
-#else
-#define u_seed mod(u_transform.x, 31.0)
-#endif
+// Keep the seed small enough for mobile mediump fragment shaders. Large values
+// lose their fractional detail before hash21 can mix them and become stripes.
+#define u_seed mod(u_transform.x, 16.0)
 #define u_rotate u_transform.y
 #define u_drift u_transform.z
 #define u_oklab u_transform.w
@@ -57,12 +55,10 @@ uniform vec4 u_cursor;
 #define u_cursorRadius u_cursor.w
 
 float hash21(vec2 p) {
-#ifndef GL_FRAGMENT_PRECISION_HIGH
-  p = mod(p, 31.0);
-#endif
-  p = fract(p * vec2(234.34, 435.345));
-  p += dot(p, p + 34.23);
-  return fract(p.x * p.y);
+  p = mod(p, 71.0);
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
 }
 
 float grainHash(vec2 p) {
@@ -198,13 +194,16 @@ vec3 shade(vec2 uv, vec2 point, float time) {
 void main() {
   vec2 uv = gl_FragCoord.xy / u_resolution.xy;
   vec2 screenUv = uv;
+  // Use height as the visual scale. This is identical to the old math on a
+  // landscape desktop, while portrait screens get a crop instead of showing
+  // roughly twice as much of the noise field vertically.
   vec2 point = (gl_FragCoord.xy - 0.5 * u_resolution.xy)
-    / min(u_resolution.x, u_resolution.y);
+    / u_resolution.y;
   float cursorMask = 0.0;
 
   if (u_cursorPresence > 0.001) {
     vec2 cursor = (0.5 * u_mouse * u_resolution.xy)
-      / min(u_resolution.x, u_resolution.y);
+      / u_resolution.y;
     vec2 cursorDelta = point - cursor;
     if (u_cursorEffect < 0.5) {
       point += cursor * u_cursorPresence * u_cursorStrength * 0.55;
@@ -229,7 +228,7 @@ void main() {
     }
   }
 
-  uv = point * min(u_resolution.x, u_resolution.y) / u_resolution.xy + 0.5;
+  uv = point * u_resolution.y / u_resolution.xy + 0.5;
   point *= u_scale;
 
   if (abs(u_rotate) > 0.0001) {
@@ -257,7 +256,7 @@ void main() {
     float edge = u_blur;
     float pointEdge = edge * u_scale;
     vec2 uvEdge = vec2(edge)
-      * min(u_resolution.x, u_resolution.y)
+      * u_resolution.y
       / u_resolution.xy;
     color = shade(uv, point, u_time) * 0.36;
     color += shade(uv + vec2(uvEdge.x, 0.0), point + vec2(pointEdge, 0.0), u_time) * 0.16;
@@ -293,6 +292,11 @@ void main() {
       grainHash(gl_FragCoord.xy + vec2(u_seed * 17.0, u_seed * 31.0)) - 0.5
     ) * u_grain;
   }
+  // One 8-bit step of screen-space dither prevents smooth blue gradients from
+  // turning into visible bands on phone OLED panels without looking grainy.
+  color += (
+    grainHash(gl_FragCoord.xy + vec2(19.0, 47.0)) - 0.5
+  ) * (1.0 / 255.0);
 
   gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
 }
@@ -335,302 +339,334 @@ const UNIFORMS = {
   timeScale: 0.746,
 };
 
-const pendingContextReleases = new WeakMap<HTMLCanvasElement, number>();
-
 export default function ShaderBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas: HTMLCanvasElement | null = canvasRef.current;
-    if (!canvas) return;
-    const canvasElement: HTMLCanvasElement = canvas;
+    const canvasCandidate = canvasRef.current;
+    if (!canvasCandidate) return;
+    const canvas: HTMLCanvasElement = canvasCandidate;
 
-    const pendingRelease = pendingContextReleases.get(canvasElement);
-    if (pendingRelease !== undefined) {
-      window.clearTimeout(pendingRelease);
-      pendingContextReleases.delete(canvasElement);
-    }
-
-    const context = canvasElement.getContext("webgl", { antialias: false });
-    if (!context) return;
-    const gl: WebGLRenderingContext = context;
-
-    const compileShader = (type: number, source: string) => {
-      const shader = gl.createShader(type);
-      if (!shader) throw new Error("Unable to create WebGL shader.");
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        const message = gl.getShaderInfoLog(shader) ?? "Unknown shader error.";
-        gl.deleteShader(shader);
-        throw new Error(message);
-      }
-      return shader;
-    };
-
-    const vertexShader = compileShader(gl.VERTEX_SHADER, VERT);
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, FRAG);
-    const program = gl.createProgram();
-    if (!program) throw new Error("Unable to create WebGL program.");
-
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    gl.deleteShader(vertexShader);
-    gl.deleteShader(fragmentShader);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const message = gl.getProgramInfoLog(program) ?? "Unknown WebGL link error.";
-      gl.deleteProgram(program);
-      throw new Error(message);
-    }
-    gl.useProgram(program);
-
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW,
-    );
-
-    const positionLocation = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-    const uniforms = {
-      colors: gl.getUniformLocation(program, "u_colors"),
-      scene: gl.getUniformLocation(program, "u_scene"),
-      shape: gl.getUniformLocation(program, "u_shape"),
-      surface: gl.getUniformLocation(program, "u_surface"),
-      finish: gl.getUniformLocation(program, "u_finish"),
-      transform: gl.getUniformLocation(program, "u_transform"),
-      space: gl.getUniformLocation(program, "u_space"),
-      cursor: gl.getUniformLocation(program, "u_cursor"),
-    };
-
-    gl.uniform3fv(uniforms.colors, new Float32Array(UNIFORMS.colors.flat()));
-    gl.uniform4f(
-      uniforms.shape,
-      UNIFORMS.scale,
-      UNIFORMS.intensity,
-      UNIFORMS.paramA,
-      UNIFORMS.warp,
-    );
-    gl.uniform4f(
-      uniforms.surface,
-      UNIFORMS.detail,
-      UNIFORMS.contrast,
-      UNIFORMS.brightness,
-      UNIFORMS.saturation,
-    );
-    gl.uniform4f(
-      uniforms.finish,
-      UNIFORMS.hue,
-      UNIFORMS.vignette,
-      UNIFORMS.blur,
-      UNIFORMS.grain,
-    );
-    gl.uniform4f(
-      uniforms.transform,
-      UNIFORMS.seed,
-      UNIFORMS.rotate,
-      UNIFORMS.drift,
-      UNIFORMS.oklab,
-    );
-
-    let targetX = 0;
-    let targetY = 0;
-    let targetPresence = 0;
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorPresence = 0;
-    let pointerKnown = false;
-    let pointerClientX = 0;
-    let pointerClientY = 0;
-    let bounds = canvasElement.getBoundingClientRect();
-    let animationFrame = 0;
-    let lastNow: number | null = null;
-    let visible = document.visibilityState === "visible";
-    let inView = true;
     let disposed = false;
-    const start = performance.now();
+    let retryTimer = 0;
+    let retryIndex = 0;
+    let teardownRenderer: (() => void) | null = null;
+    const retryDelays = [120, 420, 1200];
 
-    const resizeCanvas = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rawWidth = Math.max(1, Math.round(bounds.width * dpr));
-      const rawHeight = Math.max(1, Math.round(bounds.height * dpr));
-      const pixelScale = Math.min(
-        1,
-        Math.sqrt(2_000_000 / Math.max(1, rawWidth * rawHeight)),
-      );
-      const width = Math.max(1, Math.round(rawWidth * pixelScale));
-      const height = Math.max(1, Math.round(rawHeight * pixelScale));
-
-      if (canvasElement.width !== width || canvasElement.height !== height) {
-        canvasElement.width = width;
-        canvasElement.height = height;
-        gl.viewport(0, 0, width, height);
-      }
+    const setShaderState = (state: "initializing" | "ready" | "fallback") => {
+      canvas.dataset.shaderState = state;
     };
 
-    function requestRender() {
-      if (!disposed && visible && inView && animationFrame === 0) {
-        animationFrame = requestAnimationFrame(render);
-      }
-    }
+    const scheduleRetry = () => {
+      if (disposed || retryIndex >= retryDelays.length) return;
+      window.clearTimeout(retryTimer);
+      const delay = retryDelays[retryIndex++];
+      retryTimer = window.setTimeout(initializeRenderer, delay);
+    };
 
-    const updatePointerTarget = () => {
-      if (!pointerKnown || bounds.width === 0 || bounds.height === 0) return;
-      const inside =
-        pointerClientX >= bounds.left &&
-        pointerClientX <= bounds.right &&
-        pointerClientY >= bounds.top &&
-        pointerClientY <= bounds.bottom;
+    function initializeRenderer() {
+      if (disposed) return;
+      window.clearTimeout(retryTimer);
+      teardownRenderer?.();
+      teardownRenderer = null;
+      setShaderState("initializing");
 
-      if (!inside) {
-        targetPresence = 0;
-        requestRender();
+      const gl = canvas.getContext("webgl", {
+        antialias: false,
+        alpha: false,
+        powerPreference: "high-performance",
+      });
+      if (!gl) {
+        setShaderState("fallback");
+        scheduleRetry();
         return;
       }
 
-      const nextX = ((pointerClientX - bounds.left) / bounds.width) * 2 - 1;
-      const nextY = -(((pointerClientY - bounds.top) / bounds.height) * 2 - 1);
-      if (targetPresence === 0 && cursorPresence < 0.01) {
-        mouseX = nextX;
-        mouseY = nextY;
-      }
-      targetX = nextX;
-      targetY = nextY;
-      targetPresence = 1;
-      requestRender();
-    };
+      let rendererDisposed = false;
+      let contextLost = false;
+      let animationFrame = 0;
+      let program: WebGLProgram | null = null;
+      let buffer: WebGLBuffer | null = null;
+      let resizeObserver: ResizeObserver | null = null;
+      let vertexShader: WebGLShader | null = null;
+      let fragmentShader: WebGLShader | null = null;
 
-    const onPointerMove = (event: PointerEvent) => {
-      pointerKnown = true;
-      pointerClientX = event.clientX;
-      pointerClientY = event.clientY;
-      bounds = canvasElement.getBoundingClientRect();
-      updatePointerTarget();
-    };
-
-    const onPointerLeave = () => {
-      pointerKnown = false;
-      targetPresence = 0;
-      requestRender();
-    };
-
-    const updateLayout = () => {
-      bounds = canvasElement.getBoundingClientRect();
-      resizeCanvas();
-      updatePointerTarget();
-      requestRender();
-    };
-
-    window.addEventListener("resize", updateLayout);
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("pointercancel", onPointerLeave);
-    window.addEventListener("scroll", updateLayout, true);
-    window.addEventListener("blur", onPointerLeave);
-    document.documentElement.addEventListener("pointerleave", onPointerLeave);
-
-    const resizeObserver = new ResizeObserver(updateLayout);
-    resizeObserver.observe(canvasElement);
-
-    const intersectionObserver = new IntersectionObserver(([entry]) => {
-      inView = entry?.isIntersecting ?? true;
-      if (inView) {
-        requestRender();
-      } else if (animationFrame !== 0) {
+      const onContextLost = (event: Event) => {
+        event.preventDefault();
+        contextLost = true;
         cancelAnimationFrame(animationFrame);
         animationFrame = 0;
-        lastNow = null;
-      }
-    });
-    intersectionObserver.observe(canvasElement);
+        setShaderState("fallback");
+      };
 
-    const onVisibilityChange = () => {
-      visible = document.visibilityState === "visible";
-      if (visible) {
-        requestRender();
-      } else if (animationFrame !== 0) {
+      const onContextRestored = () => {
+        if (disposed) return;
+        retryIndex = 0;
+        initializeRenderer();
+      };
+
+      canvas.addEventListener("webglcontextlost", onContextLost);
+      canvas.addEventListener("webglcontextrestored", onContextRestored);
+
+      const cleanup = () => {
+        if (rendererDisposed) return;
+        rendererDisposed = true;
         cancelAnimationFrame(animationFrame);
-        animationFrame = 0;
-        lastNow = null;
+        resizeObserver?.disconnect();
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        window.removeEventListener("resize", updateLayout);
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointercancel", onPointerLeave);
+        window.removeEventListener("scroll", updateLayout, true);
+        window.removeEventListener("blur", onPointerLeave);
+        document.documentElement.removeEventListener("pointerleave", onPointerLeave);
+        canvas.removeEventListener("webglcontextlost", onContextLost);
+        canvas.removeEventListener("webglcontextrestored", onContextRestored);
+        if (!contextLost) {
+          if (vertexShader) gl.deleteShader(vertexShader);
+          if (fragmentShader) gl.deleteShader(fragmentShader);
+          if (buffer) gl.deleteBuffer(buffer);
+          if (program) gl.deleteProgram(program);
+        }
+      };
+      teardownRenderer = cleanup;
+
+      let targetX = 0;
+      let targetY = 0;
+      let targetPresence = 0;
+      let mouseX = 0;
+      let mouseY = 0;
+      let cursorPresence = 0;
+      let pointerKnown = false;
+      let pointerClientX = 0;
+      let pointerClientY = 0;
+      let bounds = canvas.getBoundingClientRect();
+      let lastNow: number | null = null;
+      let visible = document.visibilityState === "visible";
+      let renderedFirstFrame = false;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const start = performance.now();
+      let render = (_now: number) => {};
+
+      const compileShader = (type: number, source: string) => {
+        const shader = gl.createShader(type);
+        if (!shader) throw new Error("Unable to create WebGL shader.");
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          const message = gl.getShaderInfoLog(shader) ?? "Unknown shader error.";
+          gl.deleteShader(shader);
+          throw new Error(message);
+        }
+        return shader;
+      };
+
+      const resizeCanvas = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        const rawWidth = Math.max(1, Math.round(bounds.width * dpr));
+        const rawHeight = Math.max(1, Math.round(bounds.height * dpr));
+        const pixelScale = Math.min(
+          1,
+          Math.sqrt(1_600_000 / Math.max(1, rawWidth * rawHeight)),
+        );
+        const width = Math.max(1, Math.round(rawWidth * pixelScale));
+        const height = Math.max(1, Math.round(rawHeight * pixelScale));
+
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+          gl.viewport(0, 0, width, height);
+        }
+      };
+
+      function requestRender() {
+        if (
+          !disposed &&
+          !rendererDisposed &&
+          !contextLost &&
+          visible &&
+          animationFrame === 0 &&
+          (!reduceMotion || !renderedFirstFrame)
+        ) {
+          animationFrame = requestAnimationFrame(render);
+        }
       }
-    };
-    document.addEventListener("visibilitychange", onVisibilityChange);
 
-    function render(now: number) {
-      animationFrame = 0;
-      if (disposed || !visible || !inView) return;
+      const updatePointerTarget = () => {
+        if (!pointerKnown || bounds.width === 0 || bounds.height === 0) return;
+        const inside =
+          pointerClientX >= bounds.left &&
+          pointerClientX <= bounds.right &&
+          pointerClientY >= bounds.top &&
+          pointerClientY <= bounds.bottom;
 
-      const delta =
-        lastNow === null ? 0 : Math.min((now - lastNow) / 1000, 0.1);
-      lastNow = now;
-      const follow = 1 - Math.exp(-12 * delta);
-      mouseX += (targetX - mouseX) * follow;
-      mouseY += (targetY - mouseY) * follow;
-      cursorPresence += (targetPresence - cursorPresence) * follow;
-      resizeCanvas();
+        if (!inside) {
+          targetPresence = 0;
+          requestRender();
+          return;
+        }
 
-      gl.uniform4f(
-        uniforms.scene,
-        canvasElement.width,
-        canvasElement.height,
-        ((now - start) / 1000) * UNIFORMS.timeScale,
-        UNIFORMS.colorCount,
-      );
-      gl.uniform4f(
-        uniforms.space,
-        UNIFORMS.offsetX,
-        UNIFORMS.offsetY,
-        mouseX,
-        mouseY,
-      );
-      gl.uniform4f(
-        uniforms.cursor,
-        cursorPresence,
-        UNIFORMS.cursorEffect,
-        UNIFORMS.cursorStrength,
-        UNIFORMS.cursorRadius,
-      );
-      gl.drawArrays(gl.TRIANGLES, 0, 3);
-      requestRender();
+        const nextX = ((pointerClientX - bounds.left) / bounds.width) * 2 - 1;
+        const nextY = -(((pointerClientY - bounds.top) / bounds.height) * 2 - 1);
+        if (targetPresence === 0 && cursorPresence < 0.01) {
+          mouseX = nextX;
+          mouseY = nextY;
+        }
+        targetX = nextX;
+        targetY = nextY;
+        targetPresence = 1;
+        requestRender();
+      };
+
+      const onPointerMove = (event: PointerEvent) => {
+        pointerKnown = true;
+        pointerClientX = event.clientX;
+        pointerClientY = event.clientY;
+        bounds = canvas.getBoundingClientRect();
+        updatePointerTarget();
+      };
+
+      const onPointerLeave = () => {
+        pointerKnown = false;
+        targetPresence = 0;
+        requestRender();
+      };
+
+      const updateLayout = () => {
+        bounds = canvas.getBoundingClientRect();
+        resizeCanvas();
+        updatePointerTarget();
+        requestRender();
+      };
+
+      const onVisibilityChange = () => {
+        visible = document.visibilityState === "visible";
+        if (visible) {
+          lastNow = null;
+          requestRender();
+        } else if (animationFrame !== 0) {
+          cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+          lastNow = null;
+        }
+      };
+
+      try {
+        vertexShader = compileShader(gl.VERTEX_SHADER, VERT);
+        fragmentShader = compileShader(gl.FRAGMENT_SHADER, FRAG);
+        program = gl.createProgram();
+        if (!program) throw new Error("Unable to create WebGL program.");
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          throw new Error(gl.getProgramInfoLog(program) ?? "Unknown WebGL link error.");
+        }
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        vertexShader = null;
+        fragmentShader = null;
+        gl.useProgram(program);
+
+        buffer = gl.createBuffer();
+        if (!buffer) throw new Error("Unable to create WebGL buffer.");
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array([-1, -1, 3, -1, -1, 3]),
+          gl.STATIC_DRAW,
+        );
+
+        const positionLocation = gl.getAttribLocation(program, "a_position");
+        if (positionLocation < 0) throw new Error("Missing a_position attribute.");
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const uniforms = {
+          colors: gl.getUniformLocation(program, "u_colors"),
+          scene: gl.getUniformLocation(program, "u_scene"),
+          shape: gl.getUniformLocation(program, "u_shape"),
+          surface: gl.getUniformLocation(program, "u_surface"),
+          finish: gl.getUniformLocation(program, "u_finish"),
+          transform: gl.getUniformLocation(program, "u_transform"),
+          space: gl.getUniformLocation(program, "u_space"),
+          cursor: gl.getUniformLocation(program, "u_cursor"),
+        };
+
+        gl.uniform3fv(uniforms.colors, new Float32Array(UNIFORMS.colors.flat()));
+        gl.uniform4f(uniforms.shape, UNIFORMS.scale, UNIFORMS.intensity, UNIFORMS.paramA, UNIFORMS.warp);
+        gl.uniform4f(uniforms.surface, UNIFORMS.detail, UNIFORMS.contrast, UNIFORMS.brightness, UNIFORMS.saturation);
+        gl.uniform4f(uniforms.finish, UNIFORMS.hue, UNIFORMS.vignette, UNIFORMS.blur, UNIFORMS.grain);
+        gl.uniform4f(uniforms.transform, UNIFORMS.seed, UNIFORMS.rotate, UNIFORMS.drift, UNIFORMS.oklab);
+
+        render = (now: number) => {
+          animationFrame = 0;
+          if (disposed || rendererDisposed || contextLost || !visible || gl.isContextLost()) return;
+
+          const delta = lastNow === null ? 0 : Math.min((now - lastNow) / 1000, 0.1);
+          lastNow = now;
+          const follow = 1 - Math.exp(-12 * delta);
+          mouseX += (targetX - mouseX) * follow;
+          mouseY += (targetY - mouseY) * follow;
+          cursorPresence += (targetPresence - cursorPresence) * follow;
+          resizeCanvas();
+
+          gl.uniform4f(uniforms.scene, canvas.width, canvas.height, ((now - start) / 1000) * UNIFORMS.timeScale, UNIFORMS.colorCount);
+          gl.uniform4f(uniforms.space, UNIFORMS.offsetX, UNIFORMS.offsetY, mouseX, mouseY);
+          gl.uniform4f(uniforms.cursor, cursorPresence, UNIFORMS.cursorEffect, UNIFORMS.cursorStrength, UNIFORMS.cursorRadius);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+          if (!renderedFirstFrame) {
+            renderedFirstFrame = true;
+            retryIndex = 0;
+            setShaderState("ready");
+          }
+          requestRender();
+        };
+
+        window.addEventListener("resize", updateLayout);
+        window.addEventListener("pointermove", onPointerMove, { passive: true });
+        window.addEventListener("pointercancel", onPointerLeave);
+        window.addEventListener("scroll", updateLayout, true);
+        window.addEventListener("blur", onPointerLeave);
+        document.documentElement.addEventListener("pointerleave", onPointerLeave);
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        resizeObserver = new ResizeObserver(updateLayout);
+        resizeObserver.observe(canvas);
+        updateLayout();
+      } catch (error) {
+        console.error("Wave shader initialization failed; using fallback.", error);
+        cleanup();
+        teardownRenderer = null;
+        setShaderState("fallback");
+        scheduleRetry();
+      }
     }
 
-    updateLayout();
+    initializeRenderer();
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(animationFrame);
-      resizeObserver.disconnect();
-      intersectionObserver.disconnect();
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      window.removeEventListener("resize", updateLayout);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointercancel", onPointerLeave);
-      window.removeEventListener("scroll", updateLayout, true);
-      window.removeEventListener("blur", onPointerLeave);
-      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
-      gl.deleteBuffer(buffer);
-      gl.deleteProgram(program);
-
-      const releaseTimer = window.setTimeout(() => {
-        if (pendingContextReleases.get(canvasElement) !== releaseTimer) return;
-        pendingContextReleases.delete(canvasElement);
-        gl.getExtension("WEBGL_lose_context")?.loseContext();
-        canvasElement.width = 1;
-        canvasElement.height = 1;
-      }, 0);
-      pendingContextReleases.set(canvasElement, releaseTimer);
+      window.clearTimeout(retryTimer);
+      teardownRenderer?.();
+      teardownRenderer = null;
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[1] h-full w-full"
-    />
+      className="pointer-events-none fixed inset-0 z-[1] overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(ellipse at 18% 24%, rgba(87,178,203,.94) 0%, rgba(0,127,173,.42) 34%, transparent 61%), radial-gradient(ellipse at 84% 74%, rgba(234,249,255,.88) 0%, rgba(87,178,203,.48) 27%, transparent 56%), linear-gradient(145deg, #184557 0%, #007fad 48%, #57b2cb 76%, #eaf9ff 118%)",
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        data-shader-state="initializing"
+        className="h-full w-full opacity-0 transition-opacity duration-700 data-[shader-state=ready]:opacity-100"
+      />
+    </div>
   );
 }
