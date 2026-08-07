@@ -38,6 +38,7 @@ export default function WeihaiGallery() {
       lightboxBase="/weihai/lightbox"
       layoutSeed={20241014}
       poster="/assets/atlas/gallery-backgrounds/weihai-gallery-bg.png"
+      mobilePoster="/assets/atlas/posters/weihai-zine-v2.png"
       posterAlt="威海影笺背景"
     />
   );

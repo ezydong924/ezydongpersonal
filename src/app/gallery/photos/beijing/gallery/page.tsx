@@ -43,6 +43,7 @@ function distribute(photos: string[], cols: number) {
 
 function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const [loaded, setLoaded] = useState(false);
   const [ratio, setRatio] = useState(3 / 4);
@@ -53,6 +54,10 @@ function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClic
     img.src = src;
   }, [src]);
 
+  useEffect(() => {
+    if (imgRef.current?.complete) setLoaded(true);
+  }, [src]);
+
   return (
     <div
       ref={ref}
@@ -61,6 +66,7 @@ function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClic
       onClick={onClick}
     >
       <img
+        ref={imgRef}
         alt={alt}
         src={src}
         className={`size-full object-cover transition-all duration-700 ease-out ${
@@ -105,7 +111,11 @@ export default function BeijingGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
-      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/beijing-gallery-bg.png" alt="北京影笺背景" />
+      <GalleryPosterBackground
+        poster="/assets/atlas/gallery-backgrounds/beijing-gallery-bg.png"
+        mobilePoster="/assets/atlas/posters/beijing-zine-v2.png"
+        alt="北京影笺背景"
+      />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/beijing" label="返回" />
       </div>

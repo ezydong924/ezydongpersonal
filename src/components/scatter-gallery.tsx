@@ -84,10 +84,11 @@ interface ScatterGalleryProps {
   lightboxBase: string;
   layoutSeed: number;
   poster?: string;
+  mobilePoster?: string;
   posterAlt?: string;
 }
 
-export default function ScatterGallery({ photos, cityName, backHref, thumbBase, lightboxBase, layoutSeed, poster, posterAlt }: ScatterGalleryProps) {
+export default function ScatterGallery({ photos, cityName, backHref, thumbBase, lightboxBase, layoutSeed, poster, mobilePoster, posterAlt }: ScatterGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
   const layout = useMemo(() => buildLayout(photos.length, layoutSeed), [photos.length, layoutSeed]);
@@ -279,7 +280,7 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
       onMouseDown={onDown}
       onTouchStart={onDown}
     >
-      {poster && <GalleryPosterBackground poster={poster} alt={posterAlt ?? `${cityName}影笺背景`} />}
+      {poster && <GalleryPosterBackground poster={poster} mobilePoster={mobilePoster} alt={posterAlt ?? `${cityName}影笺背景`} />}
       <style>{`
         .sg-tile { transition: filter .35s ease, box-shadow .35s ease; cursor: pointer; }
         .sg-tile:hover { filter: brightness(1.14) saturate(1.05); box-shadow: 0 24px 60px rgba(0,0,0,.6) !important; z-index: 50; }
