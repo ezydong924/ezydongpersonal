@@ -24,7 +24,6 @@ const photos = [
   "IMG_20241004_221103.jpg",
   "IMG_20241014_182423.jpg",
   "IMG_20241023_173252.jpg",
-  ".gitkeep",
   "DSC_1701.JPG",
 ];
 
@@ -34,11 +33,11 @@ export default function WeihaiGallery() {
       photos={photos}
       cityName="威海"
       backHref="/gallery/photos/weihai"
-      thumbBase="/weihai/lightbox"
+      thumbBase="/weihai/thumbs"
       lightboxBase="/weihai/lightbox"
       layoutSeed={20241014}
-      poster="/assets/atlas/gallery-backgrounds/weihai-gallery-bg.png"
-      mobilePoster="/assets/atlas/posters/weihai-zine-v2.png"
+      poster="/assets/atlas/gallery-backgrounds/weihai-gallery-bg.webp"
+      mobilePoster="/assets/atlas/posters/weihai-zine-v2.webp"
       posterAlt="威海影笺背景"
     />
   );

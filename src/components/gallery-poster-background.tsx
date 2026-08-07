@@ -11,7 +11,7 @@ export default function GalleryPosterBackground({ poster, mobilePoster, alt }: G
     <div className="gallery-poster-background" aria-hidden="true">
       <picture>
         {mobilePoster && <source media="(max-width: 700px)" srcSet={mobilePoster} />}
-        <img src={poster} alt={alt} decoding="async" fetchPriority="high" />
+        <img src={poster} alt={alt} decoding="async" fetchPriority="low" />
       </picture>
       <style jsx>{`
         .gallery-poster-background {

@@ -312,7 +312,8 @@ export default function ScatterGallery({ photos, cityName, backHref, thumbBase, 
               draggable={false}
               decoding="async"
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-              loading="lazy"
+              loading={k < 8 ? "eager" : "lazy"}
+              fetchPriority={k < 3 ? "high" : "auto"}
             />
           </div>
         ))}

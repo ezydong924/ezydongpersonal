@@ -24,11 +24,11 @@ const photos = [
 export default function RizhaoGallery() {
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
-      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/rizhao-gallery-bg.png" mobilePoster="/assets/atlas/posters/rizhao-zine-v2.png" alt="日照影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/rizhao-gallery-bg.webp" mobilePoster="/assets/atlas/posters/rizhao-zine-v2.webp" alt="日照影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/rizhao" label="返回" />
       </div>
-      <HorizontalFilmGallery photos={photos} basePath="/rizhao/lightbox" />
+      <HorizontalFilmGallery photos={photos} basePath="/rizhao/lightbox" thumbBasePath="/rizhao/thumbs" />
     </div>
   );
 }

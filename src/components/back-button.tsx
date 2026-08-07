@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowLeftIcon } from "@/components/icons";
 
 interface BackButtonProps {
@@ -8,12 +7,12 @@ interface BackButtonProps {
 
 export default function BackButton({ href, label }: BackButtonProps) {
   return (
-    <Link
+    <a
       href={href}
       className="inline-flex items-center gap-2 text-white/40 hover:text-white/80 transition-colors text-sm"
     >
       <ArrowLeftIcon />
       {label}
-    </Link>
+    </a>
   );
 }

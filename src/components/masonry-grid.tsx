@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface MasonryGridProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,27 +13,12 @@ const MasonryGrid = React.forwardRef<HTMLDivElement, MasonryGridProps>(
       columnGap: `${gap * 0.25}rem`,
     };
 
-    const cardVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.5, ease: "easeOut" },
-      },
-    };
-
     return (
       <div ref={ref} style={style} className={cn('w-full', className)} {...props}>
         {React.Children.map(children, (child) => (
-          <motion.div
-            className="mb-4 break-inside-avoid"
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          <div className="mb-4 break-inside-avoid">
             {child}
-          </motion.div>
+          </div>
         ))}
       </div>
     );

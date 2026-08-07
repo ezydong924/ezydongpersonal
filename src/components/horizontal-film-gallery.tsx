@@ -9,9 +9,10 @@ type Photo = { file: string; title: string };
 interface HorizontalFilmGalleryProps {
   photos: Photo[];
   basePath: string;
+  thumbBasePath?: string;
 }
 
-export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFilmGalleryProps) {
+export default function HorizontalFilmGallery({ photos, basePath, thumbBasePath }: HorizontalFilmGalleryProps) {
   const [active, setActive] = useState<number>(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [vw, setVw] = useState(1200);
@@ -150,10 +151,13 @@ export default function HorizontalFilmGallery({ photos, basePath }: HorizontalFi
                 transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <img
-                  src={`${basePath}/${photo.file}`}
+                  src={`${thumbBasePath ?? basePath}/${photo.file}`}
                   alt={photo.title || `影笺 第 ${i + 1} 张`}
                   className="absolute inset-0 w-full h-full object-cover"
                   draggable={false}
+                  decoding="async"
+                  loading={isNear ? "eager" : "lazy"}
+                  fetchPriority={isActive ? "high" : "auto"}
                 />
                 {isActive && (
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 to-transparent" />

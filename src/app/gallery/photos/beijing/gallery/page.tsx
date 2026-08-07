@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useMemo } from "react";
-import { useInView } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/components/back-button";
 import { X } from "lucide-react";
@@ -42,10 +41,6 @@ function distribute(photos: string[], cols: number) {
 }
 
 function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [loaded, setLoaded] = useState(false);
   const [ratio, setRatio] = useState(3 / 4);
 
   useEffect(() => {
@@ -54,25 +49,16 @@ function AnimatedImage({ src, alt, onClick }: { src: string; alt: string; onClic
     img.src = src;
   }, [src]);
 
-  useEffect(() => {
-    if (imgRef.current?.complete) setLoaded(true);
-  }, [src]);
-
   return (
     <div
-      ref={ref}
       className="relative w-full rounded-lg overflow-hidden cursor-pointer bg-white/[0.03] border border-white/[0.04] hover:border-white/15 transition-all duration-500"
       style={{ aspectRatio: ratio }}
       onClick={onClick}
     >
       <img
-        ref={imgRef}
         alt={alt}
         src={src}
-        className={`size-full object-cover transition-all duration-700 ease-out ${
-          isInView && loaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
-        }`}
-        onLoad={() => setLoaded(true)}
+        className="size-full object-cover"
         loading="lazy"
         decoding="async"
       />
@@ -112,8 +98,8 @@ export default function BeijingGallery() {
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
       <GalleryPosterBackground
-        poster="/assets/atlas/gallery-backgrounds/beijing-gallery-bg.png"
-        mobilePoster="/assets/atlas/posters/beijing-zine-v2.png"
+        poster="/assets/atlas/gallery-backgrounds/beijing-gallery-bg.webp"
+        mobilePoster="/assets/atlas/posters/beijing-zine-v2.webp"
         alt="北京影笺背景"
       />
       <div className="fixed top-8 left-8 z-50">

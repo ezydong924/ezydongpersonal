@@ -14,14 +14,14 @@ const photos = [
 
 const images = photos.map((p, i) => ({
   id: i,
-  src: `/xian/lightbox/${p}`,
+  src: `/xian/thumbs/${p}`,
   alt: `西安影笺 ${i + 1}`,
 }));
 
 export default function XianGallery() {
   return (
     <div className="relative min-h-screen">
-      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xian-gallery-bg.png" mobilePoster="/assets/atlas/posters/xian-zine-v2.png" alt="西安影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xian-gallery-bg.webp" mobilePoster="/assets/atlas/posters/xian-zine-v2.webp" alt="西安影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xian" label="返回" />
       </div>

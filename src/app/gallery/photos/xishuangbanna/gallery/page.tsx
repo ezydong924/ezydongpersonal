@@ -34,7 +34,7 @@ export default function XishuangbannaGallery() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0c]">
-      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xishuangbanna-gallery-bg.png" mobilePoster="/assets/atlas/posters/xishuangbanna-zine-v2.png" alt="西双版纳影笺背景" />
+      <GalleryPosterBackground poster="/assets/atlas/gallery-backgrounds/xishuangbanna-gallery-bg.webp" mobilePoster="/assets/atlas/posters/xishuangbanna-zine-v2.webp" alt="西双版纳影笺背景" />
       <div className="fixed top-8 left-8 z-50">
         <BackButton href="/gallery/photos/xishuangbanna" label="返回" />
       </div>
@@ -49,7 +49,7 @@ export default function XishuangbannaGallery() {
               onClick={() => setActive(i)}
             >
               <img
-                src={`/xishuangbanna/lightbox/${photo}`}
+                src={`/xishuangbanna/thumbs/${photo}`}
                 alt=""
                 className="w-full h-auto block"
                 loading="lazy"
